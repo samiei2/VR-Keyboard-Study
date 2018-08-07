@@ -468,6 +468,8 @@ GameObject:
   - component: {fileID: 1593842410}
   - component: {fileID: 1593842411}
   - component: {fileID: 1593842412}
+  - component: {fileID: 1593842413}
+  - component: {fileID: 1593842414}
   m_Layer: 0
   m_Name: HexKeyboard
   m_TagString: Untagged
@@ -532,5 +534,27 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 537d955ff3f11184692316aef1451e36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1593842413
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1593842407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea1398d9fa202404995457753108324c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1593842414
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1593842407}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce7f64f73eceab4459ade7ae3f2bf733, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

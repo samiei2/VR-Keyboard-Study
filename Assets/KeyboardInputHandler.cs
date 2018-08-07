@@ -52,15 +52,19 @@ public class KeyboardInputHandler : MonoBehaviour {
                 }
                 else
                 {
-                    // There is a bug in visual update and we have to do the following 
-                    foreach (Transform child in transform)
+                    if (!inKeyPress)
                     {
-                        if(child != hit.transform.gameObject)
-                            child.GetComponent<KeyEvents>().Key_UnfocusedEvent();
+                        // There is a bug in visual update and we have to do the following 
+                        foreach (Transform child in transform)
+                        {
+                            if(child != hit.transform.gameObject)
+                                child.GetComponent<KeyEvents>().Key_UnfocusedEvent();
+                        }
+                        //////////////////////////////////////////////////////////////
+                    
+                        hit.transform.parent.GetComponent<KeyEvents>().Key_FocusedEvent();
+                        objectInFocus = hit.transform.gameObject;
                     }
-                    //////////////////////////////////////////////////////////////
-                    hit.transform.parent.GetComponent<KeyEvents>().Key_FocusedEvent();
-                    objectInFocus = hit.transform.gameObject;
                 }
             }
         }
