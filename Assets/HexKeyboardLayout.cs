@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class HexKeyboardLayout : MonoBehaviour {
+public class HexKeyboardLayout : KeyboardLayout {
     private Dictionary<String, GameObject> keysDic = new Dictionary<string, GameObject>();
 
     private void Start()

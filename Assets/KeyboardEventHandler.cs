@@ -16,6 +16,11 @@ public class KeyboardEventHandler : MonoBehaviour {
 		
 	}
 
+    internal void KeyFocused(GameObject key)
+    {
+        GetComponent<KeyboardLayout>().KeyInFocus = key;
+    }
+
     internal void KeyPressed(string key,bool isPrintable)
     {
         if (isPrintable)
@@ -29,5 +34,10 @@ public class KeyboardEventHandler : MonoBehaviour {
         {
 
         }
+    }
+
+    internal void KeyUnfocused()
+    {
+        GetComponent<KeyboardLayout>().KeyInFocus = null;
     }
 }
