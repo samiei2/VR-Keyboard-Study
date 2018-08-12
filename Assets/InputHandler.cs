@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class KeyboardInputHandler : MonoBehaviour {
+public class InputHandler : MonoBehaviour {
     public InputType SourceType;
     private GameObject objectInFocus;
     private bool inKeyPress;
@@ -38,14 +38,14 @@ public class KeyboardInputHandler : MonoBehaviour {
             {
                 if (Input.GetMouseButtonDown(0))
                 {
-                    Debug.Log("Mouse down on the " + hit.transform.parent.name);
+                    //Debug.Log("Mouse down on the " + hit.transform.parent.name);
                     inKeyPress = true;
                     hit.transform.parent.GetComponent<KeyEvents>().Key_PressedEvent();
                     StartCoroutine("RepeatKeyPress");
                 }
                 else if (Input.GetMouseButtonUp(0))
                 {
-                    Debug.Log("Mouse up on the " + hit.transform.parent.name);
+                    //Debug.Log("Mouse up on the " + hit.transform.parent.name);
                     StopCoroutine("RepeatKeyPress");
                     inKeyPress = false;
                     hit.transform.parent.GetComponent<KeyEvents>().Key_RealseEvent();
@@ -80,7 +80,7 @@ public class KeyboardInputHandler : MonoBehaviour {
             {
                 if (objectInFocus.name.Contains("HexCylinder"))
                 {
-                    Debug.Log("You realsed the " + objectInFocus.transform.parent.name);
+                    //Debug.Log("You realsed the " + objectInFocus.transform.parent.name);
                     objectInFocus.transform.parent.GetComponent<KeyEvents>().Key_UnfocusedEvent();
                     objectInFocus = null;
                     // There is a bug in visual update and we have to do the following 

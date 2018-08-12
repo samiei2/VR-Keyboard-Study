@@ -4,17 +4,20 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-public class HexKeyboardLayout : KeyboardLayout {
+public class MetroKeyboardLayout : KeyboardLayout {
     private Dictionary<String, GameObject> keysDic = new Dictionary<string, GameObject>();
+    public GameObject textArea;
+    public int distance;
 
     private void Start()
     {
+        textArea = GameObject.Find("TextArea");
         CreateMainKeys();
         LayoutKeys();
         SetProperties();
     }
 
-    private void SetProperties()
+    public override void SetProperties()
     {
         foreach (var key in keysDic.Keys)
         {
@@ -24,6 +27,10 @@ public class HexKeyboardLayout : KeyboardLayout {
             keysDic[key].AddComponent<KeyEvents>();
             keysDic[key].AddComponent<KeyProperties>();
             keysDic[key].GetComponent<KeyProperties>().keyText = key;
+            keysDic[key].GetComponent<KeyEvents>().KeyEvents_OnKeyFocused += KeyboardEventHandler_OnFocusedHandler;
+            keysDic[key].GetComponent<KeyEvents>().KeyEvents_OnKeyUnfocused += KeyboardEventHandler_OnUnfocusedHandler;
+            keysDic[key].GetComponent<KeyEvents>().KeyEvents_OnKeyPressed += KeyboardEventHandler_OnPressedHandler;
+            keysDic[key].GetComponent<KeyEvents>().KeyEvents_OnKeyReleased += KeyboardEventHandler_OnReleasedHandler;
         }
 
         // Special Keys font size fix
@@ -42,7 +49,7 @@ public class HexKeyboardLayout : KeyboardLayout {
 
     }
 
-    public void LayoutKeys()
+    public override void LayoutKeys()
     {
         // First row: . k w m u q '
         keysDic["."].transform.position = new Vector3(-6, 4, 0);
@@ -88,7 +95,7 @@ public class HexKeyboardLayout : KeyboardLayout {
         keysDic["123"].transform.position = new Vector3(6, -4, 0);
     }
 
-    private void CreateMainKeys()
+    public override void CreateMainKeys()
     {
         GameObject hexPrefab = Resources.Load("hexPrefab", typeof(GameObject)) as GameObject;
 
@@ -126,5 +133,62 @@ public class HexKeyboardLayout : KeyboardLayout {
         keysDic.Add("shft", Instantiate(hexPrefab) as GameObject);
         keysDic.Add("ret", Instantiate(hexPrefab) as GameObject);
         keysDic.Add("123", Instantiate(hexPrefab) as GameObject);
+    }
+
+    public override void KeyboardEventHandler_OnReleasedHandler(object sender, KeyEventArgs args)
+    {
+        var transform = (Transform)sender;
+        transform.Find("HexCylinder").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().normalMat;
+    }
+
+    public override void KeyboardEventHandler_OnPressedHandler(object sender, KeyEventArgs args)
+    {
+        var transform = (Transform)sender;
+        transform.Find("HexCylinder").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().pressedMat;
+        
+        if (args.KeyPrintable)
+        {
+            if (textArea != null)
+            {
+                textArea.GetComponent<TextMeshPro>().text += args.KeyText;
+            }
+        }
+        else
+        {
+
+        }
+    }
+
+    public override void KeyboardEventHandler_OnUnfocusedHandler(object sender, KeyEventArgs args)
+    {
+        var transform = (Transform)sender;
+        transform.Find("HexCylinder").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().normalMat;
+        if (zoomEffect)
+        {
+            transform.localScale = new Vector3(1,1,1);
+        }
+    }
+
+    public override void KeyboardEventHandler_OnFocusedHandler(object sender, KeyEventArgs args)
+    {
+        var transform = (Transform)sender;
+        transform.Find("HexCylinder").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().focusedMat;
+        if (zoomEffect)
+        {
+            transform.localScale *= 1.5f;
+            //ChangeClosebyKeys(transform);
+        }
+    }
+
+    private void ChangeClosebyKeys(Transform ts)
+    {
+        foreach (Transform key in transform)
+        {
+            double dist = Vector3.Distance(key.position, ts.position);
+            if (dist < distance)
+            {
+                key.localScale *= 1.1f;
+            }
+        }
     }
 }

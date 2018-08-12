@@ -1,31 +1,43 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class KeyEvents : MonoBehaviour {
+    public delegate void KeyEvent(object sender, KeyEventArgs args);
+    public event KeyEvent KeyEvents_OnKeyFocused;
+    public event KeyEvent KeyEvents_OnKeyUnfocused;
+    public event KeyEvent KeyEvents_OnKeyPressed;
+    public event KeyEvent KeyEvents_OnKeyReleased;
 
     public void Key_FocusedEvent()
     {
-        transform.Find("HexCylinder").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().focusedMat;
-        transform.parent.GetComponent<KeyboardEventHandler>().KeyFocused(gameObject);
+        KeyEvents_OnKeyFocused?.Invoke(transform, KeyEventArgs.Empty);
     }
 
     public void Key_UnfocusedEvent()
     {
-        transform.Find("HexCylinder").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().normalMat;
-        transform.parent.GetComponent<KeyboardEventHandler>().KeyUnfocused();
+        KeyEvents_OnKeyUnfocused?.Invoke(transform, KeyEventArgs.Empty);
     }
 
     public void Key_PressedEvent()
     {
-        transform.Find("HexCylinder").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().pressedMat;
-        transform.parent.GetComponent<KeyboardEventHandler>().KeyPressed(
-            transform.GetComponent<KeyProperties>().keyText,
-            transform.GetComponent<KeyProperties>().isPrintable);
+        KeyEventArgs args = new KeyEventArgs();
+        args.KeyPrintable = GetComponent<KeyProperties>().isPrintable;
+        args.KeyText = GetComponent<KeyProperties>().keyText;
+        KeyEvents_OnKeyPressed?.Invoke(transform, args);
     }
 
     public void Key_RealseEvent()
     {
-        transform.Find("HexCylinder").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().normalMat;
+        KeyEvents_OnKeyReleased?.Invoke(transform, KeyEventArgs.Empty);
     }
+}
+
+public class KeyEventArgs: EventArgs
+{
+    public static KeyEventArgs Empty;
+
+    public bool KeyPrintable { get; internal set; }
+    public string KeyText { get; internal set; }
 }

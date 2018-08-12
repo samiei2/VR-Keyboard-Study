@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-[CustomEditor(typeof(KeyboardInputHandler))]
+[CustomEditor(typeof(InputHandler))]
 public class KeyboardInputHandler_editor : Editor {
     public override void OnInspectorGUI()
     {
-        KeyboardInputHandler kin = (KeyboardInputHandler)target;
+        InputHandler kin = (InputHandler)target;
         EditorGUILayout.BeginVertical();
         
         kin.SourceType = (InputType)EditorGUILayout.EnumPopup("Input Type:",kin.SourceType);

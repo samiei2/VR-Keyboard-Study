@@ -8,6 +8,7 @@ public class KeyProperties : MonoBehaviour {
     public Material normalMat;
     internal bool isPrintable = true;
     internal string keyText = "";
+    internal bool effectsEnabled;
 
     void Start()
     {

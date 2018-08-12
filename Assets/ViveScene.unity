@@ -113,6 +113,47 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!1 &132592076
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 132592077}
+  - component: {fileID: 132592078}
+  m_Layer: 0
+  m_Name: FitalyKeyboard
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &132592077
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 132592076}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &132592078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 132592076}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b6ffc7e30156e04eb1dac801e9badfd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  zoomEffect: 0
 --- !u!1 &360446857
 GameObject:
   m_ObjectHideFlags: 0
@@ -178,6 +219,34 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!1 &914900539
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 914900540}
+  m_Layer: 0
+  m_Name: QuickwriteKeyboard
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &914900540
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 914900539}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1059536994
 GameObject:
   m_ObjectHideFlags: 0
@@ -311,7 +380,7 @@ ParticleSystem:
   moveWithTransform: 1
   moveWithCustomTransform: {fileID: 0}
   scalingMode: 1
-  randomSeed: 1194383475
+  randomSeed: 1063882081
   InitialModule:
     serializedVersion: 3
     enabled: 1
@@ -3936,15 +4005,15 @@ GameObject:
   m_Component:
   - component: {fileID: 1593842409}
   - component: {fileID: 1593842408}
+  - component: {fileID: 1593842411}
   - component: {fileID: 1593842410}
-  - component: {fileID: 1593842412}
   m_Layer: 0
-  m_Name: HexKeyboard
+  m_Name: MetroKeyboard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1593842408
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3956,6 +4025,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 047545dfce763ae43b52f69f2a046788, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  zoomEffect: 0
+  textArea: {fileID: 0}
+  distance: 4
 --- !u!4 &1593842409
 Transform:
   m_ObjectHideFlags: 0
@@ -3982,7 +4054,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SourceType: 1
   RepeatedKeyPressEnabled: 0
---- !u!114 &1593842412
+--- !u!114 &1593842411
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
@@ -3990,7 +4062,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1593842407}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 537d955ff3f11184692316aef1451e36, type: 3}
+  m_Script: {fileID: 11500000, guid: 87430d9d0d44b9745b2e9016b65adeb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &1693107410
