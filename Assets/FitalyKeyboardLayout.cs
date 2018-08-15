@@ -47,4 +47,9 @@ public class FitalyKeyboardLayout : KeyboardLayout {
     {
         throw new NotImplementedException();
     }
+
+    public override void HighlightKeys(List<char> suggestedAlphabet)
+    {
+        throw new NotImplementedException();
+    }
 }

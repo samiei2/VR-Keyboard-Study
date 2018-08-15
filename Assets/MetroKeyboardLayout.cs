@@ -150,6 +150,7 @@ public class MetroKeyboardLayout : KeyboardLayout {
         {
             if (textArea != null)
             {
+                OnKeyPressed(sender,args);
                 textArea.GetComponent<TextMeshPro>().text += args.KeyText;
             }
         }
@@ -191,4 +192,14 @@ public class MetroKeyboardLayout : KeyboardLayout {
             }
         }
     }
+
+    public override void HighlightKeys(List<char> suggestedAlphabet)
+    {
+        foreach (var item in suggestedAlphabet)
+        {
+            var gameobj = keysDic[item.ToString()];
+            
+        }
+    }
+    
 }
