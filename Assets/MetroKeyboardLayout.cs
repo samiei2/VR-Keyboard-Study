@@ -34,9 +34,9 @@ public class MetroKeyboardLayout : KeyboardLayout {
         }
 
         // Special Keys font size fix
-        keysDic["spc"].transform.Find("Text").GetComponent<TextMeshPro>().fontSize -= 4;
-        keysDic["spc"].transform.GetComponent<KeyProperties>().isPrintable = false;
-        keysDic["spc"].GetComponent<KeyProperties>().keyText = "";
+        keysDic["spc"].transform.Find("Text").GetComponent<TextMeshPro>().fontSize -= 5;
+        keysDic["spc"].transform.GetComponent<KeyProperties>().isPrintable = true;
+        keysDic["spc"].GetComponent<KeyProperties>().keyText = " ";
         keysDic["shft"].transform.Find("Text").GetComponent<TextMeshPro>().fontSize -= 5;
         keysDic["shft"].transform.GetComponent<KeyProperties>().isPrintable = false;
         keysDic["shft"].GetComponent<KeyProperties>().keyText = "";

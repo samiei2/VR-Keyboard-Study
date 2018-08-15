@@ -1,0 +1,772 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Tst</name>
+    </assembly>
+    <members>
+        <member name="T:Tst.TstDictionary">
+            <summary>
+            Ternary Search Tree Dictionary
+            </summary>
+            <remarks>
+            <para>
+            This dictionary is an implementation of the <b>Ternary Search Tree</b>
+            data structure proposed by J. L. Bentley and R. Sedgewick in their 
+            paper:  Fast algorithms for sorting and searching strings
+            in Proceedings of the Eighth Annual ACM-SIAM Symposium on Discrete Algorithms, 
+            New Orleans Louisiana, January 5-7, 1997. 
+            </para>
+            <para>
+            This dictionary acts as a symbol table: the keys must be string. It
+            is generally faster to find symbol than the <see cref="T:System.Collections.Hashtable"/> or
+            <see cref="T:System.Collections.SortedList"/> classes. It can also perform more complex search
+            such as neighbor search.
+            </para>
+            <para>
+            Please read the paper to get some insight on the stucture used below.
+            </para>	
+            </remarks>
+        </member>
+        <member name="M:Tst.TstDictionary.#ctor">
+            <summary>
+             Constructor
+            </summary> 
+             <remarks>
+             Construct an empty ternary search tree.
+             </remarks>
+        </member>
+        <member name="M:Tst.TstDictionary.#ctor(Tst.TstDictionaryEntry)">
+            <summary>
+            Create a dictionary with a specified root.
+            </summary>
+            <param name="root">Root of the new dictionary</param>
+        </member>
+        <member name="P:Tst.TstDictionary.Root">
+            <summary>
+             Root node
+             </summary>
+        </member>
+        <member name="P:Tst.TstDictionary.Version">
+            <summary>
+            Returns the current dictionary version.
+            </summary>
+            <remarks>
+            This method is used by enumerators to track the dictionary
+            modification.
+            </remarks>
+        </member>
+        <member name="P:Tst.TstDictionary.Count">
+            <summary>
+             Gets the number of key-and-value pairs contained in the <see cref="T:Tst.TstDictionary"/>.
+             </summary>	
+             <value>
+             The number of key-and-value pairs contained in the <see cref="T:Tst.TstDictionary"/>.
+             </value>
+             <remarks>
+             Complexity: O(N)
+             </remarks>
+        </member>
+        <member name="P:Tst.TstDictionary.IsSynchronized">
+            <summary>
+            Get a value indicating whether access to the <see cref="T:Tst.TstDictionary"/> is synchronized (thread-safe).
+            </summary>
+            <value>
+            true if access to the <see cref="T:Tst.TstDictionary"/> is synchronized (thread-safe); 
+            otherwise, false. The default is false.
+            </value>
+        </member>
+        <member name="P:Tst.TstDictionary.SyncRoot">
+            <summary>
+            Gets an object that can be used to synchronize access to the <see cref="T:Tst.TstDictionary"/>.
+            </summary>
+            <value>
+            An object that can be used to synchronize access to the <see cref="T:Tst.TstDictionary"/>.
+            </value>
+        </member>
+        <member name="P:Tst.TstDictionary.IsFixedSize">
+            <summary>
+            Gets a value indicating whether the <see cref="T:Tst.TstDictionary"/> has a fixed size. 
+            </summary>
+            <value>
+            true if the <see cref="T:Tst.TstDictionary"/> has a fixed size; otherwise, false. 
+            The default is false.
+            </value>
+        </member>
+        <member name="P:Tst.TstDictionary.IsReadOnly">
+            <summary>
+             Gets a value indicating whether the <see cref="T:Tst.TstDictionary"/> is read-only.
+             </summary>
+             <value>
+             true if the <see cref="T:Tst.TstDictionary"/> is read-only; otherwise, false. 
+             The default is false.
+             </value>
+        </member>
+        <member name="P:Tst.TstDictionary.Keys">
+            <summary>
+            Gets an <see cref="T:System.Collections.Specialized.StringCollection"/> containing the keys in the <see cref="T:Tst.TstDictionary"/>.
+            </summary>
+            <returns>
+            An <see cref="T:System.Collections.Specialized.StringCollection"/> containing the keys in the <see cref="T:Tst.TstDictionary"/>.
+            </returns>
+        </member>
+        <member name="P:Tst.TstDictionary.Values">
+            <summary>
+            Gets an <see cref="T:System.Collections.ICollection"/> containing the values in the <see cref="T:Tst.TstDictionary"/>.
+            </summary>
+            <returns>
+            An <see cref="T:System.Collections.ICollection"/> containing the values in the <see cref="T:Tst.TstDictionary"/>.
+            </returns>
+        </member>
+        <member name="M:Tst.TstDictionary.Clone">
+            <summary>
+            Creates a shallow copy of the <see cref="T:Tst.TstDictionary"/>.
+            </summary>
+            <returns>A shallow copy of the <see cref="T:Tst.TstDictionary"/>.</returns>
+        </member>
+        <member name="M:Tst.TstDictionary.Synchronized(Tst.TstDictionary)">
+            <summary>
+            Returns a synchronized (thread-safe) wrapper for 
+            the <see cref="T:Tst.TstDictionary"/>.
+            </summary>
+            <param name="table">The <see cref="T:Tst.TstDictionary"/> to synchronize.</param>
+            <returns>A synchronized (thread-safe) wrapper for the 
+            <see cref="T:Tst.TstDictionary"/>.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="table"/> is a null reference.</exception>
+        </member>
+        <member name="M:Tst.TstDictionary.CopyTo(System.Array,System.Int32)">
+            <summary>
+            Copies the <see cref="T:Tst.TstDictionary"/> elements to a one-dimensional Array instance at the specified index.
+            </summary>
+            <param name="array">The one-dimensional <see cref="T:System.Array"/> that is the destination of the 
+            <see cref="T:System.Collections.DictionaryEntry"/> 
+            objects copied from <see cref="T:Tst.TstDictionary"/>. The <see cref="T:System.Array"/> must have zero-based indexing.
+            </param>
+            <param name="arrayIndex">The zero-based index in <paramref name="array"/> at which copying begins.</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="array"/> is a null reference</exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            <paramref name="arrayIndex"/> is less than zero.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            <paramref name="array"/> is multidimensional. 
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            <paramref name="arrayIndex"/> is equal to or greater than the length of <paramref name="array"/>. 
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            The number of elements in the source <see cref="T:Tst.TstDictionary"/> is greater than 
+            the available space from <paramref name="arrayIndex"/> to the end of the destination array. 
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            The type of the source <see cref="T:Tst.TstDictionary"/> cannot be cast automatically 
+            to the type of the destination array. 
+            </exception>
+        </member>
+        <member name="P:Tst.TstDictionary.Item(System.String)">
+            <summary>
+            Gets or sets the value associated with the specified key.
+            </summary>
+            <remarks>
+            [C#] In C#, this property is the indexer for the <see cref="T:Tst.TstDictionary"/> class.
+            </remarks>
+            <param name="key">The key whose value to get or set.</param>
+            <value>
+            The value associated with the specified key. 
+            If the specified key is not found, attempting to get it returns a null reference 
+            (Nothing in Visual Basic), and attempting to set it creates a new element using the specified key.
+            </value>
+            <exception cref="T:System.ArgumentNullException"><paramref name="key"/> is a null reference</exception>
+            <exception cref="T:System.ArgumentException">
+            The property is set and <paramref name="key"/> is an empty string
+            </exception>
+            <exception cref="T:System.NotSupportedException">
+            The property is set and the <see cref="T:Tst.TstDictionary"/> is read-only. 
+            </exception>
+            <exception cref="T:System.NotSupportedException">
+            The property is set, <paramref name="key"/> does not exist in the collection,
+            and the <see cref="T:Tst.TstDictionary"/> has a fixed size.
+            </exception>
+        </member>
+        <member name="M:Tst.TstDictionary.Add(System.String,System.Object)">
+            <summary>
+             Adds an element with the specified key and value into the <see cref="T:Tst.TstDictionary"/>.
+            </summary>
+             <param name="key">The key of the element to add.</param>
+             <param name="value">The value of the element to add. The value can be a null reference (Nothing in Visual Basic).</param>
+             <exception cref="T:System.ArgumentNullException">
+             <paramref name="key"/> is a null reference (Nothing in Visual Basic).
+             </exception>
+             <exception cref="T:System.ArgumentException"><paramref name="key"/> is an empty string</exception>
+             <exception cref="T:System.ArgumentException">
+             An element with the same key already exists in the <see cref="T:Tst.TstDictionary"/>.
+             </exception>
+             <exception cref="T:System.NotSupportedException">The <see cref="T:Tst.TstDictionary"/> is read-only.</exception>
+             <exception cref="T:System.NotSupportedException">The <see cref="T:Tst.TstDictionary"/> has a fixed size.</exception>
+        </member>
+        <member name="M:Tst.TstDictionary.Remove(System.String)">
+            <summary>
+             Removes the element with the specified key from the <see cref="T:Tst.TstDictionary"/>.
+             </summary>
+             <param name="key">The key of the element to remove.</param>
+             <exception cref="T:System.ArgumentNullException">
+             <paramref name="key"/> is a null reference (Nothing in Visual Basic).
+             </exception>
+             <exception cref="T:System.ArgumentException"><paramref name="key"/> is an empty string</exception>
+             <exception cref="T:System.NotSupportedException">The <see cref="T:Tst.TstDictionary"/> is read-only.</exception>
+             <exception cref="T:System.NotSupportedException">The <see cref="T:Tst.TstDictionary"/> has a fixed size.</exception>
+        </member>
+        <member name="M:Tst.TstDictionary.Clear">
+            <summary>
+            Removes all elements from the <see cref="T:Tst.TstDictionary"/>.
+            </summary>
+            <exception cref="T:System.NotSupportedException">The <see cref="T:Tst.TstDictionary"/> is read-only.</exception>
+        </member>
+        <member name="M:Tst.TstDictionary.Contains(System.String)">
+            <summary>
+            Determines whether the <see cref="T:Tst.TstDictionary"/> contains a specific key.
+            </summary>
+            <param name="key">The key to locate in the <see cref="T:Tst.TstDictionary"/>.</param>
+            <returns>true if the <see cref="T:Tst.TstDictionary"/> contains an element with the specified key; otherwise, false.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="key"/> is a null reference (Nothing in Visual Basic).
+            </exception>
+            <remarks>
+            <para>Complexity: Uses a Ternary Search Tree (tst) to find the key.</para>
+            <para>The method behaves exactly as <see cref="M:Tst.TstDictionary.ContainsKey(System.String)"/>.</para>
+            </remarks>
+        </member>
+        <member name="M:Tst.TstDictionary.ContainsKey(System.String)">
+            <summary>
+            Determines whether the <see cref="T:Tst.TstDictionary"/> contains a specific key.
+            </summary>
+            <param name="key">The key to locate in the <see cref="T:Tst.TstDictionary"/>.</param>
+            <returns>true if the <see cref="T:Tst.TstDictionary"/> contains an element with the specified key; otherwise, false.</returns>
+            <exception cref="T:System.ArgumentNullException">
+            <paramref name="key"/> is a null reference (Nothing in Visual Basic).
+            </exception>
+            <remarks>
+            <para>Complexity: Uses a Ternary Search Tree (tst) to find the key.</para>
+            <para>The method behaves exactly as <see cref="M:Tst.TstDictionary.Contains(System.String)"/>.</para>
+            </remarks>    
+        </member>
+        <member name="M:Tst.TstDictionary.ContainsValue(System.Object)">
+            <summary>
+            Determines whether the <see cref="T:Tst.TstDictionary"/> contains a specific value.
+            </summary>
+            <returns>
+            true if the <see cref="T:Tst.TstDictionary"/> contains an element with the specified value; 
+            otherwise, false.
+            </returns>
+        </member>
+        <member name="M:Tst.TstDictionary.GetEnumerator">
+            <summary>
+            Returns an <see cref="T:System.Collections.IDictionaryEnumerator"/> that can iterate through the <see cref="T:Tst.TstDictionary"/>.
+            </summary>
+            <returns>An <see cref="T:System.Collections.IDictionaryEnumerator"/> for the <see cref="T:Tst.TstDictionary"/>.</returns>
+        </member>
+        <member name="M:Tst.TstDictionary.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Returns an <see cref="T:System.Collections.IDictionaryEnumerator"/> that can iterate through the <see cref="T:Tst.TstDictionary"/>.
+            </summary>
+            <returns>An <see cref="T:System.Collections.IDictionaryEnumerator"/> for the <see cref="T:Tst.TstDictionary"/>.</returns>		
+        </member>
+        <member name="M:Tst.TstDictionary.Find(System.String)">
+            <summary>
+            Finds the tst node matching the key.
+            </summary>
+            <returns>the <see cref="T:Tst.TstDictionaryEntry"/> mathcing the key, null if not found.</returns>
+            <exception cref="T:System.ArgumentNullException"><paramref name="key"/> is null.</exception>
+        </member>
+        <member name="M:Tst.TstDictionary.PartialMatch(System.String)">
+            <summary>
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException">key is a null reference</exception>
+            <exception cref="T:System.ArgumentException">key is an empty string</exception>
+        </member>
+        <member name="M:Tst.TstDictionary.PartialMatch(System.String,System.Char)">
+            <summary>
+            Partial match search with wild char character.
+            </summary>
+            <param name="key">key to match</param>
+            <param name="wildChar">"don't care" character</param>
+            <returns></returns>
+            <exception cref="T:System.ArgumentNullException">key is a null reference</exception>
+            <exception cref="T:System.ArgumentException">key is an empty string</exception>
+            <remarks>
+            <para>
+            Searching the dictionary for the pattern
+            &quot;*o*o*o&quot; matches the single word <em>rococo</em>, 
+            while the pattern
+            &quot;*a*a*a&quot; matches many words, including <em>banana</em>,
+            <em>casaba</em>, and <em>pajama</em>.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:Tst.TstDictionary.PartialMatchSearch(Tst.TstDictionaryEntry,System.String,System.Int32,System.Char,System.Collections.IList)">
+            <summary>
+            
+            </summary>
+            <param name="p"></param>
+            <param name="key"></param>
+            <param name="index"></param>
+            <param name="wildChar"></param>
+            <param name="matches"></param>
+        </member>
+        <member name="M:Tst.TstDictionary.NearNeighbors(System.String,System.Int32)">
+            <summary>
+            Near-neighbor search in the key string set.
+            </summary>
+            <param name="key">key to search for.</param>
+            <param name="distance">Hamming distance</param>
+            <returns>near-neighbor search within <paramref name="distance"/>
+            Hamming distance.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">key is a null reference</exception>
+            <exception cref="T:System.ArgumentException">dist is negative</exception>
+            <remarks>
+            <para>
+            This methods finds all words in
+            the dictionary that are within a given Hamming distance of
+            a query word.
+            </para>
+            <para>
+            For instance, a search for all words within
+            distance two of soda finds code, coma and 117 other
+            words.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:Tst.TstDictionary.NearNeighborsSearch(Tst.TstDictionaryEntry,System.String,System.Int32,System.Int32,System.Collections.IList)">
+            <summary>
+            
+            </summary>
+            <param name="p"></param>
+            <param name="key"></param>
+            <param name="index"></param>
+            <param name="dist"></param>
+            <param name="matches"></param>
+        </member>
+        <member name="T:Tst.TstDictionaryEntry">
+            <summary>
+            Defines a Ternary Search Tree node pair that can be set or retrieved.
+            </summary>
+        </member>
+        <member name="M:Tst.TstDictionaryEntry.#ctor(Tst.TstDictionaryEntry,System.Char)">
+            <summary>
+            Construct a tst node.
+            </summary>
+            <param name="parent">parent node</param>
+            <param name="splitChar">split character</param>
+        </member>
+        <member name="P:Tst.TstDictionaryEntry.Parent">
+            <summary>
+            Gets the parent of the node.
+            </summary>	
+            <value>
+            The parent node.
+            </value>	
+        </member>
+        <member name="P:Tst.TstDictionaryEntry.SplitChar">
+            <summary>
+            Gets the split character.
+            </summary>	
+            <value>
+            The split character.
+            </value>	
+        </member>
+        <member name="P:Tst.TstDictionaryEntry.IsKey">
+            <summary>
+            Gets a value indicating wheter the node is a key.
+            </summary>	
+            <value>
+            true is the node is a key, false otherwize.
+            </value>	
+        </member>
+        <member name="P:Tst.TstDictionaryEntry.Key">
+            <summary>
+            Gets the node key, if it is a key.
+            </summary>
+            <value>
+            The node key.
+            </value>
+            <exception cref="T:System.InvalidOperationException">The node does not hold a key-value pair.</exception>
+        </member>
+        <member name="P:Tst.TstDictionaryEntry.Value">
+            <summary>
+            Gets the node value.
+            </summary>	
+            <value>
+            The node value.
+            </value>
+            <exception cref="T:System.InvalidOperationException">The node does not hold a key-value pair.</exception>
+        </member>
+        <member name="P:Tst.TstDictionaryEntry.LowChild">
+            <summary>
+            Gets the node low child.
+            </summary>	
+            <value>
+            The low child.
+            </value>	
+        </member>
+        <member name="P:Tst.TstDictionaryEntry.EqChild">
+            <summary>
+            Gets the node ep child.
+            </summary>	
+            <value>
+            The eq child.
+            </value>	
+        </member>
+        <member name="P:Tst.TstDictionaryEntry.HighChild">
+            <summary>
+            Gets the node high child.
+            </summary>	
+            <value>
+            The high child.
+            </value>	
+        </member>
+        <member name="P:Tst.TstDictionaryEntry.HasChildren">
+            <summary>
+            Gets a value indicating wheter the node has children.
+            </summary>	
+            <value>
+            true if the node has children, false otherwize.
+            </value>	
+        </member>
+        <member name="P:Tst.TstDictionaryEntry.IsLowChild">
+            <summary>
+            Gets a value indicating wheter the node is a low child.
+            </summary>	
+            <value>
+            true if the node is a low child, false otherwize.
+            </value>
+        </member>
+        <member name="P:Tst.TstDictionaryEntry.IsHighChild">
+            <summary>
+            Gets a value indicating wheter the node is a high child.
+            </summary>	
+            <value>
+            true if the node is a high child, false otherwize.
+            </value>
+        </member>
+        <member name="P:Tst.TstDictionaryEntry.IsEqChild">
+            <summary>
+            Gets a value indicating wheter the node is a eq child.
+            </summary>	
+            <value>
+            true if the node is a eq child, false otherwize.
+            </value>
+        </member>
+        <member name="M:Tst.TstDictionaryEntry.Clone">
+            <summary>
+            Creates a shallow copy of the entry
+            </summary>
+            <returns>entry shallow copy</returns>
+        </member>
+        <member name="T:Tst.TstDictionaryEntryEventArgs">
+            <summary>
+            Defines an event argument class that holds a <see cref="T:Tst.TstDictionaryEntry"/>.
+            </summary>
+        </member>
+        <member name="M:Tst.TstDictionaryEntryEventArgs.#ctor(Tst.TstDictionaryEntry)">
+            <summary>Create a <see cref="T:Tst.TstDictionaryEntry"/> event argument.</summary>
+            <param name="entry">A <see cref="T:Tst.TstDictionaryEntry"/> entry to pass as argument.</param>
+        </member>
+        <member name="P:Tst.TstDictionaryEntryEventArgs.Entry">
+            <summary>Gets the <see cref="T:Tst.TstDictionaryEntry"/> entry.</summary>
+            <value>The <see cref="T:Tst.TstDictionaryEntry"/> entry.</value>
+        </member>
+        <member name="T:Tst.TstDictionaryEntryEventHandler">
+            <summary>
+            A <see cref="T:Tst.TstDictionaryEntry"/> event handler.
+            </summary>
+        </member>
+        <member name="T:Tst.TstDictionaryEnumerator">
+            <summary>
+            Enumerates the elements of a <see cref="T:Tst.TstDictionary"/>.
+            </summary>
+        </member>
+        <member name="M:Tst.TstDictionaryEnumerator.#ctor(Tst.TstDictionary)">
+            <summary>Constructs an enumerator over <paramref name="tst"/></summary>
+            <param name="tst">dictionary to enumerate.</param>
+            <exception cref="T:System.ArgumentNullException">tst is null</exception>
+        </member>
+        <member name="M:Tst.TstDictionaryEnumerator.Reset">
+            <summary>
+            Sets the enumerator to its initial position, which is before the first element in the collection.
+            </summary>
+        </member>
+        <member name="P:Tst.TstDictionaryEnumerator.Current">
+            <summary>
+            Gets the current element in the collection.
+            </summary>
+            <value>The current element in the collection.</value>
+        </member>
+        <member name="P:Tst.TstDictionaryEnumerator.System#Collections#IEnumerator#Current">
+            <summary>
+            Gets the current element in the collection.
+            </summary>
+            <value>The current element in the collection.</value>	
+        </member>
+        <member name="P:Tst.TstDictionaryEnumerator.Entry">
+            <summary>
+            Gets both the key and the value of the current dictionary entry.
+            </summary>
+            <value>
+            A <see cref="T:System.Collections.DictionaryEntry"/> containing both the key and the value of the current 
+            dictionary entry.
+            </value>
+            <exception cref="T:System.InvalidOperationException">
+            The enumerator is positioned before the first entry of the dictionary or after the last entry. 
+            </exception>
+        </member>
+        <member name="P:Tst.TstDictionaryEnumerator.Key">
+            <summary>
+            Gets the key of the current dictionary entry.
+            </summary>
+            <value>
+            The key of the current element of the enumeration.
+            </value>
+            <exception cref="T:System.InvalidOperationException">
+            The enumerator is positioned before the first entry of the dictionary or after the last entry. 
+            </exception>	
+        </member>
+        <member name="P:Tst.TstDictionaryEnumerator.System#Collections#IDictionaryEnumerator#Key">
+            <summary>
+            Gets the key of the current dictionary entry.
+            </summary>
+            <value>
+            The key of the current element of the enumeration.
+            </value>
+            <exception cref="T:System.InvalidOperationException">
+            The enumerator is positioned before the first entry of the dictionary or after the last entry. 
+            </exception>		
+        </member>
+        <member name="P:Tst.TstDictionaryEnumerator.Value">
+            <summary>
+            Gets the value of the current dictionary entry.
+            </summary>
+            <value>
+            The value of the current element of the enumeration.
+            </value>
+            <exception cref="T:System.InvalidOperationException">
+            The enumerator is positioned before the first entry of the dictionary or after the last entry. 
+            </exception>		
+        </member>
+        <member name="M:Tst.TstDictionaryEnumerator.MoveNext">
+            <summary>
+            Advances the enumerator to the next element of the collection.
+            </summary>
+            <returns>
+            true if the enumerator was successfully advanced to the next element; 
+            false if the enumerator has passed the end of the collection.
+            </returns>
+        </member>
+        <member name="T:Tst.TstSynchronizedDictionary">
+            <summary>
+            A synchronized (thread-safe) wrapper for the <see cref="T:Tst.TstDictionary"/>.
+            </summary>
+        </member>
+        <member name="M:Tst.TstSynchronizedDictionary.#ctor(Tst.TstDictionary)">
+            <summary>
+            Creates a synchronized wrapper around the 
+            <see cref="T:Tst.TstDictionary"/> <paramref name="dic"/>.
+            </summary>
+            <param name="dic">Dictionary to synchronize</param>
+        </member>
+        <member name="P:Tst.TstSynchronizedDictionary.Wrapped">
+            <summary>
+            Wrapped dictionary
+            </summary>
+        </member>
+        <member name="M:Tst.TstSynchronizedDictionary.Add(System.String,System.Object)">
+            <summary>
+            Synchronized Add method.
+            </summary>
+            <param name="key"></param>
+            <param name="value"></param>
+        </member>
+        <member name="M:Tst.TstSynchronizedDictionary.Clear">
+            <summary>
+            Synchronized clear method
+            </summary>
+        </member>
+        <member name="M:Tst.TstSynchronizedDictionary.Remove(System.String)">
+            <summary>
+            Synchronized remove method
+            </summary>
+            <param name="key"></param>
+        </member>
+        <member name="M:Tst.TstSynchronizedDictionary.Clone">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Tst.TstSynchronizedDictionary.ContainsKey(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tst.TstSynchronizedDictionary.CopyTo(System.Array,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="array"></param>
+            <param name="arrayIndex"></param>
+        </member>
+        <member name="P:Tst.TstSynchronizedDictionary.Count">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Tst.TstSynchronizedDictionary.Find(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tst.TstSynchronizedDictionary.GetEnumerator">
+            <summary>
+            Gets a non-synchronized enumerator
+            </summary>
+            <remarks>
+            Enumerating through a collection is intrinsically not a 
+            thread-safe procedure. 
+            Even when a collection is synchronized, other threads could still 
+            modify the collection, which causes the enumerator to throw an 
+            exception. 
+            To guarantee thread safety during enumeration, you can either lock 
+            the collection during the entire enumeration or catch the 
+            exceptions resulting from changes made by other threads.
+            </remarks>
+            <returns>Enumerator</returns>
+        </member>
+        <member name="P:Tst.TstSynchronizedDictionary.IsFixedSize">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Tst.TstSynchronizedDictionary.IsSynchronized">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Tst.TstSynchronizedDictionary.IsReadOnly">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Tst.TstSynchronizedDictionary.Keys">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Tst.TstSynchronizedDictionary.Values">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="P:Tst.TstSynchronizedDictionary.Item(System.String)">
+            <summary>
+            Synchronized indexer
+            </summary>
+        </member>
+        <member name="P:Tst.TstSynchronizedDictionary.SyncRoot">
+            <summary>
+            SyncRoot object
+            </summary>
+        </member>
+        <member name="M:Tst.TstSynchronizedDictionary.PartialMatch(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="key"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tst.TstSynchronizedDictionary.PartialMatch(System.String,System.Char)">
+            <summary>
+            
+            </summary>
+            <param name="key"></param>
+            <param name="wildChar"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Tst.TstSynchronizedDictionary.NearNeighbors(System.String,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="key"></param>
+            <param name="distance"></param>
+            <returns></returns>
+        </member>
+        <member name="T:Tst.TstTraverser">
+            <summary>
+            Defines a <see cref="T:Tst.TstDictionary"/> tree traverser object.
+            </summary>
+            <remarks>
+            <para>
+            This class can be used to traverse the ternary tree. It defines two events:
+            TreeEntry and DiscoverEntry.
+            </para>
+            </remarks>
+        </member>
+        <member name="M:Tst.TstTraverser.#ctor">
+            <summary>
+            Default constructor
+            </summary>
+        </member>
+        <member name="M:Tst.TstTraverser.Traverse(Tst.TstDictionary)">
+            <summary>
+            Tarverses the ternary search tree nodes of <paramref name="dic"/>.
+            </summary>
+            <param name="dic">Tree to explore</param>
+            <exception cref="T:System.ArgumentNullException"><paramref name="dic"/> is null.</exception>
+        </member>
+        <member name="E:Tst.TstTraverser.TreeEntry">
+            <summary>Event called when a node is integrated into the traversed tree.</summary>
+        </member>
+        <member name="M:Tst.TstTraverser.OnTreeEntry(Tst.TstDictionaryEntry)">
+            <summary>
+            Raises the <see cref="E:Tst.TstTraverser.TreeEntry"/> event.
+            </summary>
+            <param name="p">tst node added to the tree</param>
+        </member>
+        <member name="E:Tst.TstTraverser.LowChild">
+            <summary>Event called when a node is discovered but not yet in the explore tree.</summary>
+        </member>
+        <member name="M:Tst.TstTraverser.OnLowChild(Tst.TstDictionaryEntry)">
+            <summary>
+            Raises the <see cref="E:Tst.TstTraverser.HighChild"/> event.
+            </summary>
+            <param name="p">high child about to be added to the tree</param>	
+        </member>
+        <member name="E:Tst.TstTraverser.EqChild">
+            <summary>Event called when a node is discovered but not yet in the explore tree.</summary>
+        </member>
+        <member name="M:Tst.TstTraverser.OnEqChild(Tst.TstDictionaryEntry)">
+            <summary>
+            Raises the <see cref="E:Tst.TstTraverser.HighChild"/> event.
+            </summary>
+            <param name="p">high child about to be added to the tree</param>	
+        </member>
+        <member name="E:Tst.TstTraverser.HighChild">
+            <summary>Event called when a node is discovered but not yet in the explore tree.</summary>
+        </member>
+        <member name="M:Tst.TstTraverser.OnHighChild(Tst.TstDictionaryEntry)">
+            <summary>
+            Raises the <see cref="E:Tst.TstTraverser.HighChild"/> event.
+            </summary>
+            <param name="p">high child about to be added to the tree</param>	
+        </member>
+        <member name="M:Tst.TstTraverser.Traverse(Tst.TstDictionaryEntry)">
+            <summary>
+            Traverses the <paramref name="p"/> sub-tree.
+            </summary>
+            <param name="p">node to traverse.</param>
+        </member>
+    </members>
+</doc>
