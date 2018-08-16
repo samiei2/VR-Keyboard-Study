@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class KeyEvents : MonoBehaviour {
+    private bool clicked = false;
+
     public delegate void KeyEvent(object sender, KeyEventArgs args);
     public event KeyEvent KeyEvents_OnKeyFocused;
     public event KeyEvent KeyEvents_OnKeyUnfocused;
@@ -23,9 +25,10 @@ public class KeyEvents : MonoBehaviour {
     public void Key_PressedEvent()
     {
         KeyEventArgs args = new KeyEventArgs();
-        args.KeyPrintable = GetComponent<KeyProperties>().isPrintable;
-        args.KeyText = GetComponent<KeyProperties>().keyText;
+        args.KeyPrintable = GetComponent<KeyProperties>().IsPrintable;
+        args.KeyText = GetComponent<KeyProperties>().KeyText;
         KeyEvents_OnKeyPressed?.Invoke(transform, args);
+
     }
 
     public void Key_RealseEvent()

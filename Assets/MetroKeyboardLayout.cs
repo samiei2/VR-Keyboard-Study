@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 
 public class MetroKeyboardLayout : KeyboardLayout {
-    private Dictionary<String, GameObject> keysDic = new Dictionary<string, GameObject>();
+    private Dictionary<KeyID, GameObject> keysDic = new Dictionary<KeyID, GameObject>();
     public GameObject textArea;
     public int distance;
 
@@ -22,11 +22,15 @@ public class MetroKeyboardLayout : KeyboardLayout {
         foreach (var key in keysDic.Keys)
         {
             keysDic[key].name = "Key_" + key;
+            
             keysDic[key].transform.parent = this.transform;
-            keysDic[key].transform.Find("Text").GetComponent<TextMeshPro>().text = key.ToUpper();
+            if(PRINTABLEKEYS.ContainsKey(key))
+                keysDic[key].transform.Find("Text").GetComponent<TextMeshPro>().text = PRINTABLEKEYS[key].ToString().ToUpper();
             keysDic[key].AddComponent<KeyEvents>();
             keysDic[key].AddComponent<KeyProperties>();
-            keysDic[key].GetComponent<KeyProperties>().keyText = key;
+            if(PRINTABLEKEYS.ContainsKey(key))
+                keysDic[key].GetComponent<KeyProperties>().KeyText = PRINTABLEKEYS[key].ToString();
+            keysDic[key].GetComponent<KeyProperties>().ID = key;
             keysDic[key].GetComponent<KeyEvents>().KeyEvents_OnKeyFocused += KeyboardEventHandler_OnFocusedHandler;
             keysDic[key].GetComponent<KeyEvents>().KeyEvents_OnKeyUnfocused += KeyboardEventHandler_OnUnfocusedHandler;
             keysDic[key].GetComponent<KeyEvents>().KeyEvents_OnKeyPressed += KeyboardEventHandler_OnPressedHandler;
@@ -34,105 +38,101 @@ public class MetroKeyboardLayout : KeyboardLayout {
         }
 
         // Special Keys font size fix
-        keysDic["spc"].transform.Find("Text").GetComponent<TextMeshPro>().fontSize -= 5;
-        keysDic["spc"].transform.GetComponent<KeyProperties>().isPrintable = true;
-        keysDic["spc"].GetComponent<KeyProperties>().keyText = " ";
-        keysDic["shft"].transform.Find("Text").GetComponent<TextMeshPro>().fontSize -= 5;
-        keysDic["shft"].transform.GetComponent<KeyProperties>().isPrintable = false;
-        keysDic["shft"].GetComponent<KeyProperties>().keyText = "";
-        keysDic["123"].transform.Find("Text").GetComponent<TextMeshPro>().fontSize -= 4;
-        keysDic["123"].transform.GetComponent<KeyProperties>().isPrintable = false;
-        keysDic["123"].GetComponent<KeyProperties>().keyText = "";
-        keysDic["ret"].transform.Find("Text").GetComponent<TextMeshPro>().fontSize -= 4;
-        keysDic["ret"].transform.GetComponent<KeyProperties>().isPrintable = false;
-        keysDic["ret"].GetComponent<KeyProperties>().keyText = "";
+        keysDic[KeyID.Space].transform.Find("Text").GetComponent<TextMeshPro>().fontSize -= 7;
+        keysDic[KeyID.Space].transform.Find("Text").GetComponent<TextMeshPro>().text = "Space";
+        keysDic[KeyID.Shift].transform.Find("Text").GetComponent<TextMeshPro>().fontSize -= 6;
+        keysDic[KeyID.Shift].transform.Find("Text").GetComponent<TextMeshPro>().text = "Shift";
+        keysDic[KeyID.Next].transform.Find("Text").GetComponent<TextMeshPro>().fontSize -= 6;
+        keysDic[KeyID.Next].transform.Find("Text").GetComponent<TextMeshPro>().text = "Next";
+        keysDic[KeyID.Enter].transform.Find("Text").GetComponent<TextMeshPro>().fontSize -= 6;
+        keysDic[KeyID.Enter].transform.Find("Text").GetComponent<TextMeshPro>().text = "Enter";
 
     }
 
     public override void LayoutKeys()
     {
         // First row: . k w m u q '
-        keysDic["."].transform.position = new Vector3(-6, 4, 0);
-        keysDic["k"].transform.position = new Vector3(-4, 4, 0);
-        keysDic["w"].transform.position = new Vector3(-2, 4, 0);
-        keysDic["m"].transform.position = new Vector3(0, 4, 0);
-        keysDic["u"].transform.position = new Vector3(2, 4, 0);
-        keysDic["q"].transform.position = new Vector3(4, 4, 0);
-        keysDic["'"].transform.position = new Vector3(6, 4, 0);
+        keysDic[KeyID.Dot].transform.position = new Vector3(-6, 4, 0);
+        keysDic[KeyID.K].transform.position = new Vector3(-4, 4, 0);
+        keysDic[KeyID.W].transform.position = new Vector3(-2, 4, 0);
+        keysDic[KeyID.M].transform.position = new Vector3(0, 4, 0);
+        keysDic[KeyID.U].transform.position = new Vector3(2, 4, 0);
+        keysDic[KeyID.Q].transform.position = new Vector3(4, 4, 0);
+        keysDic[KeyID.Quote].transform.position = new Vector3(6, 4, 0);
 
         // Second row: c h t o f z
-        keysDic["c"].transform.position = new Vector3(-5, 2, 0);
-        keysDic["h"].transform.position = new Vector3(-3, 2, 0);
-        keysDic["t"].transform.position = new Vector3(-1, 2, 0);
-        keysDic["o"].transform.position = new Vector3(1, 2, 0);
-        keysDic["f"].transform.position = new Vector3(3, 2, 0);
-        keysDic["z"].transform.position = new Vector3(5, 2, 0);
+        keysDic[KeyID.C].transform.position = new Vector3(-5, 2, 0);
+        keysDic[KeyID.H].transform.position = new Vector3(-3, 2, 0);
+        keysDic[KeyID.T].transform.position = new Vector3(-1, 2, 0);
+        keysDic[KeyID.O].transform.position = new Vector3(1, 2, 0);
+        keysDic[KeyID.F].transform.position = new Vector3(3, 2, 0);
+        keysDic[KeyID.Z].transform.position = new Vector3(5, 2, 0);
 
         // Third row: j i e space n g b
-        keysDic["j"].transform.position = new Vector3(-6, 0, 0);
-        keysDic["i"].transform.position = new Vector3(-4, 0, 0);
-        keysDic["e"].transform.position = new Vector3(-2, 0, 0);
-        keysDic["spc"].transform.position = new Vector3(0, 0, 0);
-        keysDic["n"].transform.position = new Vector3(2, 0, 0);
-        keysDic["g"].transform.position = new Vector3(4, 0, 0);
-        keysDic["b"].transform.position = new Vector3(6, 0, 0);
+        keysDic[KeyID.J].transform.position = new Vector3(-6, 0, 0);
+        keysDic[KeyID.I].transform.position = new Vector3(-4, 0, 0);
+        keysDic[KeyID.E].transform.position = new Vector3(-2, 0, 0);
+        keysDic[KeyID.Space].transform.position = new Vector3(0, 0, 0);
+        keysDic[KeyID.N].transform.position = new Vector3(2, 0, 0);
+        keysDic[KeyID.G].transform.position = new Vector3(4, 0, 0);
+        keysDic[KeyID.B].transform.position = new Vector3(6, 0, 0);
 
         // Fourth row: v r s a d ret
-        keysDic["v"].transform.position = new Vector3(-5, -2, 0);
-        keysDic["r"].transform.position = new Vector3(-3, -2, 0);
-        keysDic["s"].transform.position = new Vector3(-1, -2, 0);
-        keysDic["a"].transform.position = new Vector3(1, -2, 0);
-        keysDic["d"].transform.position = new Vector3(3, -2, 0);
-        keysDic["ret"].transform.position = new Vector3(5, -2, 0);
+        keysDic[KeyID.V].transform.position = new Vector3(-5, -2, 0);
+        keysDic[KeyID.R].transform.position = new Vector3(-3, -2, 0);
+        keysDic[KeyID.S].transform.position = new Vector3(-1, -2, 0);
+        keysDic[KeyID.A].transform.position = new Vector3(1, -2, 0);
+        keysDic[KeyID.D].transform.position = new Vector3(3, -2, 0);
+        keysDic[KeyID.Enter].transform.position = new Vector3(5, -2, 0);
 
         // Fifth row: , x p l y shift otherkeysDic
-        keysDic[","].transform.position = new Vector3(-6, -4, 0);
-        keysDic["x"].transform.position = new Vector3(-4, -4, 0);
-        keysDic["p"].transform.position = new Vector3(-2, -4, 0);
-        keysDic["l"].transform.position = new Vector3(0, -4, 0);
-        keysDic["y"].transform.position = new Vector3(2, -4, 0);
-        keysDic["shft"].transform.position = new Vector3(4, -4, 0);
-        keysDic["123"].transform.position = new Vector3(6, -4, 0);
+        keysDic[KeyID.Comma].transform.position = new Vector3(-6, -4, 0);
+        keysDic[KeyID.X].transform.position = new Vector3(-4, -4, 0);
+        keysDic[KeyID.P].transform.position = new Vector3(-2, -4, 0);
+        keysDic[KeyID.L].transform.position = new Vector3(0, -4, 0);
+        keysDic[KeyID.Y].transform.position = new Vector3(2, -4, 0);
+        keysDic[KeyID.Shift].transform.position = new Vector3(4, -4, 0);
+        keysDic[KeyID.Next].transform.position = new Vector3(6, -4, 0);
     }
 
     public override void CreateMainKeys()
     {
         GameObject hexPrefab = Resources.Load("hexPrefab", typeof(GameObject)) as GameObject;
 
-        keysDic.Add("q", Instantiate(hexPrefab) as GameObject);
-        keysDic.Add("w", Instantiate(hexPrefab) as GameObject);
-        keysDic.Add("e", Instantiate(hexPrefab) as GameObject);
-        keysDic.Add("r", Instantiate(hexPrefab) as GameObject);
-        keysDic.Add("t", Instantiate(hexPrefab) as GameObject);
-        keysDic.Add("y", Instantiate(hexPrefab) as GameObject);
-        keysDic.Add("u", Instantiate(hexPrefab) as GameObject);
-        keysDic.Add("i", Instantiate(hexPrefab) as GameObject);
-        keysDic.Add("o", Instantiate(hexPrefab) as GameObject);
-        keysDic.Add("p", Instantiate(hexPrefab) as GameObject);
-        keysDic.Add("a", Instantiate(hexPrefab) as GameObject);
-        keysDic.Add("s", Instantiate(hexPrefab) as GameObject);
-        keysDic.Add("d", Instantiate(hexPrefab) as GameObject);
-        keysDic.Add("f", Instantiate(hexPrefab) as GameObject);
-        keysDic.Add("g", Instantiate(hexPrefab) as GameObject);
-        keysDic.Add("h", Instantiate(hexPrefab) as GameObject);
-        keysDic.Add("j", Instantiate(hexPrefab) as GameObject);
-        keysDic.Add("k", Instantiate(hexPrefab) as GameObject);
-        keysDic.Add("l", Instantiate(hexPrefab) as GameObject);
-        keysDic.Add("z", Instantiate(hexPrefab) as GameObject);
-        keysDic.Add("x", Instantiate(hexPrefab) as GameObject);
-        keysDic.Add("c", Instantiate(hexPrefab) as GameObject);
-        keysDic.Add("v", Instantiate(hexPrefab) as GameObject);
-        keysDic.Add("b", Instantiate(hexPrefab) as GameObject);
-        keysDic.Add("n", Instantiate(hexPrefab) as GameObject);
-        keysDic.Add("m", Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.Q, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.W, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.E, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.R, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.T, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.Y, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.U, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.I, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.O, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.P, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.A, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.S, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.D, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.F, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.G, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.H, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.J, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.K, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.L, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.Z, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.X, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.C, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.V, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.B, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.N, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.M, Instantiate(hexPrefab) as GameObject);
 
-        keysDic.Add(".", Instantiate(hexPrefab) as GameObject);
-        keysDic.Add("'", Instantiate(hexPrefab) as GameObject);
-        keysDic.Add(",", Instantiate(hexPrefab) as GameObject);
-        keysDic.Add("spc", Instantiate(hexPrefab) as GameObject);
-        keysDic.Add("shft", Instantiate(hexPrefab) as GameObject);
-        keysDic.Add("ret", Instantiate(hexPrefab) as GameObject);
-        keysDic.Add("123", Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.Dot, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.Quote, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.Comma, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.Space, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.Shift, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.Enter, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.Next, Instantiate(hexPrefab) as GameObject);
     }
 
     public override void KeyboardEventHandler_OnReleasedHandler(object sender, KeyEventArgs args)
@@ -195,11 +195,7 @@ public class MetroKeyboardLayout : KeyboardLayout {
 
     public override void HighlightKeys(List<char> suggestedAlphabet)
     {
-        foreach (var item in suggestedAlphabet)
-        {
-            var gameobj = keysDic[item.ToString()];
-            
-        }
+        GetComponent<KeyHighlightEffect>().HighlightKeys(suggestedAlphabet);
     }
     
 }

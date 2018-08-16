@@ -47,7 +47,7 @@ public class WordPrediction : MonoBehaviour {
 
     private void ResetKeyboard()
     {
-        throw new NotImplementedException();
+        
     }
 
     private void LoadDictionary(string path)

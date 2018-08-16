@@ -6,8 +6,12 @@ public class KeyProperties : MonoBehaviour {
     public Material focusedMat;
     public Material pressedMat;
     public Material normalMat;
-    internal bool isPrintable = true;
-    internal string keyText = "";
+
+    public KeyID ID;
+
+    public bool IsPrintable => KeyboardLayout.PRINTABLEKEYS.ContainsKey(ID);
+    public string KeyText = "";
+
     internal bool effectsEnabled;
 
     void Start()
