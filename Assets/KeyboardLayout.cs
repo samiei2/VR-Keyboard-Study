@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using UnityEngine;
 
-public abstract class KeyboardLayout: MonoBehaviour
+public abstract class KeyboardLayout : MonoBehaviour
 {
     protected Dictionary<KeyID, GameObject> keysDic = new Dictionary<KeyID, GameObject>();
     public event KeyEvents.KeyEvent KeyboardLayout_OnKeyPressed;
@@ -31,49 +31,52 @@ public abstract class KeyboardLayout: MonoBehaviour
         CreateMainKeys();
         LayoutKeys();
         SetProperties();
-        if (touchHandler!=null)
+        if (touchHandler != null)
         {
             touchHandler.TouchDataReceivedEvent += Pointer_PointerDataReceivedEvent;
         }
     }
 
+    public int pointerSpeedMultiplier = 10;
+    Vector3 vec, oldVec, lerpedVec, position;
+    int action, x, y, top, bottom, left, right, width, height;
+    float touchMovementPercentageX, touchMovementPercentageY, initialValX, initialValY; 
     private void Pointer_PointerDataReceivedEvent(object sender, TouchDataArgs args)
     {
-        UnityMainThreadDispatcher.Instance().Enqueue(() => {
+        UnityMainThreadDispatcher.Instance().Enqueue(() =>
+        {
             if (InputType == KeyboardInputType.TouchPad)
             {
-                int action = args.action;
-                int x = args.x;
-                int y = args.y;
-                int top = args.top;
-                int bottom = args.bottom;
-                int left = args.left;
-                int right = args.right;
-                if (action == 0)
-                {
+                action = args.action;
+                x = args.x;
+                y = args.y;
+                top = args.top;
+                bottom = args.bottom;
+                left = args.left;
+                right = args.right;
+                if (action == 0) {
                     prevX = x;
                     prevY = y;
-                }
-                else if (action == 2)
+                } else if (action == 2)
                 {
 
-                    Vector3 vec = Camera.main.WorldToScreenPoint(pointer.transform.position);
-                    Vector3 oldVec = Camera.main.WorldToScreenPoint(pointer.transform.position);
+                    vec = Camera.main.WorldToScreenPoint(pointer.transform.position);
+                    oldVec = Camera.main.WorldToScreenPoint(pointer.transform.position);
 
-                    int width = Math.Abs(right - left);
-                    int height = Math.Abs(bottom - top);
+                    width = Math.Abs(right - left);
+                    height = Math.Abs(bottom - top);
 
                     //Debug.Log("DiffX: " + (prevX - x) + "," + "DiffY: " + (prevY - y));
                     //Debug.Log("Width: " + width + ",Height: " + height);
-                    float touchMovementPercentageX = ((prevX - x) * Screen.height) / height;
-                    float touchMovementPercentageY = ((prevY - y) * Screen.width) / width;
-                    Debug.Log("PercentX: " + touchMovementPercentageX + "," + "PercentY: " + touchMovementPercentageY);
+                    touchMovementPercentageX = ((prevX - x) * Screen.height) / height*pointerSpeedMultiplier;
+                    touchMovementPercentageY = ((prevY - y) * Screen.height) / height*pointerSpeedMultiplier;
+                    //Debug.Log("PercentX: " + touchMovementPercentageX + "," + "PercentY: " + touchMovementPercentageY);
 
                     //float screenMovementX = Screen.height * touchMovementPercentageX;
                     //float screenMovementY = Screen.width * touchMovementPercentageY;
 
-                    float initialValX = 0;
-                    float initialValY = 0;
+                    initialValX = 0;
+                    initialValY = 0;
                     if ((prevX - x) < 0)
                         initialValX = -1;
                     else
@@ -82,12 +85,12 @@ public abstract class KeyboardLayout: MonoBehaviour
                         initialValY = -1;
                     else
                         initialValY = 1;
-                    vec.x += -touchMovementPercentageX + initialValX;
-                    vec.y += touchMovementPercentageY + initialValY;
-                    
-                    Vector3 lerpedVec = Vector3.Lerp(oldVec, vec, 1.0f - Mathf.Exp(-10 * Time.deltaTime));
+                    vec.x += -(touchMovementPercentageX / Time.deltaTime/40+ initialValX) ;
+                    vec.y += (touchMovementPercentageY / Time.deltaTime/40 + initialValY);
 
-                    Vector3 position = Camera.main.ScreenToWorldPoint(lerpedVec);
+                    lerpedVec = Vector3.Lerp(oldVec, vec, 1.0f - Mathf.Exp(-10 * Time.deltaTime));
+
+                    position = Camera.main.ScreenToWorldPoint(lerpedVec);
                     //Vector3 worldVec = Camera.main.ScreenToWorldPoint(vec);
 
                     //Vector3 position = Vector3.Lerp(pointer.transform.position, worldVec, 1.0f - Mathf.Exp(-speed * Time.deltaTime));
@@ -100,7 +103,7 @@ public abstract class KeyboardLayout: MonoBehaviour
             }
         });
 
-        
+
     }
 
     public virtual void Update()
@@ -108,7 +111,7 @@ public abstract class KeyboardLayout: MonoBehaviour
         if (InputType == KeyboardInputType.Mouse)
         {
             HandleMouseInput();
-            
+
             if (pointer != null)
             {
                 Vector3 mousePosition = Input.mousePosition;
@@ -158,7 +161,7 @@ public abstract class KeyboardLayout: MonoBehaviour
         RaycastHit hit;
         Ray ray = new Ray(pointer.transform.position, pointer.transform.position - Camera.main.transform.position);
         //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        
+
         if (Physics.Raycast(ray, out hit, 100.0f))
         {
             if (hit.transform.name.Contains("Cylinder"))
@@ -184,10 +187,11 @@ public abstract class KeyboardLayout: MonoBehaviour
                         // There is a bug in visual update and we have to do the following 
                         foreach (Transform child in transform)
                         {
-                            if (child != hit.transform.gameObject)
-                                if (child != null)
-                                    if (child.GetComponent<KeyEvents>() != null)
-                                        child.GetComponent<KeyEvents>().Key_UnfocusedEvent();
+                            //if (child != null)
+                                //if (child.name != hit.transform.gameObject.name)
+                                    //if (child.GetComponent<KeyEvents>() != null)
+                                        
+                                        //child.GetComponent<KeyEvents>().Key_UnfocusedEvent();
                         }
                         //////////////////////////////////////////////////////////////
 
@@ -254,10 +258,10 @@ public abstract class KeyboardLayout: MonoBehaviour
                         // There is a bug in visual update and we have to do the following 
                         foreach (Transform child in transform)
                         {
-                            if (child != hit.transform.gameObject)
-                                if (child != null)
-                                    if (child.GetComponent<KeyEvents>() != null)
-                                        child.GetComponent<KeyEvents>().Key_UnfocusedEvent();
+                            //if (child != hit.transform.gameObject)
+                                //if (child != null)
+                                    //if (child.GetComponent<KeyEvents>() != null)
+                                        //child.GetComponent<KeyEvents>().Key_UnfocusedEvent();
                         }
                         //////////////////////////////////////////////////////////////
 
@@ -324,10 +328,12 @@ public abstract class KeyboardLayout: MonoBehaviour
 
     public GameObject KeyInFocus { get; set; }
     public Pointer pointer;
-    
+
     public KeyboardInputType InputType;
 
     public bool zoomEffect;
+    public bool dwell;
+    public float dwellWaitTime = 1;
     private bool inKeyPress;
     private GameObject objectInFocus;
     public bool RepeatedKeyPressEnabled;

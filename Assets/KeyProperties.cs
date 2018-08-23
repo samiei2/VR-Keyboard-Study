@@ -16,6 +16,9 @@ public class KeyProperties : MonoBehaviour {
 
     internal bool effectsEnabled;
 
+    bool isDwelling = false;
+    bool doneDwelling = false;
+
     void Start()
     {
         if (focusedMat == null) 
@@ -36,5 +39,31 @@ public class KeyProperties : MonoBehaviour {
     internal void ResetToNormal()
     {
         transform.Find("HexCylinder").GetComponent<MeshRenderer>().material = normalMat;
+    }
+
+    internal void StartDwell(float dwellWaitTime)
+    {
+        if (!doneDwelling)
+        {
+            isDwelling = true;
+            StartCoroutine(SelectLetter(this.transform, dwellWaitTime));
+        }
+    }
+
+    internal void StopDwell()
+    {
+        isDwelling = false;
+        doneDwelling = false;
+    }
+
+    IEnumerator SelectLetter(Transform transform, float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+        if (isDwelling)
+        {
+            transform.GetComponent<KeyEvents>().Key_PressedEvent();
+            isDwelling = false;
+            doneDwelling = true;
+        }
     }
 }
