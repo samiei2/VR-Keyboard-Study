@@ -12,12 +12,24 @@ public class KeyHighlightEffect : MonoBehaviour
     //public bool gradientHighlight;
     //public bool disablingHighlight;
     //public bool sizeHighlight;
+    public Material highlightMaterial;
 
     public void HighlightKeys(List<char> suggestedAlphabet)
     {
-        if (SelectedEffect.Equals(Highlights.Size))
+        foreach (var item in suggestedAlphabet)
         {
+            var gobject = GetComponent<KeyboardLayout>().GetKeyObject(item);
+            if (SelectedEffect.Equals(Highlights.Color))
+            {
+                if (highlightMaterial != null)
+                    gobject.transform.Find("HexCylinder").GetComponent<MeshRenderer>().material = highlightMaterial;
+                else
+                    gobject.transform.Find("HexCylinder").GetComponent<MeshRenderer>().material = gobject.GetComponent<KeyProperties>().highlightMat;
+            }
+            if (SelectedEffect.Equals(Highlights.Size))
+            {
 
+            }
         }
     }
 }

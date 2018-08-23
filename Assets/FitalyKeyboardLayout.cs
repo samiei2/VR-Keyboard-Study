@@ -52,4 +52,9 @@ public class FitalyKeyboardLayout : KeyboardLayout {
     {
         throw new NotImplementedException();
     }
+
+    public override void ResetKeyBoard()
+    {
+        throw new NotImplementedException();
+    }
 }

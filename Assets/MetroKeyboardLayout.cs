@@ -5,16 +5,13 @@ using TMPro;
 using UnityEngine;
 
 public class MetroKeyboardLayout : KeyboardLayout {
-    private Dictionary<KeyID, GameObject> keysDic = new Dictionary<KeyID, GameObject>();
     public GameObject textArea;
     public int distance;
 
-    private void Start()
+    public override void Start()
     {
         textArea = GameObject.Find("TextArea");
-        CreateMainKeys();
-        LayoutKeys();
-        SetProperties();
+        base.Start();
     }
 
     public override void SetProperties()
@@ -58,7 +55,7 @@ public class MetroKeyboardLayout : KeyboardLayout {
         keysDic[KeyID.M].transform.position = new Vector3(0, 4, 0);
         keysDic[KeyID.U].transform.position = new Vector3(2, 4, 0);
         keysDic[KeyID.Q].transform.position = new Vector3(4, 4, 0);
-        keysDic[KeyID.Quote].transform.position = new Vector3(6, 4, 0);
+        keysDic[KeyID.Backspace].transform.position = new Vector3(6, 4, 0);
 
         // Second row: c h t o f z
         keysDic[KeyID.C].transform.position = new Vector3(-5, 2, 0);
@@ -127,7 +124,7 @@ public class MetroKeyboardLayout : KeyboardLayout {
         keysDic.Add(KeyID.M, Instantiate(hexPrefab) as GameObject);
 
         keysDic.Add(KeyID.Dot, Instantiate(hexPrefab) as GameObject);
-        keysDic.Add(KeyID.Quote, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.Backspace, Instantiate(hexPrefab) as GameObject);
         keysDic.Add(KeyID.Comma, Instantiate(hexPrefab) as GameObject);
         keysDic.Add(KeyID.Space, Instantiate(hexPrefab) as GameObject);
         keysDic.Add(KeyID.Shift, Instantiate(hexPrefab) as GameObject);
@@ -163,7 +160,8 @@ public class MetroKeyboardLayout : KeyboardLayout {
     public override void KeyboardEventHandler_OnUnfocusedHandler(object sender, KeyEventArgs args)
     {
         var transform = (Transform)sender;
-        transform.Find("HexCylinder").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().normalMat;
+        //transform.Find("HexCylinder").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().normalMat;
+        transform.Find("Tint").gameObject.SetActive(false);
         if (zoomEffect)
         {
             transform.localScale = new Vector3(1,1,1);
@@ -173,7 +171,8 @@ public class MetroKeyboardLayout : KeyboardLayout {
     public override void KeyboardEventHandler_OnFocusedHandler(object sender, KeyEventArgs args)
     {
         var transform = (Transform)sender;
-        transform.Find("HexCylinder").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().focusedMat;
+        //transform.Find("HexCylinder").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().focusedMat;
+        transform.Find("Tint").gameObject.SetActive(true);
         if (zoomEffect)
         {
             transform.localScale *= 1.5f;
@@ -195,7 +194,15 @@ public class MetroKeyboardLayout : KeyboardLayout {
 
     public override void HighlightKeys(List<char> suggestedAlphabet)
     {
-        GetComponent<KeyHighlightEffect>().HighlightKeys(suggestedAlphabet);
+        if(GetComponent<KeyHighlightEffect>()!=null)
+            GetComponent<KeyHighlightEffect>().HighlightKeys(suggestedAlphabet);
     }
-    
+
+    public override void ResetKeyBoard()
+    {
+        foreach (var item in keysDic)
+        {
+            item.Value.GetComponent<KeyProperties>().ResetToNormal();
+        }
+    }
 }

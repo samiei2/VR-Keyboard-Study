@@ -27,8 +27,8 @@ public class KeyEvents : MonoBehaviour {
         KeyEventArgs args = new KeyEventArgs();
         args.KeyPrintable = GetComponent<KeyProperties>().IsPrintable;
         args.KeyText = GetComponent<KeyProperties>().KeyText;
+        args.KeyId = GetComponent<KeyProperties>().ID;
         KeyEvents_OnKeyPressed?.Invoke(transform, args);
-
     }
 
     public void Key_RealseEvent()
@@ -43,4 +43,5 @@ public class KeyEventArgs: EventArgs
 
     public bool KeyPrintable { get; internal set; }
     public string KeyText { get; internal set; }
+    public KeyID KeyId { get; internal set; }
 }

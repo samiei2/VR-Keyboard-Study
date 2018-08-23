@@ -28,26 +28,38 @@ public class WordPrediction : MonoBehaviour {
 
     private void WordPrediction_KeyPressedHandler(object sender, KeyEventArgs args)
     {
-        if(args.KeyText.Equals(" "))
+        ResetKeyboard();
+        if (args.KeyText.Equals(" "))
         {
             _input = "";
-            ResetKeyboard();
         }
         else
         {
             _input += args.KeyText;
-            List<char> highlightList = new List<char>(); 
-            foreach (DictionaryEntry item in words.PartialMatch(_input + "*"))
+            HashSet<char> highlightList = new HashSet<char>();
+            String temp = "";
+            foreach (DictionaryEntry item in words)
             {
-                highlightList.Add(item.Key.ToString()[item.Key.ToString().Length-1]);
+                if (item.Key.ToString().StartsWith(_input, StringComparison.InvariantCultureIgnoreCase))
+                {
+                    string filteredinput = item.Key.ToString().Remove(0, _input.Length);
+                    if (filteredinput.Length != 0)
+                    {
+                        highlightList.Add(filteredinput[0]);
+                        temp += filteredinput[0] + ", ";
+                    }
+                }
+                //highlightList.Add(item.Key.ToString()[item.Key.ToString().Length-1]);
+                
             }
-            targetkeyboard.HighlightKeys(highlightList);
+            Debug.Log(temp);
+            targetkeyboard.HighlightKeys(new List<char>(highlightList));
         }
     }
 
     private void ResetKeyboard()
     {
-        
+        targetkeyboard.ResetKeyBoard();
     }
 
     private void LoadDictionary(string path)

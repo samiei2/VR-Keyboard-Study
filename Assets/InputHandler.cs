@@ -34,7 +34,7 @@ public class InputHandler : MonoBehaviour {
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         if (Physics.Raycast(ray, out hit, 100.0f))
         {
-            if(hit.transform.name.Contains("HexCylinder"))
+            if(hit.transform.name.Contains("Cylinder"))
             {
                 if (Input.GetMouseButtonDown(0))
                 {
@@ -58,7 +58,9 @@ public class InputHandler : MonoBehaviour {
                         foreach (Transform child in transform)
                         {
                             if(child != hit.transform.gameObject)
-                                child.GetComponent<KeyEvents>().Key_UnfocusedEvent();
+                                if(child != null)
+                                    if(child.GetComponent<KeyEvents>()!=null)
+                                        child.GetComponent<KeyEvents>().Key_UnfocusedEvent();
                         }
                         //////////////////////////////////////////////////////////////
                     
