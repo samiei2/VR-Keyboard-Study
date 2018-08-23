@@ -52,7 +52,7 @@ public class WordPrediction : MonoBehaviour {
                 //highlightList.Add(item.Key.ToString()[item.Key.ToString().Length-1]);
                 
             }
-            Debug.Log(temp);
+            //Debug.Log(temp);
             targetkeyboard.HighlightKeys(new List<char>(highlightList));
         }
     }

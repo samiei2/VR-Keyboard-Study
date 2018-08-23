@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class KeyHighlightEffect : MonoBehaviour
 {
-    internal Highlights SelectedEffect;
+    public Highlights SelectedEffect;
 
     //public bool colorHighlight;
     //public bool fadeHighlight;

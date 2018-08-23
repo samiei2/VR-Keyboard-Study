@@ -12273,7 +12273,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pointer: {fileID: 1059536999}
-  InputType: 3
+  InputType: 2
   zoomEffect: 0
   RepeatedKeyPressEnabled: 0
   touchHandler: {fileID: 512920337}
@@ -12325,6 +12325,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1f3b52a4e383e2d4fadaed9233a2b216, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  SelectedEffect: 1
   highlightMaterial: {fileID: 0}
 --- !u!1001 &1596659670
 Prefab:
@@ -12940,6 +12941,7 @@ GameObject:
   - component: {fileID: 1842702156}
   - component: {fileID: 1842702155}
   - component: {fileID: 1842702154}
+  - component: {fileID: 1842702159}
   m_Layer: 0
   m_Name: TextArea
   m_TagString: Untagged
@@ -13127,6 +13129,20 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 10, y: 2}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1842702159
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1842702153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 977eb6406c4bd3c46ba5defdc5ce1e45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableCompoundCorrection: 0
+  enableSegmentation: 0
+  targetkeyboard: {fileID: 0}
 --- !u!1 &1845879228 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1846152157934626, guid: 12c6030625d8ab443be25b7fb8a3d438,
