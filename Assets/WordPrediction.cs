@@ -5,15 +5,23 @@ using System.IO;
 using UnityEngine;
 using Tst;
 
-public class WordPrediction : MonoBehaviour {
+public class WordPrediction : MonoBehaviour
+{
     TstDictionary words;
     private KeyboardLayout targetkeyboard;
     private string _input;
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         words = new TstDictionary();
+#if UNITY_STANDALONE_WIN
         string path = Application.dataPath + @"\SpellChecker\Resources\frequency_dictionary_en_82_765.txt";
+#else
+        string path = Application.dataPath + @"/SpellChecker/Resources/frequency_dictionary_en_82_765.txt";
+#endif
+
+
         LoadDictionary(path);
         targetkeyboard = GetComponent<KeyboardLayout>();
         if (!targetkeyboard)

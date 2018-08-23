@@ -159,24 +159,39 @@ public class MetroKeyboardLayout : KeyboardLayout {
 
     public override void KeyboardEventHandler_OnUnfocusedHandler(object sender, KeyEventArgs args)
     {
+        
         var transform = (Transform)sender;
+        if(transform.name == "Key_B")
+        Debug.Log("# Unfocus " + transform.name);
         //transform.Find("HexCylinder").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().normalMat;
         transform.Find("Tint").gameObject.SetActive(false);
         if (zoomEffect)
         {
             transform.localScale = new Vector3(1,1,1);
         }
+
+        if (dwell)
+        {
+            transform.GetComponent<KeyProperties>().StopDwell();
+        }
     }
 
     public override void KeyboardEventHandler_OnFocusedHandler(object sender, KeyEventArgs args)
     {
+        
         var transform = (Transform)sender;
+        if (transform.name == "Key_B")
+        Debug.Log("# Focus " + transform.name);
         //transform.Find("HexCylinder").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().focusedMat;
         transform.Find("Tint").gameObject.SetActive(true);
         if (zoomEffect)
         {
             transform.localScale *= 1.5f;
             //ChangeClosebyKeys(transform);
+        }
+
+        if(dwell){
+            transform.GetComponent<KeyProperties>().StartDwell(dwellWaitTime);
         }
     }
 
@@ -205,4 +220,5 @@ public class MetroKeyboardLayout : KeyboardLayout {
             item.Value.GetComponent<KeyProperties>().ResetToNormal();
         }
     }
+
 }
