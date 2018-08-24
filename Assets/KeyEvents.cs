@@ -31,7 +31,7 @@ public class KeyEvents : MonoBehaviour {
         KeyEvents_OnKeyPressed?.Invoke(transform, args);
     }
 
-    public void Key_RealseEvent()
+    public void Key_ReleaseEvent()
     {
         KeyEvents_OnKeyReleased?.Invoke(transform, KeyEventArgs.Empty);
     }

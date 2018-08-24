@@ -57,6 +57,7 @@ public abstract class KeyboardLayout : MonoBehaviour
                 if (action == 0) {
                     prevX = x;
                     prevY = y;
+                    HandleTouchInput(action);
                 } else if (action == 2)
                 {
 
@@ -87,14 +88,14 @@ public abstract class KeyboardLayout : MonoBehaviour
                         initialValY = 1;
                     vec.x += -(touchMovementPercentageX / Time.deltaTime/40+ initialValX) ;
                     vec.y += (touchMovementPercentageY / Time.deltaTime/40 + initialValY);
-
+                    
                     lerpedVec = Vector3.Lerp(oldVec, vec, 1.0f - Mathf.Exp(-10 * Time.deltaTime));
 
                     position = Camera.main.ScreenToWorldPoint(lerpedVec);
                     //Vector3 worldVec = Camera.main.ScreenToWorldPoint(vec);
 
                     //Vector3 position = Vector3.Lerp(pointer.transform.position, worldVec, 1.0f - Mathf.Exp(-speed * Time.deltaTime));
-                    //position.z = -4;
+                    position.z = Camera.main.transform.position.z + distanceFromCamera;
                     pointer.transform.position = position;
 
                     prevX = x;
@@ -127,7 +128,7 @@ public abstract class KeyboardLayout : MonoBehaviour
 
         if (InputType == KeyboardInputType.TouchPad)
         {
-            HandleTouchInput();
+            HandleTouchInput(-1);
         }
 
 
@@ -178,14 +179,14 @@ public abstract class KeyboardLayout : MonoBehaviour
                     //Debug.Log("Mouse up on the " + hit.transform.parent.name);
                     StopCoroutine("RepeatKeyPress");
                     inKeyPress = false;
-                    hit.transform.parent.GetComponent<KeyEvents>().Key_RealseEvent();
+                    hit.transform.parent.GetComponent<KeyEvents>().Key_ReleaseEvent();
                 }
                 else
                 {
                     if (!inKeyPress)
                     {
                         // There is a bug in visual update and we have to do the following 
-                        foreach (Transform child in transform)
+                        //foreach (Transform child in transform)
                         {
                             //if (child != null)
                                 //if (child.name != hit.transform.gameObject.name)
@@ -207,7 +208,7 @@ public abstract class KeyboardLayout : MonoBehaviour
             {
                 StopCoroutine("RepeatKeyPress");
                 inKeyPress = false;
-                objectInFocus.transform.parent.GetComponent<KeyEvents>().Key_RealseEvent();
+                objectInFocus.transform.parent.GetComponent<KeyEvents>().Key_ReleaseEvent();
             }
             if (objectInFocus != null)
             {
@@ -227,7 +228,7 @@ public abstract class KeyboardLayout : MonoBehaviour
         }
     }
 
-    private void HandleTouchInput()
+    private void HandleTouchInput(int action)
     {
         RaycastHit hit;
         Ray ray = new Ray(pointer.transform.position, pointer.transform.position - Camera.main.transform.position);
@@ -237,26 +238,26 @@ public abstract class KeyboardLayout : MonoBehaviour
         {
             if (hit.transform.name.Contains("Cylinder"))
             {
-                if (Input.GetMouseButtonDown(0))
+                if (action == 0 && tapActionEnabled)
                 {
                     //Debug.Log("Mouse down on the " + hit.transform.parent.name);
-                    //inKeyPress = true;
-                    //hit.transform.parent.GetComponent<KeyEvents>().Key_PressedEvent();
-                    //StartCoroutine("RepeatKeyPress");
+                    inKeyPress = true;
+                    hit.transform.parent.GetComponent<KeyEvents>().Key_PressedEvent();
+                    StartCoroutine("RepeatKeyPress");
                 }
-                else if (Input.GetMouseButtonUp(0))
+                else if (action == 1 && tapActionEnabled)
                 {
                     //Debug.Log("Mouse up on the " + hit.transform.parent.name);
-                    //StopCoroutine("RepeatKeyPress");
-                    //inKeyPress = false;
-                    //hit.transform.parent.GetComponent<KeyEvents>().Key_RealseEvent();
+                    StopCoroutine("RepeatKeyPress");
+                    inKeyPress = false;
+                    hit.transform.parent.GetComponent<KeyEvents>().Key_ReleaseEvent();
                 }
                 else
                 {
                     if (!inKeyPress)
                     {
                         // There is a bug in visual update and we have to do the following 
-                        foreach (Transform child in transform)
+                        //foreach (Transform child in transform)
                         {
                             //if (child != hit.transform.gameObject)
                                 //if (child != null)
@@ -277,11 +278,11 @@ public abstract class KeyboardLayout : MonoBehaviour
             {
                 StopCoroutine("RepeatKeyPress");
                 inKeyPress = false;
-                objectInFocus.transform.parent.GetComponent<KeyEvents>().Key_RealseEvent();
+                objectInFocus.transform.parent.GetComponent<KeyEvents>().Key_ReleaseEvent();
             }
             if (objectInFocus != null)
             {
-                if (objectInFocus.name.Contains("HexCylinder"))
+                if (objectInFocus.name.Contains("Cylinder"))
                 {
                     //Debug.Log("You realsed the " + objectInFocus.transform.parent.name);
                     objectInFocus.transform.parent.GetComponent<KeyEvents>().Key_UnfocusedEvent();
@@ -334,14 +335,17 @@ public abstract class KeyboardLayout : MonoBehaviour
     public bool zoomEffect;
     public bool dwell;
     public float dwellWaitTime = 1;
+
+    public bool suggestionEnabled = false;
     private bool inKeyPress;
     private GameObject objectInFocus;
     public bool RepeatedKeyPressEnabled;
     public TouchDataHandler touchHandler;
     private int speed = 5;
-    private float distanceFromCamera = 6;
+    public float distanceFromCamera = 6;
     private int prevX;
     private int prevY;
+    public bool tapActionEnabled;
 
     public abstract void SetProperties();
 

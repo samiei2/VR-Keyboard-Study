@@ -48,7 +48,7 @@ public class InputHandler : MonoBehaviour {
                     //Debug.Log("Mouse up on the " + hit.transform.parent.name);
                     StopCoroutine("RepeatKeyPress");
                     inKeyPress = false;
-                    hit.transform.parent.GetComponent<KeyEvents>().Key_RealseEvent();
+                    hit.transform.parent.GetComponent<KeyEvents>().Key_ReleaseEvent();
                 }
                 else
                 {
@@ -76,7 +76,7 @@ public class InputHandler : MonoBehaviour {
             {
                 StopCoroutine("RepeatKeyPress");
                 inKeyPress = false;
-                objectInFocus.transform.parent.GetComponent<KeyEvents>().Key_RealseEvent();
+                objectInFocus.transform.parent.GetComponent<KeyEvents>().Key_ReleaseEvent();
             }
             if (objectInFocus != null)
             {

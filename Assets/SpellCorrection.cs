@@ -12,7 +12,8 @@ public class SpellCorrection : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        targetkeyboard = GetComponent<KeyboardLayout>();
+        if(!targetkeyboard)
+            targetkeyboard = GetComponent<KeyboardLayout>();
         if (!targetkeyboard)
         {
             Debug.LogError("Target Keyboard Empty");
@@ -82,14 +83,14 @@ public class SpellCorrection : MonoBehaviour {
         List<SymSpell.SuggestItem> suggestions = null;
 
         //check if input term or similar terms within edit-distance are in dictionary, return results sorted by ascending edit distance, then by descending word frequency     
-        const SymSpell.Verbosity verbosity = SymSpell.Verbosity.Closest;
+        const SymSpell.Verbosity verbosity = SymSpell.Verbosity.All;
         suggestions = symSpell.Lookup(input, verbosity);
 
         //return suggestions;
         //display term and frequency
         foreach (var suggestion in suggestions)
         {
-            Debug.Log(suggestion.term + " " + suggestion.distance.ToString() + " " + suggestion.count.ToString("N0"));
+            //Debug.Log(suggestion.term + " " + suggestion.distance.ToString() + " " + suggestion.count.ToString("N0"));
         }
         if (verbosity != SymSpell.Verbosity.Top) Debug.Log(suggestions.Count.ToString() + " suggestions");
         return suggestions;

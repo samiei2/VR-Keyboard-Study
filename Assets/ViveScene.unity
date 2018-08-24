@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657868, g: 0.49641263, b: 0.5748171, a: 1}
+  m_IndirectSpecularColor: {r: 0.44657898, g: 0.4964133, b: 0.5748178, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -424,8 +424,13 @@ MonoBehaviour:
   pointer: {fileID: 0}
   InputType: 0
   zoomEffect: 0
+  dwell: 0
+  dwellWaitTime: 1
+  suggestionEnabled: 0
   RepeatedKeyPressEnabled: 0
   touchHandler: {fileID: 0}
+  distanceFromCamera: 6
+  tapActionEnabled: 0
 --- !u!1 &137451054 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1846152157934626, guid: 12c6030625d8ab443be25b7fb8a3d438,
@@ -1043,8 +1048,13 @@ MonoBehaviour:
   pointer: {fileID: 0}
   InputType: 0
   zoomEffect: 0
+  dwell: 0
+  dwellWaitTime: 1
+  suggestionEnabled: 0
   RepeatedKeyPressEnabled: 0
   touchHandler: {fileID: 0}
+  distanceFromCamera: 6
+  tapActionEnabled: 0
   keys:
   - {fileID: 1570666093}
   - {fileID: 610181600}
@@ -12276,10 +12286,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pointerSpeedMultiplier: 15
   pointer: {fileID: 1059536999}
-  InputType: 2
+  InputType: 3
   zoomEffect: 0
+  dwell: 0
+  dwellWaitTime: 1
+  suggestionEnabled: 0
   RepeatedKeyPressEnabled: 0
   touchHandler: {fileID: 512920337}
+  distanceFromCamera: 6
+  tapActionEnabled: 0
   textArea: {fileID: 0}
   distance: 4
 --- !u!4 &1593842409
@@ -13138,14 +13153,14 @@ MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1842702153}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 977eb6406c4bd3c46ba5defdc5ce1e45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   enableCompoundCorrection: 0
   enableSegmentation: 0
-  targetkeyboard: {fileID: 0}
+  targetkeyboard: {fileID: 1593842408}
 --- !u!1 &1845879228 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1846152157934626, guid: 12c6030625d8ab443be25b7fb8a3d438,
