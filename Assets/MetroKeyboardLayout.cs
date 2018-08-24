@@ -162,8 +162,6 @@ public class MetroKeyboardLayout : KeyboardLayout {
     {
         
         var transform = (Transform)sender;
-        //if(transform.name == "Key_B")
-        //Debug.Log("# Unfocus " + transform.name);
         //transform.Find("HexCylinder").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().normalMat;
         transform.Find("Tint").gameObject.SetActive(false);
         if (zoomEffect)
@@ -181,8 +179,6 @@ public class MetroKeyboardLayout : KeyboardLayout {
     {
         
         var transform = (Transform)sender;
-        //if (transform.name == "Key_B")
-        //Debug.Log("# Focus " + transform.name);
         //transform.Find("HexCylinder").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().focusedMat;
         transform.Find("Tint").gameObject.SetActive(true);
         if (zoomEffect)
