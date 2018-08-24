@@ -17,7 +17,7 @@ public abstract class KeyboardLayout : MonoBehaviour
         { KeyID.P, 'p' },{ KeyID.Q, 'q' },{ KeyID.R, 'r' },{ KeyID.S, 's' },{ KeyID.T, 't' },
         { KeyID.U, 'u' },{ KeyID.V, 'v' },{ KeyID.W, 'w' },{ KeyID.X, 'x' },{ KeyID.Y, 'y' },
         { KeyID.Z, 'z' },
-        { KeyID.Space, ' ' },{ KeyID.Tab, '\t' },
+        { KeyID.Space, ' ' },{ KeyID.Space2, ' ' },{ KeyID.Tab, '\t' },
         { KeyID.N1, '1' },{ KeyID.N2, '2' },{ KeyID.N3, '3' },{ KeyID.N4, '4' },{ KeyID.N5, '5' },
         { KeyID.N6, '6' },{ KeyID.N7, '7' },{ KeyID.N8, '8' },{ KeyID.N9, '9' },{ KeyID.N0, '0' },
         { KeyID.Quote, '\'' },{ KeyID.DoubleQuote, '\"' },{ KeyID.Enter, '\n' },{ KeyID.Dot, '.' }, { KeyID.Comma, ',' },
@@ -165,7 +165,7 @@ public abstract class KeyboardLayout : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, 100.0f))
         {
-            if (hit.transform.name.Contains("Cylinder"))
+            if (hit.transform.name.Contains("MainShape"))
             {
                 if (Input.GetMouseButtonDown(0))
                 {
@@ -212,7 +212,7 @@ public abstract class KeyboardLayout : MonoBehaviour
             }
             if (objectInFocus != null)
             {
-                if (objectInFocus.name.Contains("HexCylinder"))
+                if (objectInFocus.name.Contains("MainShape"))
                 {
                     //Debug.Log("You realsed the " + objectInFocus.transform.parent.name);
                     objectInFocus.transform.parent.GetComponent<KeyEvents>().Key_UnfocusedEvent();
@@ -236,7 +236,7 @@ public abstract class KeyboardLayout : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, 100.0f))
         {
-            if (hit.transform.name.Contains("Cylinder"))
+            if (hit.transform.name.Contains("MainShape"))
             {
                 if (action == 0 && tapActionEnabled)
                 {
@@ -282,7 +282,7 @@ public abstract class KeyboardLayout : MonoBehaviour
             }
             if (objectInFocus != null)
             {
-                if (objectInFocus.name.Contains("Cylinder"))
+                if (objectInFocus.name.Contains("MainShape"))
                 {
                     //Debug.Log("You realsed the " + objectInFocus.transform.parent.name);
                     objectInFocus.transform.parent.GetComponent<KeyEvents>().Key_UnfocusedEvent();
@@ -368,7 +368,7 @@ public abstract class KeyboardLayout : MonoBehaviour
 
 public enum KeyID
 {
-    A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, Space,
+    A, B, C, D, E, F, G, H, I, J, K, L, M, N, O, P, Q, R, S, T, U, V, W, X, Y, Z, Space, Space2,
     LAlt, RAlt, Alt, LShift, RShift, Shift, LCtrl, RCtrl, Ctrl,
     F1, F2, F3, F4, F5, F6, F7, F8, F9, F10, F11, F12,
     ESC, CpsLck, Tab, Enter,

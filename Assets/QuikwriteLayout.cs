@@ -49,7 +49,7 @@ public class QuikwriteLayout : KeyboardLayout {
     public override void KeyboardEventHandler_OnFocusedHandler(object sender, KeyEventArgs args)
     {
         var transform = (Transform)sender;
-        //transform.Find("HexCylinder").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().focusedMat;
+        //transform.Find("MainShape").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().focusedMat;
         transform.Find("Tint").gameObject.SetActive(true);
         if (zoomEffect)
         {
@@ -71,7 +71,7 @@ public class QuikwriteLayout : KeyboardLayout {
     public override void KeyboardEventHandler_OnUnfocusedHandler(object sender, KeyEventArgs args)
     {
         var transform = (Transform)sender;
-        //transform.Find("HexCylinder").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().normalMat;
+        //transform.Find("MainShape").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().normalMat;
         transform.Find("Tint").gameObject.SetActive(false);
         if (zoomEffect)
         {

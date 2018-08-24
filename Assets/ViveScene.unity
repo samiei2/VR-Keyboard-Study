@@ -395,7 +395,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &132592077
 Transform:
   m_ObjectHideFlags: 0
@@ -421,14 +421,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pointerSpeedMultiplier: 15
-  pointer: {fileID: 0}
+  pointer: {fileID: 1059536999}
   InputType: 0
   zoomEffect: 0
   dwell: 0
   dwellWaitTime: 1
   suggestionEnabled: 0
   RepeatedKeyPressEnabled: 0
-  touchHandler: {fileID: 0}
+  touchHandler: {fileID: 512920337}
   distanceFromCamera: 6
   tapActionEnabled: 0
 --- !u!1 &137451054 stripped
@@ -1099,8 +1099,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 009bc52f5daccdf4b854f1bbc3344956, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SourceType: 1
-  RepeatedKeyPressEnabled: 0
 --- !u!1 &397267809 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1846152157934626, guid: 12c6030625d8ab443be25b7fb8a3d438,
@@ -12272,7 +12270,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1593842408
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12286,7 +12284,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   pointerSpeedMultiplier: 15
   pointer: {fileID: 1059536999}
-  InputType: 3
+  InputType: 2
   zoomEffect: 0
   dwell: 0
   dwellWaitTime: 1

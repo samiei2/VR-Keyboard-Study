@@ -38,7 +38,7 @@ public class KeyProperties : MonoBehaviour {
 
     internal void ResetToNormal()
     {
-        transform.Find("HexCylinder").GetComponent<MeshRenderer>().material = normalMat;
+        transform.Find("MainShape").GetComponent<MeshRenderer>().material = normalMat;
     }
 
     internal void StartDwell(float dwellWaitTime)

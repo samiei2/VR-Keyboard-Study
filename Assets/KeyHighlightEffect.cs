@@ -22,9 +22,9 @@ public class KeyHighlightEffect : MonoBehaviour
             if (SelectedEffect.Equals(Highlights.Color))
             {
                 if (highlightMaterial != null)
-                    gobject.transform.Find("HexCylinder").GetComponent<MeshRenderer>().material = highlightMaterial;
+                    gobject.transform.Find("MainShape").GetComponent<MeshRenderer>().material = highlightMaterial;
                 else
-                    gobject.transform.Find("HexCylinder").GetComponent<MeshRenderer>().material = gobject.GetComponent<KeyProperties>().highlightMat;
+                    gobject.transform.Find("MainShape").GetComponent<MeshRenderer>().material = gobject.GetComponent<KeyProperties>().highlightMat;
             }
             if (SelectedEffect.Equals(Highlights.Size))
             {

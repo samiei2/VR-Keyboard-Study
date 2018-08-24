@@ -36,6 +36,8 @@ public class MetroKeyboardLayout : KeyboardLayout {
         }
 
         // Special Keys font size fix
+        keysDic[KeyID.Backspace].transform.Find("Text").GetComponent<TextMeshPro>().fontSize -= 7;
+        keysDic[KeyID.Backspace].transform.Find("Text").GetComponent<TextMeshPro>().text = "Backspace";
         keysDic[KeyID.Space].transform.Find("Text").GetComponent<TextMeshPro>().fontSize -= 7;
         keysDic[KeyID.Space].transform.Find("Text").GetComponent<TextMeshPro>().text = "Space";
         keysDic[KeyID.Shift].transform.Find("Text").GetComponent<TextMeshPro>().fontSize -= 6;
@@ -136,13 +138,13 @@ public class MetroKeyboardLayout : KeyboardLayout {
     public override void KeyboardEventHandler_OnReleasedHandler(object sender, KeyEventArgs args)
     {
         var transform = (Transform)sender;
-        transform.Find("HexCylinder").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().normalMat;
+        transform.Find("MainShape").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().normalMat;
     }
 
     public override void KeyboardEventHandler_OnPressedHandler(object sender, KeyEventArgs args)
     {
         var transform = (Transform)sender;
-        transform.Find("HexCylinder").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().pressedMat;
+        transform.Find("MainShape").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().pressedMat;
         
         if (args.KeyPrintable)
         {
@@ -154,7 +156,7 @@ public class MetroKeyboardLayout : KeyboardLayout {
         }
         else
         {
-
+            HandleNonPrintable(sender, args);
         }
     }
 
@@ -162,7 +164,7 @@ public class MetroKeyboardLayout : KeyboardLayout {
     {
         
         var transform = (Transform)sender;
-        //transform.Find("HexCylinder").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().normalMat;
+        //transform.Find("MainShape").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().normalMat;
         transform.Find("Tint").gameObject.SetActive(false);
         if (zoomEffect)
         {
@@ -179,7 +181,7 @@ public class MetroKeyboardLayout : KeyboardLayout {
     {
         
         var transform = (Transform)sender;
-        //transform.Find("HexCylinder").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().focusedMat;
+        //transform.Find("MainShape").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().focusedMat;
         transform.Find("Tint").gameObject.SetActive(true);
         if (zoomEffect)
         {
@@ -215,6 +217,21 @@ public class MetroKeyboardLayout : KeyboardLayout {
         foreach (var item in keysDic)
         {
             item.Value.GetComponent<KeyProperties>().ResetToNormal();
+        }
+    }
+
+    private void HandleNonPrintable(object sender, KeyEventArgs args)
+    {
+        var transform = (Transform)sender;
+        if(args.KeyId == KeyID.Backspace)
+        {
+            if(textArea.GetComponent<TextMeshPro>().text.Length > 0)
+                textArea.GetComponent<TextMeshPro>().text =
+                    textArea.GetComponent<TextMeshPro>().text.Remove(textArea.GetComponent<TextMeshPro>().text.Length - 1, 1);
+        }
+        else if (args.KeyId == KeyID.Enter)
+        {
+            textArea.GetComponent<TextMeshPro>().text += '\n';
         }
     }
 
