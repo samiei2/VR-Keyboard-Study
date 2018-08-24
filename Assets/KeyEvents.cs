@@ -14,12 +14,14 @@ public class KeyEvents : MonoBehaviour {
 
     public void Key_FocusedEvent()
     {
-        KeyEvents_OnKeyFocused?.Invoke(transform, KeyEventArgs.Empty);
+        if (KeyEvents_OnKeyFocused != null)
+        KeyEvents_OnKeyFocused.Invoke(transform, KeyEventArgs.Empty);
     }
 
     public void Key_UnfocusedEvent()
     {
-        KeyEvents_OnKeyUnfocused?.Invoke(transform, KeyEventArgs.Empty);
+        if (KeyEvents_OnKeyUnfocused != null)
+            KeyEvents_OnKeyUnfocused.Invoke(transform, KeyEventArgs.Empty);
     }
 
     public void Key_PressedEvent()
@@ -28,12 +30,14 @@ public class KeyEvents : MonoBehaviour {
         args.KeyPrintable = GetComponent<KeyProperties>().IsPrintable;
         args.KeyText = GetComponent<KeyProperties>().KeyText;
         args.KeyId = GetComponent<KeyProperties>().ID;
-        KeyEvents_OnKeyPressed?.Invoke(transform, args);
+        if (KeyEvents_OnKeyPressed != null)
+            KeyEvents_OnKeyPressed.Invoke(transform, args);
     }
 
     public void Key_ReleaseEvent()
     {
-        KeyEvents_OnKeyReleased?.Invoke(transform, KeyEventArgs.Empty);
+        if (KeyEvents_OnKeyReleased != null)
+            KeyEvents_OnKeyReleased.Invoke(transform, KeyEventArgs.Empty);
     }
 }
 

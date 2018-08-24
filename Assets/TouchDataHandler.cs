@@ -10,7 +10,7 @@ public class TouchDataHandler : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        GameObject.Find("Server").GetComponent<Server>().OnDataReceived += TouchDataHandler_OnDataReceived;
+        //GameObject.Find("Server").GetComponent<Server>().OnDataReceived += TouchDataHandler_OnDataReceived;
         GameObject.Find("Server").GetComponent<AsyncServer>().OnMessageReceived += TouchDataHandler_OnMessageReceived;
 
     }
@@ -62,7 +62,8 @@ public class TouchDataHandler : MonoBehaviour {
                             right = right,
                         };
 
-                        TouchDataReceivedEvent?.Invoke(this, args);
+                        if(TouchDataReceivedEvent != null)
+                            TouchDataReceivedEvent.Invoke(this, args);
                     }
                     catch (Exception ex)
                     {

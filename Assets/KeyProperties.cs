@@ -11,7 +11,7 @@ public class KeyProperties : MonoBehaviour {
 
     public KeyID ID;
 
-    public bool IsPrintable => KeyboardLayout.PRINTABLEKEYS.ContainsKey(ID);
+    public bool IsPrintable { get { return KeyboardLayout.PRINTABLEKEYS.ContainsKey(ID); } }
     public string KeyText = "";
 
     internal bool effectsEnabled;

@@ -131,6 +131,16 @@ public abstract class KeyboardLayout : MonoBehaviour
             HandleTouchInput(-1);
         }
 
+        if(InputType == KeyboardInputType.GazeAndDwell || InputType == KeyboardInputType.GazeAndClick)
+        {
+            GazePoint gazePoint = TobiiAPI.GetGazePoint();
+            if (gazePoint.IsRecent()) // Use IsValid property instead to process old but valid data
+            {
+                // Note: Values can be negative if the user looks outside the game view.
+                //print("Gaze point on Screen (X,Y): " + gazePoint.Screen.x + ", " + gazePoint.Screen.y);
+            }
+        }
+
 
         // Lock boundaries
         Vector3 screenPos = Camera.main.WorldToScreenPoint(pointer.transform.position);
@@ -324,7 +334,8 @@ public abstract class KeyboardLayout : MonoBehaviour
     protected virtual void OnKeyPressed(object sender, KeyEventArgs args)
     {
         KeyEvents.KeyEvent handler = KeyboardLayout_OnKeyPressed;
-        handler?.Invoke(sender, args);
+        if(handler!=null)
+            handler.Invoke(sender, args);
     }
 
     public GameObject KeyInFocus { get; set; }
