@@ -133,12 +133,12 @@ public abstract class KeyboardLayout : MonoBehaviour
 
         if(InputType == KeyboardInputType.GazeAndDwell || InputType == KeyboardInputType.GazeAndClick)
         {
-            GazePoint gazePoint = TobiiAPI.GetGazePoint();
-            if (gazePoint.IsRecent()) // Use IsValid property instead to process old but valid data
-            {
-                // Note: Values can be negative if the user looks outside the game view.
-                //print("Gaze point on Screen (X,Y): " + gazePoint.Screen.x + ", " + gazePoint.Screen.y);
-            }
+            //GazePoint gazePoint = TobiiAPI.GetGazePoint();
+            //if (gazePoint.IsRecent()) // Use IsValid property instead to process old but valid data
+            //{
+            //    // Note: Values can be negative if the user looks outside the game view.
+            //    //print("Gaze point on Screen (X,Y): " + gazePoint.Screen.x + ", " + gazePoint.Screen.y);
+            //}
         }
 
 
