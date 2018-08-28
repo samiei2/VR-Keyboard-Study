@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Tobii.Research.Unity;
 using UnityEngine;
 
 public abstract class KeyboardLayout : MonoBehaviour
 {
     protected Dictionary<KeyID, GameObject> keysDic = new Dictionary<KeyID, GameObject>();
     public event KeyEvents.KeyEvent KeyboardLayout_OnKeyPressed;
+    private VREyeTracker _eyeTracker;
+    private VRCalibration _calibrationObject;
 
     public static Dictionary<KeyID, char> PRINTABLEKEYS = new Dictionary<KeyID, char>()
     {
@@ -35,9 +38,12 @@ public abstract class KeyboardLayout : MonoBehaviour
         {
             touchHandler.TouchDataReceivedEvent += Pointer_PointerDataReceivedEvent;
         }
+        _eyeTracker = VREyeTracker.Instance;
+        _calibrationObject = VRCalibration.Instance;
     }
 
     public int pointerSpeedMultiplier = 10;
+    
     Vector3 vec, oldVec, lerpedVec, position;
     int action, x, y, top, bottom, left, right, width, height;
     float touchMovementPercentageX, touchMovementPercentageY, initialValX, initialValY; 
@@ -95,7 +101,7 @@ public abstract class KeyboardLayout : MonoBehaviour
                     //Vector3 worldVec = Camera.main.ScreenToWorldPoint(vec);
 
                     //Vector3 position = Vector3.Lerp(pointer.transform.position, worldVec, 1.0f - Mathf.Exp(-speed * Time.deltaTime));
-                    position.z = Camera.main.transform.position.z + distanceFromCamera;
+                    position.z = transform.position.z + pointerDistanceFromKeyboard;
                     pointer.transform.position = position;
 
                     prevX = x;
@@ -109,14 +115,20 @@ public abstract class KeyboardLayout : MonoBehaviour
 
     public virtual void Update()
     {
+        if (InputType != KeyboardInputType.GazeAndDwell)
+            dwell = false;
+        
         if (InputType == KeyboardInputType.Mouse)
         {
+            InputButtonDown = Input.GetMouseButtonDown(0);
+            InputButtonUp = Input.GetMouseButtonUp(0);
             HandleMouseInput();
 
             if (pointer != null)
             {
                 Vector3 mousePosition = Input.mousePosition;
-                mousePosition.z = distanceFromCamera;
+                //mousePosition.z = pointerDistanceFromKeyboard;
+                mousePosition.z = transform.position.z + pointerDistanceFromKeyboard;
 
                 Vector3 mouseScreenToWorld = Camera.main.ScreenToWorldPoint(mousePosition);
 
@@ -128,17 +140,24 @@ public abstract class KeyboardLayout : MonoBehaviour
 
         if (InputType == KeyboardInputType.TouchPad)
         {
+            InputButtonDown = action == 0 && tapActionEnabled ? true : false;
+            InputButtonUp = action == 1 && tapActionEnabled ? true : false;
             HandleTouchInput(-1);
         }
 
         if(InputType == KeyboardInputType.GazeAndDwell || InputType == KeyboardInputType.GazeAndClick)
         {
-            //GazePoint gazePoint = TobiiAPI.GetGazePoint();
-            //if (gazePoint.IsRecent()) // Use IsValid property instead to process old but valid data
-            //{
-            //    // Note: Values can be negative if the user looks outside the game view.
-            //    //print("Gaze point on Screen (X,Y): " + gazePoint.Screen.x + ", " + gazePoint.Screen.y);
-            //}
+            if(InputType == KeyboardInputType.GazeAndDwell)
+            {
+                if (!dwell)
+                    dwell = true;
+            }
+            if(InputType == KeyboardInputType.GazeAndClick)
+            {
+                InputButtonDown = action == 0 && tapActionEnabled ? true : false;
+                InputButtonUp = action == 1 && tapActionEnabled ? true : false;
+            }
+            HandleGazeInput();
         }
 
 
@@ -167,6 +186,107 @@ public abstract class KeyboardLayout : MonoBehaviour
         }
     }
 
+    private void HandleGazeInput()
+    {
+        if (_eyeTracker != null)
+        {
+            Ray ray;
+            var valid = GetRay(out ray);
+            if (valid)
+            {
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit))
+                {
+                    HandleHit(hit.transform.gameObject);
+                }
+                else
+                {
+                    HandleUnhit();
+                }
+            }
+        }
+    }
+
+    private void HandleUnhit()
+    {
+        if (inKeyPress)
+        {
+            StopCoroutine("RepeatKeyPress");
+            inKeyPress = false;
+            objectInFocus.transform.parent.GetComponent<KeyEvents>().Key_ReleaseEvent();
+        }
+        if (objectInFocus != null)
+        {
+            if (objectInFocus.name.Contains("MainShape"))
+            {
+                //Debug.Log("You realsed the " + objectInFocus.transform.parent.name);
+                objectInFocus.transform.parent.GetComponent<KeyEvents>().Key_UnfocusedEvent();
+                objectInFocus = null;
+                focused = false;
+                // There is a bug in visual update and we have to do the following 
+                foreach (Transform child in transform)
+                {
+                    child.GetComponent<KeyEvents>().Key_UnfocusedEvent();
+                }
+                //////////////////////////////////////////////////////////////
+            }
+        }
+    }
+
+    private void HandleHit(GameObject hit)
+    {
+        if (hit.transform.name.Contains("MainShape"))
+        {
+            if (InputButtonDown)
+            {
+                //Debug.Log("Mouse down on the " + hit.transform.parent.name);
+                inKeyPress = true;
+                hit.transform.parent.GetComponent<KeyEvents>().Key_PressedEvent();
+                StartCoroutine("RepeatKeyPress");
+            }
+            else if (InputButtonUp)
+            {
+                //Debug.Log("Mouse up on the " + hit.transform.parent.name);
+                StopCoroutine("RepeatKeyPress");
+                inKeyPress = false;
+                hit.transform.parent.GetComponent<KeyEvents>().Key_ReleaseEvent();
+            }
+            else
+            {
+                if (!inKeyPress && !focused)
+                {
+                    // There is a bug in visual update and we have to do the following 
+                    //foreach (Transform child in transform)
+                    {
+                        //if (child != null)
+                        //if (child.name != hit.transform.gameObject.name)
+                        //if (child.GetComponent<KeyEvents>() != null)
+
+                        //child.GetComponent<KeyEvents>().Key_UnfocusedEvent();
+                    }
+                    //////////////////////////////////////////////////////////////
+
+                    hit.transform.parent.GetComponent<KeyEvents>().Key_FocusedEvent();
+                    objectInFocus = hit.transform.gameObject;
+                    focused = true;
+                }
+            }
+        }
+    }
+
+    protected bool GetRay(out Ray ray)
+    {
+        if (_eyeTracker == null)
+        {
+            ray = default(Ray);
+            return false;
+        }
+
+        var data = _eyeTracker.LatestGazeData;
+        ray = data.CombinedGazeRayWorld;
+        return data.CombinedGazeRayWorldValid;
+    }
+
     private void HandleMouseInput()
     {
         RaycastHit hit;
@@ -175,66 +295,11 @@ public abstract class KeyboardLayout : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, 100.0f))
         {
-            if (hit.transform.name.Contains("MainShape"))
-            {
-                if (Input.GetMouseButtonDown(0))
-                {
-                    //Debug.Log("Mouse down on the " + hit.transform.parent.name);
-                    inKeyPress = true;
-                    hit.transform.parent.GetComponent<KeyEvents>().Key_PressedEvent();
-                    StartCoroutine("RepeatKeyPress");
-                }
-                else if (Input.GetMouseButtonUp(0))
-                {
-                    //Debug.Log("Mouse up on the " + hit.transform.parent.name);
-                    StopCoroutine("RepeatKeyPress");
-                    inKeyPress = false;
-                    hit.transform.parent.GetComponent<KeyEvents>().Key_ReleaseEvent();
-                }
-                else
-                {
-                    if (!inKeyPress)
-                    {
-                        // There is a bug in visual update and we have to do the following 
-                        //foreach (Transform child in transform)
-                        {
-                            //if (child != null)
-                                //if (child.name != hit.transform.gameObject.name)
-                                    //if (child.GetComponent<KeyEvents>() != null)
-                                        
-                                        //child.GetComponent<KeyEvents>().Key_UnfocusedEvent();
-                        }
-                        //////////////////////////////////////////////////////////////
-
-                        hit.transform.parent.GetComponent<KeyEvents>().Key_FocusedEvent();
-                        objectInFocus = hit.transform.gameObject;
-                    }
-                }
-            }
+            HandleHit(hit.transform.gameObject);
         }
         else
         {
-            if (inKeyPress)
-            {
-                StopCoroutine("RepeatKeyPress");
-                inKeyPress = false;
-                objectInFocus.transform.parent.GetComponent<KeyEvents>().Key_ReleaseEvent();
-            }
-            if (objectInFocus != null)
-            {
-                if (objectInFocus.name.Contains("MainShape"))
-                {
-                    //Debug.Log("You realsed the " + objectInFocus.transform.parent.name);
-                    objectInFocus.transform.parent.GetComponent<KeyEvents>().Key_UnfocusedEvent();
-                    objectInFocus = null;
-                    // There is a bug in visual update and we have to do the following 
-                    foreach (Transform child in transform)
-                    {
-                        child.GetComponent<KeyEvents>().Key_UnfocusedEvent();
-                    }
-                    //////////////////////////////////////////////////////////////
-                }
-            }
+            HandleUnhit();
         }
     }
 
@@ -246,65 +311,11 @@ public abstract class KeyboardLayout : MonoBehaviour
 
         if (Physics.Raycast(ray, out hit, 100.0f))
         {
-            if (hit.transform.name.Contains("MainShape"))
-            {
-                if (action == 0 && tapActionEnabled)
-                {
-                    //Debug.Log("Mouse down on the " + hit.transform.parent.name);
-                    inKeyPress = true;
-                    hit.transform.parent.GetComponent<KeyEvents>().Key_PressedEvent();
-                    StartCoroutine("RepeatKeyPress");
-                }
-                else if (action == 1 && tapActionEnabled)
-                {
-                    //Debug.Log("Mouse up on the " + hit.transform.parent.name);
-                    StopCoroutine("RepeatKeyPress");
-                    inKeyPress = false;
-                    hit.transform.parent.GetComponent<KeyEvents>().Key_ReleaseEvent();
-                }
-                else
-                {
-                    if (!inKeyPress)
-                    {
-                        // There is a bug in visual update and we have to do the following 
-                        //foreach (Transform child in transform)
-                        {
-                            //if (child != hit.transform.gameObject)
-                                //if (child != null)
-                                    //if (child.GetComponent<KeyEvents>() != null)
-                                        //child.GetComponent<KeyEvents>().Key_UnfocusedEvent();
-                        }
-                        //////////////////////////////////////////////////////////////
-
-                        hit.transform.parent.GetComponent<KeyEvents>().Key_FocusedEvent();
-                        objectInFocus = hit.transform.gameObject;
-                    }
-                }
-            }
+            HandleHit(hit.transform.gameObject);
         }
         else
         {
-            if (inKeyPress)
-            {
-                StopCoroutine("RepeatKeyPress");
-                inKeyPress = false;
-                objectInFocus.transform.parent.GetComponent<KeyEvents>().Key_ReleaseEvent();
-            }
-            if (objectInFocus != null)
-            {
-                if (objectInFocus.name.Contains("MainShape"))
-                {
-                    //Debug.Log("You realsed the " + objectInFocus.transform.parent.name);
-                    objectInFocus.transform.parent.GetComponent<KeyEvents>().Key_UnfocusedEvent();
-                    objectInFocus = null;
-                    // There is a bug in visual update and we have to do the following 
-                    foreach (Transform child in transform)
-                    {
-                        child.GetComponent<KeyEvents>().Key_UnfocusedEvent();
-                    }
-                    //////////////////////////////////////////////////////////////
-                }
-            }
+            HandleUnhit();
         }
     }
 
@@ -331,6 +342,23 @@ public abstract class KeyboardLayout : MonoBehaviour
         return null;
     }
 
+    public void ResetKeyBoardExcept(Transform sender)
+    {
+        foreach (var item in keysDic)
+        {
+            if (item.Value != sender.gameObject) 
+            item.Value.GetComponent<KeyProperties>().ResetToNormal();
+        }
+    }
+
+    public void ResetKeyBoard()
+    {
+        foreach (var item in keysDic)
+        {
+            item.Value.GetComponent<KeyProperties>().ResetToNormal();
+        }
+    }
+
     protected virtual void OnKeyPressed(object sender, KeyEventArgs args)
     {
         KeyEvents.KeyEvent handler = KeyboardLayout_OnKeyPressed;
@@ -339,6 +367,9 @@ public abstract class KeyboardLayout : MonoBehaviour
     }
 
     public GameObject KeyInFocus { get; set; }
+    public bool InputButtonDown { get; private set; }
+    public bool InputButtonUp { get; private set; }
+
     public Pointer pointer;
 
     public KeyboardInputType InputType;
@@ -353,19 +384,18 @@ public abstract class KeyboardLayout : MonoBehaviour
     public bool RepeatedKeyPressEnabled;
     public TouchDataHandler touchHandler;
     private int speed = 5;
-    public float distanceFromCamera = 6;
+    public float pointerDistanceFromKeyboard = 6;
     private int prevX;
     private int prevY;
     public bool tapActionEnabled;
+    private bool focused = false;
 
     public abstract void SetProperties();
 
     public abstract void LayoutKeys();
 
     public abstract void CreateMainKeys();
-
-    public abstract void ResetKeyBoard();
-
+    
     public abstract void KeyboardEventHandler_OnReleasedHandler(object sender, KeyEventArgs args);
 
     public abstract void KeyboardEventHandler_OnPressedHandler(object sender, KeyEventArgs args);

@@ -201,14 +201,7 @@ public class FitalyKeyboardLayout : KeyboardLayout {
         if (GetComponent<KeyHighlightEffect>() != null && suggestionEnabled)
             GetComponent<KeyHighlightEffect>().HighlightKeys(suggestedAlphabet);
     }
-
-    public override void ResetKeyBoard()
-    {
-        foreach (var item in keysDic)
-        {
-            item.Value.GetComponent<KeyProperties>().ResetToNormal();
-        }
-    }
+    
 
     private void HandleNonPrintable(object sender, KeyEventArgs args)
     {

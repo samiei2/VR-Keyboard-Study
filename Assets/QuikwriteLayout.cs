@@ -115,12 +115,7 @@ public class QuikwriteLayout : KeyboardLayout {
         keysDic[KeyID.Next] = keys[30];
         keysDic[KeyID.Backspace] = keys[31];
     }
-
-    public override void ResetKeyBoard()
-    {
-        throw new System.NotImplementedException();
-    }
-
+    
     public override void SetProperties()
     {
         foreach (var key in keysDic.Keys)

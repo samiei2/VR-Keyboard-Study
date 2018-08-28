@@ -36,7 +36,7 @@ public class WordPrediction : MonoBehaviour
 
     private void WordPrediction_KeyPressedHandler(object sender, KeyEventArgs args)
     {
-        ResetKeyboard();
+        ResetKeyboardExcept((Transform)sender);
         if (args.KeyText.Equals(" "))
         {
             _input = "";
@@ -65,9 +65,9 @@ public class WordPrediction : MonoBehaviour
         }
     }
 
-    private void ResetKeyboard()
+    private void ResetKeyboardExcept(Transform sender)
     {
-        targetkeyboard.ResetKeyBoard();
+        targetkeyboard.ResetKeyBoardExcept(sender);
     }
 
     private void LoadDictionary(string path)

@@ -138,14 +138,16 @@ public class MetroKeyboardLayout : KeyboardLayout {
     public override void KeyboardEventHandler_OnReleasedHandler(object sender, KeyEventArgs args)
     {
         var transform = (Transform)sender;
-        transform.Find("MainShape").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().normalMat;
+        transform.Find("MainShape").GetComponent<Renderer>().material = transform.GetComponent<KeyProperties>().normalMat;
+        
     }
 
     public override void KeyboardEventHandler_OnPressedHandler(object sender, KeyEventArgs args)
     {
         var transform = (Transform)sender;
+
         transform.Find("MainShape").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().pressedMat;
-        
+
         if (args.KeyPrintable)
         {
             if (textArea != null)
@@ -164,7 +166,7 @@ public class MetroKeyboardLayout : KeyboardLayout {
     {
         
         var transform = (Transform)sender;
-        //transform.Find("MainShape").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().normalMat;
+
         transform.Find("Tint").gameObject.SetActive(false);
         if (zoomEffect)
         {
@@ -181,7 +183,8 @@ public class MetroKeyboardLayout : KeyboardLayout {
     {
         
         var transform = (Transform)sender;
-        //transform.Find("MainShape").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().focusedMat;
+        
+
         transform.Find("Tint").gameObject.SetActive(true);
         if (zoomEffect)
         {
@@ -211,15 +214,7 @@ public class MetroKeyboardLayout : KeyboardLayout {
         if(GetComponent<KeyHighlightEffect>()!=null && suggestionEnabled)
             GetComponent<KeyHighlightEffect>().HighlightKeys(suggestedAlphabet);
     }
-
-    public override void ResetKeyBoard()
-    {
-        foreach (var item in keysDic)
-        {
-            item.Value.GetComponent<KeyProperties>().ResetToNormal();
-        }
-    }
-
+    
     private void HandleNonPrintable(object sender, KeyEventArgs args)
     {
         var transform = (Transform)sender;
