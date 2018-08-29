@@ -8,6 +8,7 @@ public class KeyProperties : MonoBehaviour {
     public Material pressedMat;
     public Material normalMat;
     public Material highlightMat;
+    public Material invisibleMat;
 
     public KeyID ID;
 
@@ -18,6 +19,7 @@ public class KeyProperties : MonoBehaviour {
 
     bool isDwelling = false;
     bool doneDwelling = false;
+    
 
     void Start()
     {
@@ -29,6 +31,8 @@ public class KeyProperties : MonoBehaviour {
             pressedMat = Resources.Load("PressedKeyMaterial") as Material;
         if (highlightMat == null)
             highlightMat = Resources.Load("HighlightKeyMaterial") as Material;
+        if (invisibleMat == null)
+            invisibleMat = Resources.Load("InvisibleMaterial") as Material;
     }
 	
 	// Update is called once per frame

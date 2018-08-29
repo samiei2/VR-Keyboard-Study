@@ -40,6 +40,11 @@ public abstract class KeyboardLayout : MonoBehaviour
         }
         _eyeTracker = VREyeTracker.Instance;
         _calibrationObject = VRCalibration.Instance;
+
+        transform.position = new Vector3(
+            Camera.main.transform.position.x, 
+            Camera.main.transform.position.y, 
+            Camera.main.transform.position.z + keyboardDistanceFromCamera);
     }
 
     public int pointerSpeedMultiplier = 10;
@@ -102,6 +107,7 @@ public abstract class KeyboardLayout : MonoBehaviour
 
                     //Vector3 position = Vector3.Lerp(pointer.transform.position, worldVec, 1.0f - Mathf.Exp(-speed * Time.deltaTime));
                     position.z = transform.position.z + pointerDistanceFromKeyboard;
+                    
                     pointer.transform.position = position;
 
                     prevX = x;
@@ -127,13 +133,13 @@ public abstract class KeyboardLayout : MonoBehaviour
             if (pointer != null)
             {
                 Vector3 mousePosition = Input.mousePosition;
-                //mousePosition.z = pointerDistanceFromKeyboard;
-                mousePosition.z = transform.position.z + pointerDistanceFromKeyboard;
+                mousePosition.z = 9;
+                //mousePosition.z = Camera.main.transform.position.z + pointerDistanceFromKeyboard;
 
                 Vector3 mouseScreenToWorld = Camera.main.ScreenToWorldPoint(mousePosition);
 
                 Vector3 position = Vector3.Lerp(pointer.transform.position, mouseScreenToWorld, 1.0f - Mathf.Exp(-speed * Time.deltaTime));
-
+                //position.z = transform.position.z + pointerDistanceFromKeyboard;
                 pointer.transform.position = position;
             }
         }
@@ -162,28 +168,31 @@ public abstract class KeyboardLayout : MonoBehaviour
 
 
         // Lock boundaries
-        Vector3 screenPos = Camera.main.WorldToScreenPoint(pointer.transform.position);
-        //ebug.Log("X: " + screenPos.x+", Y: "+screenPos.y);
+        //if (pointer != null )
+        //{
+        //    Vector3 screenPos = Camera.main.WorldToScreenPoint(pointer.transform.position);
+        //    //ebug.Log("X: " + screenPos.x+", Y: "+screenPos.y);
 
-        if (screenPos.x < 0 || screenPos.y < 0 ||
-            screenPos.x > Screen.width || screenPos.y > Screen.height)
-        {
-            float x = screenPos.x;
-            float y = screenPos.y;
-            float z = screenPos.z;
+        //    if (screenPos.x < 0 || screenPos.y < 0 ||
+        //        screenPos.x > Screen.width || screenPos.y > Screen.height)
+        //    {
+        //        float x = screenPos.x;
+        //        float y = screenPos.y;
+        //        float z = screenPos.z;
 
-            if (x < 0)
-                x = 0;
-            if (x > Screen.width)
-                x = Screen.width;
-            if (y < 0)
-                y = 0;
-            if (y > Screen.height)
-                y = Screen.height;
-            //Debug.LogError("X: " + x + ", Y: " + y);
-            pointer.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(x, y, z));
-            //transform.position = Camera.main.ScreenToWorldPoint(newPos);
-        }
+        //        if (x < 0)
+        //            x = 0;
+        //        if (x > Screen.width)
+        //            x = Screen.width;
+        //        if (y < 0)
+        //            y = 0;
+        //        if (y > Screen.height)
+        //            y = Screen.height;
+        //        //Debug.LogError("X: " + x + ", Y: " + y);
+        //        pointer.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(x, y, z));
+        //        //transform.position = Camera.main.ScreenToWorldPoint(newPos);
+        //    }
+        //}
     }
 
     private void HandleGazeInput()
@@ -224,10 +233,11 @@ public abstract class KeyboardLayout : MonoBehaviour
                 objectInFocus = null;
                 focused = false;
                 // There is a bug in visual update and we have to do the following 
-                foreach (Transform child in transform)
-                {
-                    child.GetComponent<KeyEvents>().Key_UnfocusedEvent();
-                }
+                //foreach (Transform child in transform)
+                //{
+                //    if(child.Find("MainShape")!=null)
+                //    child.GetComponent<KeyEvents>().Key_UnfocusedEvent();
+                //}
                 //////////////////////////////////////////////////////////////
             }
         }
@@ -385,6 +395,7 @@ public abstract class KeyboardLayout : MonoBehaviour
     public TouchDataHandler touchHandler;
     private int speed = 5;
     public float pointerDistanceFromKeyboard = 6;
+    public float keyboardDistanceFromCamera = 0;
     private int prevX;
     private int prevY;
     public bool tapActionEnabled;
