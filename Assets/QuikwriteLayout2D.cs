@@ -6,7 +6,12 @@ using UnityEngine;
 
 public class QuikwriteLayout2D : KeyboardLayout {
     private GameObject textArea;
+    private Material zoneHighlightMat;
+    private Material invisibleMat;
     public float radius = -1;
+    private String path = "";
+    public bool HighlightZone = false;
+    private Transform focusedZone;
 
     public override void CreateMainKeys()
     {
@@ -219,7 +224,10 @@ public class QuikwriteLayout2D : KeyboardLayout {
 
     // Use this for initialization
     public override void Start () {
+        
         textArea = GameObject.Find("TextArea");
+        zoneHighlightMat = Resources.Load("ZoneHighlightMat") as Material;
+        invisibleMat = Resources.Load("InvisibleMaterial") as Material;
         base.Start();
 	}
 
@@ -227,10 +235,100 @@ public class QuikwriteLayout2D : KeyboardLayout {
     {
         base.Update();
 
-        if (IsInRestZone(pointer))
-        {
 
+        if (InputButtonDown)
+        {
+            if (IsInRestZone(pointer))
+            {
+                if (path.Length != 0) // We might have returned to zone after visiting other zones or just resting in zone 0
+                {
+                    if (path.Length > 2) // We have been to other zones
+                    {
+                        path += "Z0";
+                        // Parse path ...
+                        ProcessPathAction(path);
+                        path = "";
+                    }
+                    else
+                    { // we are just resting in zone 0
+                        path = "Z0";
+                    }
+                }
+                else
+                {
+                    path += "Z0"; // Add Zone 0 as start of path
+                }
+            }
+            else
+            {
+                if (path.StartsWith("Z0"))
+                {
+                    // Into other zones
+                    String currentZone = GetZoneOfPointer();
+                    if(currentZone != oldZone)
+                    {
+                        path += currentZone;
+                        oldZone = currentZone;
+                    }
+                }
+            }
         }
+        else if (InputButtonUp)
+        {
+            if (path.StartsWith("Z0") && path.Length > 2)  // Path might be valid
+            {
+                ProcessPathAction(path);
+                path = "";
+            }
+            else
+            { // Discard path
+                path = "";
+            }
+        }
+    }
+
+    private void ProcessPathAction(string path)
+    {
+        if (path.StartsWith("Z0") && path.Length > 2)
+        {
+            var pathWithoutStartZone = path.Remove(0,2);// Dont need the rest zone Z0 in processing
+            String characterCode = "";
+            for (int i = 0; i < pathWithoutStartZone.Length; i+=2)
+            {
+                var zone = pathWithoutStartZone.Substring(i, 2); // Each zone is 2 char code (ex. Z1) 
+                characterCode += zone.Substring(1, 1); // Just append the zone number
+            }
+            if (!characterCode.EndsWith("0"))
+                characterCode += "0";
+            int code = Int32.Parse(characterCode);
+            Debug.Log(characterCode);
+        }
+    }
+
+    private string GetZoneOfPointer()
+    {
+        // Visual bug problem. needs to be fixed
+        foreach (Transform zone in transform.Find("RegionQuads"))
+        {
+            zone.GetComponent<MeshRenderer>().material = invisibleMat;
+        }
+        Ray ray = new Ray(pointer.transform.position, pointer.transform.position - Camera.main.transform.position);
+        Debug.DrawRay(ray.origin,ray.direction,Color.red);
+        RaycastHit hit;
+        if (Physics.Raycast(ray,out hit,20f))
+        {
+            if (hit.transform.name.Contains("Zone"))
+            {
+                // Light up zone?
+                if (HighlightZone)
+                {
+                    focusedZone = hit.transform;
+                    focusedZone.GetComponent<MeshRenderer>().material = zoneHighlightMat;
+                }
+                return hit.transform.name.Replace("one", ""); // Removes "one" from "Zone" which results in "Z1" etc
+            }
+        }
+        return "";
     }
 
     private bool IsInRestZone(Pointer pointer)
@@ -239,9 +337,9 @@ public class QuikwriteLayout2D : KeyboardLayout {
         if (radius == -1)
             radius = FindRadius();
 
-        var distance = Math.Pow(pointer.transform.position.x - center.x, 2) +
-            Math.Pow(pointer.transform.position.y - center.y, 2) +
-            Math.Pow(pointer.transform.position.z - center.z, 2);
+        var distance = Math.Sqrt(
+            Math.Pow(pointer.transform.position.x - center.x,2) + Math.Pow(pointer.transform.position.y - center.y, 2));
+        //Debug.Log(distance + "," + radius);
         if(distance < Math.Pow(radius, 2))
         {
             //Debug.Log("In Rest");
@@ -265,4 +363,15 @@ public class QuikwriteLayout2D : KeyboardLayout {
         }
         return maxDist;
     }
+
+    private Dictionary<int, KeyID> codeToKeyId = new Dictionary<int, KeyID>
+    {
+        { 080,KeyID.A },
+        { 04560,KeyID.B },
+        { 0760,KeyID.C },
+        { 0450,KeyID.D },
+        { 070,KeyID.E },
+        { 0210,KeyID.F },
+    };
+    private string oldZone;
 }

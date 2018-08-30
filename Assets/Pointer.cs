@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Pointer : MonoBehaviour {
-    private bool atEdge;
+    
 
     // Use this for initialization
     void Start () {

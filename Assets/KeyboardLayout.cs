@@ -45,6 +45,8 @@ public abstract class KeyboardLayout : MonoBehaviour
             Camera.main.transform.position.x, 
             Camera.main.transform.position.y, 
             Camera.main.transform.position.z + keyboardDistanceFromCamera);
+
+        
     }
 
     public int pointerSpeedMultiplier = 10;
@@ -68,7 +70,7 @@ public abstract class KeyboardLayout : MonoBehaviour
                 if (action == 0) {
                     prevX = x;
                     prevY = y;
-                    HandleTouchInput(action);
+                    //HandleTouchInput(action);
                 } else if (action == 2)
                 {
 
@@ -106,7 +108,7 @@ public abstract class KeyboardLayout : MonoBehaviour
                     //Vector3 worldVec = Camera.main.ScreenToWorldPoint(vec);
 
                     //Vector3 position = Vector3.Lerp(pointer.transform.position, worldVec, 1.0f - Mathf.Exp(-speed * Time.deltaTime));
-                    position.z = transform.position.z + pointerDistanceFromKeyboard;
+                    position.z = Math.Abs(Camera.main.transform.position.z - transform.position.z) + pointerDistanceFromCamera;
                     
                     pointer.transform.position = position;
 
@@ -126,16 +128,16 @@ public abstract class KeyboardLayout : MonoBehaviour
         
         if (InputType == KeyboardInputType.Mouse)
         {
-            InputButtonDown = Input.GetMouseButtonDown(0);
+            InputButtonDown = Input.GetMouseButton(0);
             InputButtonUp = Input.GetMouseButtonUp(0);
             HandleMouseInput();
 
             if (pointer != null)
             {
                 Vector3 mousePosition = Input.mousePosition;
-                mousePosition.z = 9;
-                //mousePosition.z = Camera.main.transform.position.z + pointerDistanceFromKeyboard;
-
+                //mousePosition.z = 9;
+                mousePosition.z = Math.Abs(Camera.main.transform.position.z - transform.position.z) + pointerDistanceFromCamera;
+                
                 Vector3 mouseScreenToWorld = Camera.main.ScreenToWorldPoint(mousePosition);
 
                 Vector3 position = Vector3.Lerp(pointer.transform.position, mouseScreenToWorld, 1.0f - Mathf.Exp(-speed * Time.deltaTime));
@@ -166,6 +168,11 @@ public abstract class KeyboardLayout : MonoBehaviour
             HandleGazeInput();
         }
 
+        if(InputType == KeyboardInputType.Swype)
+        {
+            InputButtonDown = action == 0 && tapActionEnabled ? true : false;
+            InputButtonUp = action == 1 && tapActionEnabled ? true : false;
+        }
 
         // Lock boundaries
         //if (pointer != null )
@@ -394,7 +401,7 @@ public abstract class KeyboardLayout : MonoBehaviour
     public bool RepeatedKeyPressEnabled;
     public TouchDataHandler touchHandler;
     private int speed = 5;
-    public float pointerDistanceFromKeyboard = 6;
+    public float pointerDistanceFromCamera = 6;
     public float keyboardDistanceFromCamera = 0;
     private int prevX;
     private int prevY;
@@ -435,5 +442,6 @@ public enum KeyboardInputType
     GazeAndDwell,
     GazeAndClick,
     Mouse,
-    TouchPad
+    TouchPad,
+    Swype
 }
