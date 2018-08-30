@@ -565,18 +565,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b6ffc7e30156e04eb1dac801e9badfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  textArea: {fileID: 0}
   pointerSpeedMultiplier: 15
   pointer: {fileID: 1059536999}
-  InputType: 0
+  InputType: 1
   zoomEffect: 0
   dwell: 0
   dwellWaitTime: 1
   suggestionEnabled: 0
   RepeatedKeyPressEnabled: 0
   touchHandler: {fileID: 512920337}
+  trackpadHandler: {fileID: 1228453480}
   pointerDistanceFromCamera: 6
-  keyboardDistanceFromCamera: 0
+  keyboardDistanceFromCamera: 20
   tapActionEnabled: 0
+  useViveTrackpad: 1
 --- !u!1 &137451054 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1846152157934626, guid: 12c6030625d8ab443be25b7fb8a3d438,
@@ -1363,6 +1366,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4cae6782f035580439705be115985ee6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  textArea: {fileID: 0}
   pointerSpeedMultiplier: 15
   pointer: {fileID: 0}
   InputType: 0
@@ -1372,9 +1376,11 @@ MonoBehaviour:
   suggestionEnabled: 0
   RepeatedKeyPressEnabled: 0
   touchHandler: {fileID: 0}
+  trackpadHandler: {fileID: 0}
   pointerDistanceFromCamera: 6
   keyboardDistanceFromCamera: 0
   tapActionEnabled: 0
+  useViveTrackpad: 0
   keys:
   - {fileID: 1570666093}
   - {fileID: 610181600}
@@ -1475,19 +1481,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 940b2a6883550c84eb8cd5a606a5068c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  textArea: {fileID: 0}
   pointerSpeedMultiplier: 15
   pointer: {fileID: 1059536999}
-  InputType: 0
+  InputType: 1
   zoomEffect: 0
   dwell: 0
   dwellWaitTime: 1
   suggestionEnabled: 0
   RepeatedKeyPressEnabled: 0
   touchHandler: {fileID: 512920337}
-  pointerDistanceFromCamera: 6
-  keyboardDistanceFromCamera: 0
+  trackpadHandler: {fileID: 1228453480}
+  pointerDistanceFromCamera: -0.05
+  keyboardDistanceFromCamera: 15
   tapActionEnabled: 0
-  textArea: {fileID: 0}
+  useViveTrackpad: 0
 --- !u!4 &453485102
 Transform:
   m_ObjectHideFlags: 0
@@ -1495,7 +1503,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 453485100}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 10}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -1861,14 +1869,14 @@ Prefab:
     - target: {fileID: 3380982, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
       propertyPath: m_Mesh
       value: 
-      objectReference: {fileID: 894850062}
+      objectReference: {fileID: 956490571}
     - target: {fileID: 2348914, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 1474849678}
+      objectReference: {fileID: 1555930232}
     - target: {fileID: 146900, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 11420968, guid: 4d293c8e162f3874b982baadd71153d2, type: 2}
@@ -2119,7 +2127,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1913999449996858, guid: 62738557548b56049a13da23ad45636c, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 62738557548b56049a13da23ad45636c, type: 2}
@@ -2506,6 +2514,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 27c71e7568d95c34e8adb308bd6c7d95, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  textArea: {fileID: 0}
   pointerSpeedMultiplier: 10
   pointer: {fileID: 1059536999}
   InputType: 2
@@ -2515,9 +2524,11 @@ MonoBehaviour:
   suggestionEnabled: 0
   RepeatedKeyPressEnabled: 0
   touchHandler: {fileID: 512920337}
+  trackpadHandler: {fileID: 0}
   pointerDistanceFromCamera: -0.01
   keyboardDistanceFromCamera: 10
   tapActionEnabled: 0
+  useViveTrackpad: 0
   radius: -1
   HighlightZone: 0
 --- !u!1 &748847883 stripped
@@ -2864,7 +2875,7 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1846152157934626, guid: 12c6030625d8ab443be25b7fb8a3d438,
     type: 2}
   m_PrefabInternal: {fileID: 246387847}
---- !u!43 &894850062
+--- !u!43 &956490571
 Mesh:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -3914,6 +3925,40 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1846152157934626, guid: 12c6030625d8ab443be25b7fb8a3d438,
     type: 2}
   m_PrefabInternal: {fileID: 306735804}
+--- !u!1 &1204389795 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 124034, guid: 4d293c8e162f3874b982baadd71153d2,
+    type: 2}
+  m_PrefabInternal: {fileID: 540866489}
+--- !u!114 &1204389796
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1204389795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b755cabbbbbfdb409b295229fff2bc1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1204389797
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1204389795}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7346a42905a29b347b1f492e8ad7b49f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controllerIndex: 0
+  triggerPressed: 0
+  steamPressed: 0
+  menuPressed: 0
+  padPressed: 0
+  padTouched: 0
+  gripped: 0
 --- !u!1 &1212420384
 GameObject:
   m_ObjectHideFlags: 0
@@ -3931,7 +3976,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!81 &1212420385
 AudioListener:
   m_ObjectHideFlags: 0
@@ -3999,6 +4044,40 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1228453478 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 159396, guid: 4d293c8e162f3874b982baadd71153d2,
+    type: 2}
+  m_PrefabInternal: {fileID: 540866489}
+--- !u!114 &1228453479
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1228453478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7346a42905a29b347b1f492e8ad7b49f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controllerIndex: 0
+  triggerPressed: 0
+  steamPressed: 0
+  menuPressed: 0
+  padPressed: 0
+  padTouched: 0
+  gripped: 0
+--- !u!114 &1228453480
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1228453478}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b755cabbbbbfdb409b295229fff2bc1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1248983586
 GameObject:
   m_ObjectHideFlags: 0
@@ -4218,7 +4297,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1160280738898768, guid: 8eabc06d9a0080442b8a3ea7e15276a1, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8eabc06d9a0080442b8a3ea7e15276a1, type: 2}
@@ -4565,39 +4644,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 1846152157934626, guid: 12c6030625d8ab443be25b7fb8a3d438,
     type: 2}
   m_PrefabInternal: {fileID: 1772222895}
---- !u!21 &1474849678
-Material:
-  serializedVersion: 6
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: Sprites/Default
-  m_Shader: {fileID: 10753, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: 
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - _AlphaTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Floats:
-    - PixelSnap: 0
-    - _EnableExternalAlpha: 0
-    m_Colors:
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _Flip: {r: 1, g: 1, b: 1, a: 1}
-    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &1494511579
 GameObject:
   m_ObjectHideFlags: 0
@@ -4972,7 +5018,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1312122597722048, guid: 34ea29efaea62b24bac94e340b012d11, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 34ea29efaea62b24bac94e340b012d11, type: 2}
@@ -5174,6 +5220,39 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 4372958206876320, guid: 12c6030625d8ab443be25b7fb8a3d438,
     type: 2}
   m_PrefabInternal: {fileID: 1552692783}
+--- !u!21 &1555930232
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Sprites/Default
+  m_Shader: {fileID: 10753, guid: 0000000000000000f000000000000000, type: 0}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _AlphaTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - PixelSnap: 0
+    - _EnableExternalAlpha: 0
+    m_Colors:
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Flip: {r: 1, g: 1, b: 1, a: 1}
+    - _RendererColor: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &1570666093 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1846152157934626, guid: 12c6030625d8ab443be25b7fb8a3d438,
@@ -5295,20 +5374,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 047545dfce763ae43b52f69f2a046788, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  textArea: {fileID: 0}
   pointerSpeedMultiplier: 15
   pointer: {fileID: 1059536999}
-  InputType: 2
+  InputType: 1
   zoomEffect: 0
   dwell: 0
   dwellWaitTime: 1
   suggestionEnabled: 0
   RepeatedKeyPressEnabled: 0
   touchHandler: {fileID: 512920337}
-  pointerDistanceFromCamera: 6
-  keyboardDistanceFromCamera: 0
+  trackpadHandler: {fileID: 1228453480}
+  pointerDistanceFromCamera: -5.78
+  keyboardDistanceFromCamera: 20.06
   tapActionEnabled: 0
-  textArea: {fileID: 0}
-  distance: 4
+  useViveTrackpad: 1
+  distance: 6
 --- !u!4 &1593842409
 Transform:
   m_ObjectHideFlags: 0
@@ -5316,7 +5397,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1593842407}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 10}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -5481,7 +5562,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1298070747380710, guid: 4b22c0e7ea3dc3441b016ee550bd8308, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4b22c0e7ea3dc3441b016ee550bd8308, type: 2}
@@ -6602,7 +6683,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 132594, guid: 4f35fa249b5008c44ac2998be6f82d4d, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4f35fa249b5008c44ac2998be6f82d4d, type: 2}
@@ -6734,7 +6815,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1587741923530980, guid: dadfa62ead53ea24988e2bfd46db258f, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dadfa62ead53ea24988e2bfd46db258f, type: 2}

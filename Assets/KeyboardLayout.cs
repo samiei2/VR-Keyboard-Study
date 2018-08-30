@@ -12,6 +12,8 @@ public abstract class KeyboardLayout : MonoBehaviour
     private VREyeTracker _eyeTracker;
     private VRCalibration _calibrationObject;
 
+    public GameObject textArea;
+
     public static Dictionary<KeyID, char> PRINTABLEKEYS = new Dictionary<KeyID, char>()
     {
         { KeyID.A, 'a' },{ KeyID.B, 'b' },{ KeyID.C, 'c' },{ KeyID.D, 'd' },{ KeyID.E, 'e' },
@@ -38,15 +40,55 @@ public abstract class KeyboardLayout : MonoBehaviour
         {
             touchHandler.TouchDataReceivedEvent += Pointer_PointerDataReceivedEvent;
         }
+        if (trackpadHandler!=null && useViveTrackpad)
+        {
+            trackpadHandler.TrackpadDataReceived += TrackpadHandler_TrackpadDataReceived;
+        }
         _eyeTracker = VREyeTracker.Instance;
         _calibrationObject = VRCalibration.Instance;
 
+
         transform.position = new Vector3(
-            Camera.main.transform.position.x, 
-            Camera.main.transform.position.y, 
+            Camera.main.transform.position.x,
+            Camera.main.transform.position.y,
             Camera.main.transform.position.z + keyboardDistanceFromCamera);
 
-        
+        var keyboardTop = GetKeyboardTop();
+
+        textArea = GameObject.Find("TextArea");
+        textArea.transform.parent = this.transform;
+        textArea.transform.localPosition = new Vector3(0, keyboardTop + 4, 2);
+    }
+
+    private void TrackpadHandler_TrackpadDataReceived(object sender, TouchDataArgs args)
+    {
+        UnityMainThreadDispatcher.Instance().Enqueue(() =>
+        {
+            if (pointer!=null)
+            {
+                if (args.TriggerDown)
+                {
+                    InputButtonDown = true;
+                    InputButtonUp = false;
+                }
+                else
+                {
+                    InputButtonDown = false;
+                    InputButtonUp = true;
+                }
+            }
+        });
+    }
+
+    private float GetKeyboardTop()
+    {
+        float top = int.MinValue;
+        foreach (var item in keysDic)
+        {
+            if (item.Value.transform.position.y > top)
+                top = item.Value.transform.position.y;
+        }
+        return top;
     }
 
     public int pointerSpeedMultiplier = 10;
@@ -123,23 +165,29 @@ public abstract class KeyboardLayout : MonoBehaviour
 
     public virtual void Update()
     {
+        
+        transform.position = new Vector3(
+            Camera.main.transform.position.x,
+            Camera.main.transform.position.y,
+            Camera.main.transform.position.z + keyboardDistanceFromCamera);
+        
         if (InputType != KeyboardInputType.GazeAndDwell)
             dwell = false;
         
         if (InputType == KeyboardInputType.Mouse)
         {
-            InputButtonDown = Input.GetMouseButton(0);
+            InputButtonDown = Input.GetMouseButtonDown(0);
             InputButtonUp = Input.GetMouseButtonUp(0);
             HandleMouseInput();
 
             if (pointer != null)
             {
                 Vector3 mousePosition = Input.mousePosition;
+                
                 //mousePosition.z = 9;
                 mousePosition.z = Math.Abs(Camera.main.transform.position.z - transform.position.z) + pointerDistanceFromCamera;
-                
-                Vector3 mouseScreenToWorld = Camera.main.ScreenToWorldPoint(mousePosition);
 
+                Vector3 mouseScreenToWorld = Camera.main.ScreenToWorldPoint(mousePosition);
                 Vector3 position = Vector3.Lerp(pointer.transform.position, mouseScreenToWorld, 1.0f - Mathf.Exp(-speed * Time.deltaTime));
                 //position.z = transform.position.z + pointerDistanceFromKeyboard;
                 pointer.transform.position = position;
@@ -162,8 +210,12 @@ public abstract class KeyboardLayout : MonoBehaviour
             }
             if(InputType == KeyboardInputType.GazeAndClick)
             {
-                InputButtonDown = action == 0 && tapActionEnabled ? true : false;
-                InputButtonUp = action == 1 && tapActionEnabled ? true : false;
+                if (!useViveTrackpad)
+                {
+                    InputButtonDown = action == 0 && tapActionEnabled ? true : false;
+                    InputButtonUp = action == 1 && tapActionEnabled ? true : false;
+                }
+                // else its set in the trigger handler
             }
             HandleGazeInput();
         }
@@ -208,6 +260,7 @@ public abstract class KeyboardLayout : MonoBehaviour
         {
             Ray ray;
             var valid = GetRay(out ray);
+            Debug.DrawRay(ray.origin,ray.direction,Color.red);
             if (valid)
             {
                 RaycastHit hit;
@@ -260,6 +313,7 @@ public abstract class KeyboardLayout : MonoBehaviour
                 inKeyPress = true;
                 hit.transform.parent.GetComponent<KeyEvents>().Key_PressedEvent();
                 StartCoroutine("RepeatKeyPress");
+                InputButtonDown = false;
             }
             else if (InputButtonUp)
             {
@@ -267,6 +321,7 @@ public abstract class KeyboardLayout : MonoBehaviour
                 StopCoroutine("RepeatKeyPress");
                 inKeyPress = false;
                 hit.transform.parent.GetComponent<KeyEvents>().Key_ReleaseEvent();
+                InputButtonUp = false;
             }
             else
             {
@@ -384,7 +439,7 @@ public abstract class KeyboardLayout : MonoBehaviour
     }
 
     public GameObject KeyInFocus { get; set; }
-    public bool InputButtonDown { get; private set; }
+    public bool InputButtonDown { get; protected set; }
     public bool InputButtonUp { get; private set; }
 
     public Pointer pointer;
@@ -400,13 +455,15 @@ public abstract class KeyboardLayout : MonoBehaviour
     private GameObject objectInFocus;
     public bool RepeatedKeyPressEnabled;
     public TouchDataHandler touchHandler;
+    public ViveTrackpad trackpadHandler;
     private int speed = 5;
     public float pointerDistanceFromCamera = 6;
-    public float keyboardDistanceFromCamera = 0;
+    public float keyboardDistanceFromCamera = 10;
     private int prevX;
     private int prevY;
     public bool tapActionEnabled;
     private bool focused = false;
+    public bool useViveTrackpad;
 
     public abstract void SetProperties();
 

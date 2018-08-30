@@ -5,13 +5,12 @@ using TMPro;
 using UnityEngine;
 
 public class MetroKeyboardLayout : KeyboardLayout {
-    public GameObject textArea;
+    
     public int distance;
     
 
     public override void Start()
     {
-        textArea = GameObject.Find("TextArea");
         base.Start();
     }
 

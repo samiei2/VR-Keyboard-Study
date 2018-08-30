@@ -5,7 +5,7 @@ using TMPro;
 using UnityEngine;
 
 public class QuikwriteLayout2D : KeyboardLayout {
-    private GameObject textArea;
+    
     private Material zoneHighlightMat;
     private Material invisibleMat;
     public float radius = -1;
@@ -223,9 +223,9 @@ public class QuikwriteLayout2D : KeyboardLayout {
     }
 
     // Use this for initialization
-    public override void Start () {
+    public override void Start ()
+    {
         
-        textArea = GameObject.Find("TextArea");
         zoneHighlightMat = Resources.Load("ZoneHighlightMat") as Material;
         invisibleMat = Resources.Load("InvisibleMaterial") as Material;
         base.Start();
@@ -235,7 +235,7 @@ public class QuikwriteLayout2D : KeyboardLayout {
     {
         base.Update();
 
-
+        InputButtonDown = Input.GetMouseButton(0);
         if (InputButtonDown)
         {
             if (IsInRestZone(pointer))

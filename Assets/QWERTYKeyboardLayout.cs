@@ -4,8 +4,7 @@ using TMPro;
 using UnityEngine;
 
 public class QWERTYKeyboardLayout : KeyboardLayout {
-    public GameObject textArea;
-
+    
     public override void CreateMainKeys()
     {
         GameObject hexPrefab = Resources.Load("BoxPrefab", typeof(GameObject)) as GameObject;
@@ -101,6 +100,7 @@ public class QWERTYKeyboardLayout : KeyboardLayout {
 
     public override void SetProperties()
     {
+        var normalMat = Resources.Load("NormalKeyMaterial") as Material; ;
         foreach (var key in keysDic.Keys)
         {
             keysDic[key].name = "Key_" + key;
@@ -118,6 +118,8 @@ public class QWERTYKeyboardLayout : KeyboardLayout {
             keysDic[key].GetComponent<KeyEvents>().KeyEvents_OnKeyUnfocused += KeyboardEventHandler_OnUnfocusedHandler;
             keysDic[key].GetComponent<KeyEvents>().KeyEvents_OnKeyPressed += KeyboardEventHandler_OnPressedHandler;
             keysDic[key].GetComponent<KeyEvents>().KeyEvents_OnKeyReleased += KeyboardEventHandler_OnReleasedHandler;
+
+            keysDic[key].transform.Find("MainShape").GetComponent<MeshRenderer>().material = normalMat;
         }
 
         keysDic[KeyID.Backspace].transform.Find("Text").GetComponent<TextMeshPro>().fontSize = 8;
@@ -132,7 +134,7 @@ public class QWERTYKeyboardLayout : KeyboardLayout {
 
     public override void HighlightKeys(List<char> suggestedAlphabet)
     {
-        throw new System.NotImplementedException();
+
     }
 
     public override void KeyboardEventHandler_OnFocusedHandler(object sender, KeyEventArgs args)
@@ -197,7 +199,6 @@ public class QWERTYKeyboardLayout : KeyboardLayout {
 
     // Use this for initialization
     public override void Start () {
-        textArea = GameObject.Find("TextArea");
         base.Start();
 	}
 

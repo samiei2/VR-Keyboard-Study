@@ -58,6 +58,7 @@ public class KeyProperties : MonoBehaviour {
     {
         isDwelling = false;
         doneDwelling = false;
+        transform.GetComponent<KeyEvents>().Key_ReleaseEvent();
     }
 
     IEnumerator SelectLetter(Transform transform, float waitTime)

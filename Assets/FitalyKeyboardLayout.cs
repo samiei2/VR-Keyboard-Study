@@ -5,12 +5,10 @@ using TMPro;
 using UnityEngine;
 
 public class FitalyKeyboardLayout : KeyboardLayout {
-    private GameObject textArea;
-
+    
     // Use this for initialization
     public override void Start()
     {
-        textArea = GameObject.Find("TextArea");
         base.Start();
     }
 
@@ -110,6 +108,8 @@ public class FitalyKeyboardLayout : KeyboardLayout {
 
     public override void SetProperties()
     {
+        var normalMat = Resources.Load("NormalKeyMaterial") as Material; ;
+
         foreach (var key in keysDic.Keys)
         {
             keysDic[key].name = "Key_" + key;
@@ -122,6 +122,10 @@ public class FitalyKeyboardLayout : KeyboardLayout {
             if (PRINTABLEKEYS.ContainsKey(key))
                 keysDic[key].GetComponent<KeyProperties>().KeyText = PRINTABLEKEYS[key].ToString();
             keysDic[key].GetComponent<KeyProperties>().ID = key;
+
+            keysDic[key].transform.Find("MainShape").GetComponent<MeshRenderer>().material = normalMat;
+
+
             keysDic[key].GetComponent<KeyEvents>().KeyEvents_OnKeyFocused += KeyboardEventHandler_OnFocusedHandler;
             keysDic[key].GetComponent<KeyEvents>().KeyEvents_OnKeyUnfocused += KeyboardEventHandler_OnUnfocusedHandler;
             keysDic[key].GetComponent<KeyEvents>().KeyEvents_OnKeyPressed += KeyboardEventHandler_OnPressedHandler;
