@@ -97,4 +97,7 @@ public class TouchDataArgs
     internal int right;
     internal Vector2 touchPadVector2;
     internal bool TriggerDown;
+    internal bool leftGripped;
+    internal bool rightGripped;
+    internal bool TriggerUp;
 }

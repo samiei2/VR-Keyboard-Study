@@ -40,9 +40,20 @@ public abstract class KeyboardLayout : MonoBehaviour
         {
             touchHandler.TouchDataReceivedEvent += Pointer_PointerDataReceivedEvent;
         }
-        if (trackpadHandler!=null && useViveTrackpad)
+
+        var cameraRig = GameObject.Find("[CameraRig]");
+        if (cameraRig != null)
+            leftTrackpadHandler = cameraRig.transform.Find("Controller (left)").GetComponent<ViveTrackpad>();
+        if (cameraRig != null)
+            rightTrackpadHandler = cameraRig.transform.Find("Controller (right)").GetComponent<ViveTrackpad>();
+
+        if (leftTrackpadHandler!=null && useViveTrackpad)
         {
-            trackpadHandler.TrackpadDataReceived += TrackpadHandler_TrackpadDataReceived;
+            leftTrackpadHandler.TrackpadDataReceived += LeftTrackpadHandler_TrackpadDataReceived;
+        }
+        if (rightTrackpadHandler!=null && useViveTrackpad)
+        {
+            rightTrackpadHandler.TrackpadDataReceived += RightTrackpadHandler_TrackpadDataReceived;
         }
         _eyeTracker = VREyeTracker.Instance;
         _calibrationObject = VRCalibration.Instance;
@@ -60,11 +71,19 @@ public abstract class KeyboardLayout : MonoBehaviour
         textArea.transform.localPosition = new Vector3(0, keyboardTop + 4, 2);
     }
 
-    private void TrackpadHandler_TrackpadDataReceived(object sender, TouchDataArgs args)
+    private void RightTrackpadHandler_TrackpadDataReceived(object sender, TouchDataArgs args)
     {
         UnityMainThreadDispatcher.Instance().Enqueue(() =>
         {
-            if (pointer!=null)
+            if (args.rightGripped)
+            {
+                rightHandGripped = true;
+            }
+            else
+            {
+                rightHandGripped = false;
+            }
+            if (pointer != null && useTrackerInputForPointer)
             {
                 if (args.TriggerDown)
                 {
@@ -76,6 +95,33 @@ public abstract class KeyboardLayout : MonoBehaviour
                     InputButtonDown = false;
                     InputButtonUp = true;
                 }
+            }
+            if (InputType == KeyboardInputType.Ray)
+            {
+                var controllerTransform = ((ViveTrackpad)sender).controller.transform;
+
+                InputButtonDown = args.TriggerDown;
+                InputButtonUp = args.TriggerUp;
+            }
+        });
+    }
+
+    private void LeftTrackpadHandler_TrackpadDataReceived(object sender, TouchDataArgs args)
+    {
+        UnityMainThreadDispatcher.Instance().Enqueue(() =>
+        {
+            if (args.leftGripped)
+            {
+                leftHandGripped = true;
+            }
+            else
+            {
+                leftHandGripped = false;
+            }
+            if (InputType == KeyboardInputType.Ray)
+            {
+                InputButtonDown = args.TriggerDown;
+                InputButtonUp = args.TriggerUp;
             }
         });
     }
@@ -226,32 +272,73 @@ public abstract class KeyboardLayout : MonoBehaviour
             InputButtonUp = action == 1 && tapActionEnabled ? true : false;
         }
 
+        if (InputType == KeyboardInputType.Ray)
+        {
+            HandleRayInput();
+        }
+
         // Lock boundaries
         //if (pointer != null )
         //{
         //    Vector3 screenPos = Camera.main.WorldToScreenPoint(pointer.transform.position);
         //    //ebug.Log("X: " + screenPos.x+", Y: "+screenPos.y);
 
-        //    if (screenPos.x < 0 || screenPos.y < 0 ||
-        //        screenPos.x > Screen.width || screenPos.y > Screen.height)
-        //    {
-        //        float x = screenPos.x;
-        //        float y = screenPos.y;
-        //        float z = screenPos.z;
+            //    if (screenPos.x < 0 || screenPos.y < 0 ||
+            //        screenPos.x > Screen.width || screenPos.y > Screen.height)
+            //    {
+            //        float x = screenPos.x;
+            //        float y = screenPos.y;
+            //        float z = screenPos.z;
 
-        //        if (x < 0)
-        //            x = 0;
-        //        if (x > Screen.width)
-        //            x = Screen.width;
-        //        if (y < 0)
-        //            y = 0;
-        //        if (y > Screen.height)
-        //            y = Screen.height;
-        //        //Debug.LogError("X: " + x + ", Y: " + y);
-        //        pointer.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(x, y, z));
-        //        //transform.position = Camera.main.ScreenToWorldPoint(newPos);
-        //    }
-        //}
+            //        if (x < 0)
+            //            x = 0;
+            //        if (x > Screen.width)
+            //            x = Screen.width;
+            //        if (y < 0)
+            //            y = 0;
+            //        if (y > Screen.height)
+            //            y = Screen.height;
+            //        //Debug.LogError("X: " + x + ", Y: " + y);
+            //        pointer.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(x, y, z));
+            //        //transform.position = Camera.main.ScreenToWorldPoint(newPos);
+            //    }
+            //}
+    }
+
+    private void HandleRayInput()
+    {
+        if (leftTrackpadHandler!=null && leftTrackpadHandler.transform.gameObject.activeInHierarchy)
+        {
+            RaycastHit hit;
+            Ray ray = new Ray(leftTrackpadHandler.GetPosition(), leftTrackpadHandler.GetForward());
+            //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            
+            if (Physics.Raycast(ray, out hit))
+            {
+                HandleHit(hit.transform.gameObject);
+                
+            }
+            else
+            {
+                HandleUnhit();
+            }
+        }
+        if (rightTrackpadHandler!=null && rightTrackpadHandler.transform.gameObject.activeInHierarchy)
+        {
+            RaycastHit hit;
+            Ray ray = new Ray(rightTrackpadHandler.GetPosition(), rightTrackpadHandler.GetForward());
+            //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                HandleHit(hit.transform.gameObject);
+            }
+            else
+            {
+                HandleUnhit();
+            }
+        }
     }
 
     private void HandleGazeInput()
@@ -455,7 +542,8 @@ public abstract class KeyboardLayout : MonoBehaviour
     private GameObject objectInFocus;
     public bool RepeatedKeyPressEnabled;
     public TouchDataHandler touchHandler;
-    public ViveTrackpad trackpadHandler;
+    public ViveTrackpad rightTrackpadHandler;
+    public ViveTrackpad leftTrackpadHandler;
     private int speed = 5;
     public float pointerDistanceFromCamera = 6;
     public float keyboardDistanceFromCamera = 10;
@@ -464,6 +552,9 @@ public abstract class KeyboardLayout : MonoBehaviour
     public bool tapActionEnabled;
     private bool focused = false;
     public bool useViveTrackpad;
+    public bool useTrackerInputForPointer;
+    private bool leftHandGripped;
+    private bool rightHandGripped;
 
     public abstract void SetProperties();
 
@@ -498,6 +589,9 @@ public enum KeyboardInputType
 {
     GazeAndDwell,
     GazeAndClick,
+    GazeAndRay,
+    Ray,
+    DrumStick,
     Mouse,
     TouchPad,
     Swype
