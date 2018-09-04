@@ -39,6 +39,7 @@ public class KeyEvents : MonoBehaviour {
         if (KeyEvents_OnKeyReleased != null)
             KeyEvents_OnKeyReleased.Invoke(transform, KeyEventArgs.Empty);
     }
+    
 }
 
 public class KeyEventArgs: EventArgs

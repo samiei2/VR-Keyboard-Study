@@ -98,8 +98,6 @@ public abstract class KeyboardLayout : MonoBehaviour
             }
             if (InputType == KeyboardInputType.Ray)
             {
-                var controllerTransform = ((ViveTrackpad)sender).controller.transform;
-
                 InputButtonDown = args.TriggerDown;
                 InputButtonUp = args.TriggerUp;
             }
@@ -119,7 +117,7 @@ public abstract class KeyboardLayout : MonoBehaviour
                 leftHandGripped = false;
             }
             if (InputType == KeyboardInputType.Ray)
-            {
+            { 
                 InputButtonDown = args.TriggerDown;
                 InputButtonUp = args.TriggerUp;
             }
@@ -277,32 +275,30 @@ public abstract class KeyboardLayout : MonoBehaviour
             HandleRayInput();
         }
 
-        // Lock boundaries
-        //if (pointer != null )
-        //{
-        //    Vector3 screenPos = Camera.main.WorldToScreenPoint(pointer.transform.position);
-        //    //ebug.Log("X: " + screenPos.x+", Y: "+screenPos.y);
+        if (InputType == KeyboardInputType.DrumStick)
+        {
+            HandleDrumstickInput();
+        }
+    }
 
-            //    if (screenPos.x < 0 || screenPos.y < 0 ||
-            //        screenPos.x > Screen.width || screenPos.y > Screen.height)
-            //    {
-            //        float x = screenPos.x;
-            //        float y = screenPos.y;
-            //        float z = screenPos.z;
-
-            //        if (x < 0)
-            //            x = 0;
-            //        if (x > Screen.width)
-            //            x = Screen.width;
-            //        if (y < 0)
-            //            y = 0;
-            //        if (y > Screen.height)
-            //            y = Screen.height;
-            //        //Debug.LogError("X: " + x + ", Y: " + y);
-            //        pointer.transform.position = Camera.main.ScreenToWorldPoint(new Vector3(x, y, z));
-            //        //transform.position = Camera.main.ScreenToWorldPoint(newPos);
-            //    }
-            //}
+    private void HandleDrumstickInput()
+    {
+        if (leftTrackpadHandler != null && leftTrackpadHandler.transform.gameObject.activeInHierarchy)
+        {
+            if (leftDrumstick == null)
+            {
+                leftDrumstick = Resources.Load("DrumstickPrefab") as GameObject;
+            }
+        }
+        if (rightTrackpadHandler != null && rightTrackpadHandler.transform.gameObject.activeInHierarchy)
+        {
+            if (rightDrumstick == null)
+            {
+                rightDrumstick = Resources.Load("DrumstickPrefab") as GameObject;
+            }
+            rightDrumstick.transform.forward = rightTrackpadHandler.GetForward();
+            rightDrumstick.transform.position = rightTrackpadHandler.GetPosition();
+        }
     }
 
     private void HandleRayInput()
@@ -311,7 +307,6 @@ public abstract class KeyboardLayout : MonoBehaviour
         {
             RaycastHit hit;
             Ray ray = new Ray(leftTrackpadHandler.GetPosition(), leftTrackpadHandler.GetForward());
-            //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             
             if (Physics.Raycast(ray, out hit))
             {
@@ -327,9 +322,7 @@ public abstract class KeyboardLayout : MonoBehaviour
         {
             RaycastHit hit;
             Ray ray = new Ray(rightTrackpadHandler.GetPosition(), rightTrackpadHandler.GetForward());
-            //Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             
-
             if (Physics.Raycast(ray, out hit))
             {
                 HandleHit(hit.transform.gameObject);
@@ -347,7 +340,7 @@ public abstract class KeyboardLayout : MonoBehaviour
         {
             Ray ray;
             var valid = GetRay(out ray);
-            Debug.DrawRay(ray.origin,ray.direction,Color.red);
+            
             if (valid)
             {
                 RaycastHit hit;
@@ -370,6 +363,9 @@ public abstract class KeyboardLayout : MonoBehaviour
             StopCoroutine("RepeatKeyPress");
             inKeyPress = false;
             objectInFocus.transform.parent.GetComponent<KeyEvents>().Key_ReleaseEvent();
+        }
+        else
+        {
         }
         if (objectInFocus != null)
         {
@@ -555,6 +551,8 @@ public abstract class KeyboardLayout : MonoBehaviour
     public bool useTrackerInputForPointer;
     private bool leftHandGripped;
     private bool rightHandGripped;
+    private GameObject rightDrumstick;
+    private GameObject leftDrumstick;
 
     public abstract void SetProperties();
 
