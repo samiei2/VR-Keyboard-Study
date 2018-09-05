@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class KeyEvents : MonoBehaviour {
     private bool clicked = false;
+    private bool keyFocused;
 
     public delegate void KeyEvent(object sender, KeyEventArgs args);
     public event KeyEvent KeyEvents_OnKeyFocused;
@@ -16,12 +17,14 @@ public class KeyEvents : MonoBehaviour {
     {
         if (KeyEvents_OnKeyFocused != null)
         KeyEvents_OnKeyFocused.Invoke(transform, KeyEventArgs.Empty);
+        keyFocused = true;
     }
 
     public void Key_UnfocusedEvent()
     {
         if (KeyEvents_OnKeyUnfocused != null)
             KeyEvents_OnKeyUnfocused.Invoke(transform, KeyEventArgs.Empty);
+        keyFocused = false;
     }
 
     public void Key_PressedEvent()
@@ -39,7 +42,11 @@ public class KeyEvents : MonoBehaviour {
         if (KeyEvents_OnKeyReleased != null)
             KeyEvents_OnKeyReleased.Invoke(transform, KeyEventArgs.Empty);
     }
-    
+
+    public bool IsFocused()
+    {
+        return keyFocused;
+    }
 }
 
 public class KeyEventArgs: EventArgs

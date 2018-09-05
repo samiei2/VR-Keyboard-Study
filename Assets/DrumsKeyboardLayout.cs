@@ -1,5 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using TMPro;
 using UnityEngine;
 
@@ -44,6 +46,7 @@ public class DrumsKeyboardLayout : KeyboardLayout
         keysDic.Add(KeyID.Enter, Instantiate(hexPrefab) as GameObject);
         keysDic.Add(KeyID.Next, Instantiate(hexPrefab) as GameObject);
     }
+
 
     public override void HighlightKeys(List<char> suggestedAlphabet)
     {
@@ -111,10 +114,16 @@ public class DrumsKeyboardLayout : KeyboardLayout
 
     public override void LayoutKeys()
     {
+        if (UserLayoutFileExist())
+        {
+            LoadLayoutFile();
+            return;
+        }
+
         foreach (var item in keysDic)
         {
             item.Value.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
-            item.Value.transform.Rotate(item.Value.transform.right, -40);
+            item.Value.transform.eulerAngles = new Vector3(0, 0,0);
         }
 
         // Top Row
@@ -153,14 +162,14 @@ public class DrumsKeyboardLayout : KeyboardLayout
         keysDic[KeyID.B].transform.position = new Vector3(0.2f, -0.6f, -0.65f);
         keysDic[KeyID.N].transform.position = new Vector3(0.85f, -0.6f, -0.65f);
         keysDic[KeyID.M].transform.position = new Vector3(1.5f, -0.6f, -0.65f);
-        
+
         keysDic[KeyID.Dot].transform.position = new Vector3(2.15f, -0.6f, -0.65f);
         keysDic[KeyID.Comma].transform.position = new Vector3(2.8f, -0.6f, -0.65f);
         keysDic[KeyID.Shift].transform.position = new Vector3(3.45f, -0.6f, -0.65f);
         keysDic[KeyID.Next].transform.position = new Vector3(4.1f, -0.6f, -0.65f);
 
     }
-
+    
     public override void SetProperties()
     {
         foreach (var key in keysDic.Keys)

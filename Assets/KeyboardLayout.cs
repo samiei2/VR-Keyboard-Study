@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Tobii.Research.Unity;
@@ -33,6 +35,7 @@ public abstract class KeyboardLayout : MonoBehaviour
 
     public virtual void Start()
     {
+        MainCamera = GameObject.Find("[CameraRig]").transform.Find("Camera (eye)");
         CreateMainKeys();
         LayoutKeys();
         SetProperties();
@@ -59,11 +62,14 @@ public abstract class KeyboardLayout : MonoBehaviour
         _calibrationObject = VRCalibration.Instance;
 
 
-        transform.position = new Vector3(
-            Camera.main.transform.position.x,
-            Camera.main.transform.position.y,
-            Camera.main.transform.position.z + keyboardDistanceFromCamera);
+        //transform.position = new Vector3(
+        //    Camera.main.transform.position.x,
+        //    Camera.main.transform.position.y,
+        //    Camera.main.transform.position.z + keyboardDistanceFromCamera);
 
+        transform.position = new Vector3(MainCamera.position.x, MainCamera.position.y, MainCamera.position.z + keyboardDistanceFromCamera);
+        //transform.parent = MainCamera;
+        
         var keyboardTop = GetKeyboardTop();
 
         textArea = GameObject.Find("TextArea");
@@ -96,7 +102,7 @@ public abstract class KeyboardLayout : MonoBehaviour
                     InputButtonUp = true;
                 }
             }
-            if (InputType == KeyboardInputType.Ray)
+            if (InputType == KeyboardInputType.Ray || InputType == KeyboardInputType.DrumStick)
             {
                 InputButtonDown = args.TriggerDown;
                 InputButtonUp = args.TriggerUp;
@@ -116,7 +122,7 @@ public abstract class KeyboardLayout : MonoBehaviour
             {
                 leftHandGripped = false;
             }
-            if (InputType == KeyboardInputType.Ray)
+            if (InputType == KeyboardInputType.Ray || InputType == KeyboardInputType.DrumStick)
             { 
                 InputButtonDown = args.TriggerDown;
                 InputButtonUp = args.TriggerUp;
@@ -209,12 +215,25 @@ public abstract class KeyboardLayout : MonoBehaviour
 
     public virtual void Update()
     {
+        if ((Input.GetKey(KeyCode.RightShift) || Input.GetKey(KeyCode.LeftShift)) && Input.GetKeyDown(KeyCode.S))
+        {
+            SaveUserLayout();
+        }
+        else if ((Input.GetKey(KeyCode.RightShift) || Input.GetKey(KeyCode.LeftShift)) && Input.GetKeyDown(KeyCode.R))
+        {
+            RotateKeysTowardsHead();
+        }
+
+        //foreach (var item in keysDic)
+        //{
+        //    Debug.DrawRay(item.Value.transform.position, item.Value.transform.forward);
+        //}
         
-        transform.position = new Vector3(
-            Camera.main.transform.position.x,
-            Camera.main.transform.position.y,
-            Camera.main.transform.position.z + keyboardDistanceFromCamera);
-        
+        //transform.position = new Vector3(
+        //    Camera.main.transform.position.x,
+        //    Camera.main.transform.position.y,
+        //    Camera.main.transform.position.z + keyboardDistanceFromCamera);
+
         if (InputType != KeyboardInputType.GazeAndDwell)
             dwell = false;
         
@@ -281,23 +300,97 @@ public abstract class KeyboardLayout : MonoBehaviour
         }
     }
 
+    private void RotateKeysTowardsHead()
+    {
+        foreach (var key in keysDic)
+        {
+            key.Value.transform.LookAt(GameObject.Find("[CameraRig]").transform.Find("Camera (eye)").position);
+        }
+    }
+
+    private void SaveUserLayout()
+    {
+        List<GameObjectData> _data = new List<GameObjectData>();
+
+        foreach (var item in keysDic)
+        {
+            _data.Add(new GameObjectData()
+            {
+                Key = item.Key,
+                Position = new float[] { item.Value.transform.localPosition.x, item.Value.transform.localPosition.y, item.Value.transform.localPosition.z },
+                Rotation = new float[] { item.Value.transform.eulerAngles.x, item.Value.transform.eulerAngles.y, item.Value.transform.eulerAngles.z },
+                Scale = new float[] { item.Value.transform.localScale.x, item.Value.transform.localScale.y, item.Value.transform.localScale.z }
+            });
+        }
+
+        String filePath = Application.dataPath + "\\LayoutData\\" + transform.name + "_layout.txt";
+        Directory.CreateDirectory(Application.dataPath + "\\LayoutData\\");
+        if (File.Exists(filePath))
+            File.Copy(filePath, filePath + "._backup");
+        using (StreamWriter file = File.CreateText(filePath))
+        {
+            JsonSerializer serializer = new JsonSerializer();
+            //serialize object directly into file stream
+            serializer.Serialize(file, _data);
+        }
+    }
+
+    protected bool UserLayoutFileExist()
+    {
+        return File.Exists(Application.dataPath + "\\LayoutData\\" + transform.name + "_layout.txt");
+    }
+
+
+    protected void LoadLayoutFile()
+    {
+        String filePath = Application.dataPath + "\\LayoutData\\" + transform.name + "_layout.txt";
+        using (StreamReader file = File.OpenText(filePath))
+        {
+            JsonSerializer serializer = new JsonSerializer();
+
+            List<GameObjectData> layoutdata = (List<GameObjectData>)serializer.Deserialize(file, typeof(List<GameObjectData>));
+            foreach (var item in layoutdata)
+            {
+                keysDic[item.Key].transform.localPosition = new Vector3(item.Position[0], item.Position[1], item.Position[2]);
+                keysDic[item.Key].transform.eulerAngles = new Vector3(item.Rotation[0], item.Rotation[1], item.Rotation[2]); ;
+                keysDic[item.Key].transform.localScale = new Vector3(item.Scale[0], item.Scale[1], item.Scale[2]); ;
+            }
+        }
+    }
+
     private void HandleDrumstickInput()
     {
         if (leftTrackpadHandler != null && leftTrackpadHandler.transform.gameObject.activeInHierarchy)
         {
-            if (leftDrumstick == null)
+            if (leftTrackpadHandler.GetComponent<DrumCursor>().gameObject.activeInHierarchy)
             {
-                leftDrumstick = Resources.Load("DrumstickPrefab") as GameObject;
+                
             }
         }
         if (rightTrackpadHandler != null && rightTrackpadHandler.transform.gameObject.activeInHierarchy)
         {
-            if (rightDrumstick == null)
+            if (rightDrumStick == null)
             {
-                rightDrumstick = Resources.Load("DrumstickPrefab") as GameObject;
+                rightDrumStick = Instantiate(Resources.Load<GameObject>("DrumstickPrefab"));
+                rightDrumStick.transform.forward = rightTrackpadHandler.transform.forward;
+                rightDrumStick.transform.parent = rightTrackpadHandler.transform;
             }
-            rightDrumstick.transform.forward = rightTrackpadHandler.GetForward();
-            rightDrumstick.transform.position = rightTrackpadHandler.GetPosition();
+
+            var controllerPosition = rightTrackpadHandler.GetPosition();
+            rightDrumStick.transform.Find("Capsule").localScale = new Vector3(rightDrumStick.transform.Find("Capsule").localScale.x, rDrumLength, rightDrumStick.transform.Find("Capsule").localScale.z);
+            rightDrumStick.transform.Find("Sphere").localPosition = new Vector3(0, 0, rightDrumStick.transform.Find("Capsule").localScale.y);
+            rightDrumStick.transform.localPosition = new Vector3(0, 0, rightDrumStick.transform.Find("Capsule").localScale.y);
+
+            // Automatic length adjustment
+            //RaycastHit hit;
+            //Ray ray = new Ray(rightTrackpadHandler.GetPosition(), rightTrackpadHandler.GetForward());
+
+            //bool rayHit = Physics.Raycast(ray, out hit);
+
+            //float beamLength = GetBeamLength(rayHit, hit, rDrumLength, rDrumContactTarget, rContactDistance);
+            //rightDrumStick.transform.Find("Capsule").localScale = new Vector3(rightDrumStick.transform.Find("Capsule").localScale.x,beamLength, rightDrumStick.transform.Find("Capsule").localScale.z);
+            //rightDrumStick.transform.Find("Sphere").localPosition = new Vector3(0, 0, rightDrumStick.transform.Find("Capsule").localScale.y);
+
         }
     }
 
@@ -315,7 +408,7 @@ public abstract class KeyboardLayout : MonoBehaviour
             }
             else
             {
-                HandleUnhit();
+                HandleNotHit();
             }
         }
         if (rightTrackpadHandler!=null && rightTrackpadHandler.transform.gameObject.activeInHierarchy)
@@ -329,7 +422,7 @@ public abstract class KeyboardLayout : MonoBehaviour
             }
             else
             {
-                HandleUnhit();
+                HandleNotHit();
             }
         }
     }
@@ -350,13 +443,13 @@ public abstract class KeyboardLayout : MonoBehaviour
                 }
                 else
                 {
-                    HandleUnhit();
+                    HandleNotHit();
                 }
             }
         }
     }
 
-    private void HandleUnhit()
+    private void HandleNotHit()
     {
         if (inKeyPress)
         {
@@ -454,7 +547,7 @@ public abstract class KeyboardLayout : MonoBehaviour
         }
         else
         {
-            HandleUnhit();
+            HandleNotHit();
         }
     }
 
@@ -470,8 +563,44 @@ public abstract class KeyboardLayout : MonoBehaviour
         }
         else
         {
-            HandleUnhit();
+            HandleNotHit();
         }
+    }
+
+    float GetBeamLength(bool bHit, RaycastHit hit, float length, Transform contactTarget, float contactDistance)
+    {
+        float actualLength = length;
+
+        //reset if beam not hitting or hitting new target
+        if (!bHit || (contactTarget && contactTarget != hit.transform))
+        {
+            contactDistance = 0f;
+            contactTarget = null;
+        }
+
+        //check if beam has hit a new target
+        if (bHit)
+        {
+            if (hit.distance <= 0)
+            {
+
+            }
+            contactDistance = hit.distance;
+            contactTarget = hit.transform;
+        }
+
+        //adjust beam length if something is blocking it
+        if (bHit && contactDistance < length)
+        {
+            actualLength = contactDistance;
+        }
+
+        if (actualLength <= 0)
+        {
+            actualLength = length;
+        }
+
+        return actualLength; ;
     }
 
     public System.Collections.IEnumerator RepeatKeyPress()
@@ -551,8 +680,15 @@ public abstract class KeyboardLayout : MonoBehaviour
     public bool useTrackerInputForPointer;
     private bool leftHandGripped;
     private bool rightHandGripped;
-    private GameObject rightDrumstick;
-    private GameObject leftDrumstick;
+    private GameObject rightDrumStick;
+    public float rDrumLength;
+    private Transform rDrumContactTarget;
+    private float rContactDistance;
+    private GameObject leftDrumStick;
+    public float lDrumLength;
+    private Transform lDrumContactTarget;
+    private float lContactDistance;
+    private Transform MainCamera;
 
     public abstract void SetProperties();
 
