@@ -114,44 +114,37 @@ public class DrumsKeyboardLayout : KeyboardLayout
 
     public override void LayoutKeys()
     {
-        if (UserLayoutFileExist())
-        {
-            LoadLayoutFile();
-            return;
-        }
-
         foreach (var item in keysDic)
         {
             item.Value.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
-            item.Value.transform.eulerAngles = new Vector3(0, 0,0);
         }
-
+        
         // Top Row
-        keysDic[KeyID.Q].transform.position = new Vector3(-2.8f, 0.6f, 0.65f);
-        keysDic[KeyID.W].transform.position = new Vector3(-2.15f, 0.6f, 0.65f);
-        keysDic[KeyID.E].transform.position = new Vector3(-1.5f, 0.6f, 0.65f);
-        keysDic[KeyID.R].transform.position = new Vector3(-0.85f, 0.6f, 0.65f);
+        keysDic[KeyID.Q].transform.position = new Vector3(-2.5f, 0.6f, 0.65f);
+        keysDic[KeyID.W].transform.position = new Vector3(-1.85f, 0.6f, 0.65f);
+        keysDic[KeyID.E].transform.position = new Vector3(-1.2f, 0.6f, 0.65f);
+        keysDic[KeyID.R].transform.position = new Vector3(-0.55f, 0.6f, 0.65f);
         keysDic[KeyID.T].transform.position = new Vector3(-0.2f, 0.6f, 0.65f);
-        keysDic[KeyID.Y].transform.position = new Vector3(0.45f, 0.6f, 0.65f);
-        keysDic[KeyID.U].transform.position = new Vector3(1.1f, 0.6f, 0.65f);
-        keysDic[KeyID.I].transform.position = new Vector3(1.75f, 0.6f, 0.65f);
-        keysDic[KeyID.O].transform.position = new Vector3(2.4f, 0.6f, 0.65f);
-        keysDic[KeyID.P].transform.position = new Vector3(3.05f, 0.6f, 0.65f);
-        keysDic[KeyID.Backspace].transform.position = new Vector3(3.7f, 0.6f, 0.65f);
+        keysDic[KeyID.Y].transform.position = new Vector3(0.15f, 0.6f, 0.65f);
+        keysDic[KeyID.U].transform.position = new Vector3(0.8f, 0.6f, 0.65f);
+        keysDic[KeyID.I].transform.position = new Vector3(1.45f, 0.6f, 0.65f);
+        keysDic[KeyID.O].transform.position = new Vector3(2.1f, 0.6f, 0.65f);
+        keysDic[KeyID.P].transform.position = new Vector3(2.75f, 0.6f, 0.65f);
+        keysDic[KeyID.Backspace].transform.position = new Vector3(3.4f, 0.6f, 0.65f);
 
 
 
         // Mid Row
-        keysDic[KeyID.A].transform.position = new Vector3(-2.6f, 0f, 0f);
-        keysDic[KeyID.S].transform.position = new Vector3(-1.95f, 0f, 0f);
-        keysDic[KeyID.D].transform.position = new Vector3(-1.3f, 0f, 0f);
-        keysDic[KeyID.F].transform.position = new Vector3(-0.65f, 0f, 0f);
+        keysDic[KeyID.A].transform.position = new Vector3(-2.3f, 0f, 0f);
+        keysDic[KeyID.S].transform.position = new Vector3(-1.65f, 0f, 0f);
+        keysDic[KeyID.D].transform.position = new Vector3(-1.0f, 0f, 0f);
+        keysDic[KeyID.F].transform.position = new Vector3(-0.35f, 0f, 0f);
         keysDic[KeyID.G].transform.position = new Vector3(0f, 0f, 0f);
-        keysDic[KeyID.H].transform.position = new Vector3(0.65f, 0f, 0f);
-        keysDic[KeyID.J].transform.position = new Vector3(1.3f, 0f, 0f);
-        keysDic[KeyID.K].transform.position = new Vector3(1.95f, 0f, 0f);
-        keysDic[KeyID.L].transform.position = new Vector3(2.6f, 0f, 0f);
-        keysDic[KeyID.Enter].transform.position = new Vector3(3.25f, 0f, 0f);
+        keysDic[KeyID.H].transform.position = new Vector3(0.35f, 0f, 0f);
+        keysDic[KeyID.J].transform.position = new Vector3(1.0f, 0f, 0f);
+        keysDic[KeyID.K].transform.position = new Vector3(1.65f, 0f, 0f);
+        keysDic[KeyID.L].transform.position = new Vector3(2.3f, 0f, 0f);
+        keysDic[KeyID.Enter].transform.position = new Vector3(2.95f, 0f, 0f);
 
 
         // Bottom Row
@@ -189,6 +182,18 @@ public class DrumsKeyboardLayout : KeyboardLayout
             keysDic[key].GetComponent<KeyEvents>().KeyEvents_OnKeyPressed += KeyboardEventHandler_OnPressedHandler;
             keysDic[key].GetComponent<KeyEvents>().KeyEvents_OnKeyReleased += KeyboardEventHandler_OnReleasedHandler;
         }
+
+        // Special Keys font size fix
+        keysDic[KeyID.Backspace].transform.Find("Text").GetComponent<TextMeshPro>().fontSize -= 7;
+        keysDic[KeyID.Backspace].transform.Find("Text").GetComponent<TextMeshPro>().text = "Backspace";
+        keysDic[KeyID.Space].transform.Find("Text").GetComponent<TextMeshPro>().fontSize -= 7;
+        keysDic[KeyID.Space].transform.Find("Text").GetComponent<TextMeshPro>().text = "Space";
+        keysDic[KeyID.Shift].transform.Find("Text").GetComponent<TextMeshPro>().fontSize -= 6;
+        keysDic[KeyID.Shift].transform.Find("Text").GetComponent<TextMeshPro>().text = "Shift";
+        keysDic[KeyID.Next].transform.Find("Text").GetComponent<TextMeshPro>().fontSize -= 6;
+        keysDic[KeyID.Next].transform.Find("Text").GetComponent<TextMeshPro>().text = "Next";
+        keysDic[KeyID.Enter].transform.Find("Text").GetComponent<TextMeshPro>().fontSize -= 6;
+        keysDic[KeyID.Enter].transform.Find("Text").GetComponent<TextMeshPro>().text = "Enter";
     }
 
     private void HandleNonPrintable(object sender, KeyEventArgs args)

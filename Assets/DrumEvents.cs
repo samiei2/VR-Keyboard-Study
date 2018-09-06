@@ -9,10 +9,10 @@ public class DrumEvents : MonoBehaviour {
 
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("Enter");
         if (collision.gameObject.name == "MainShape")
-        {
+        { 
             collisionObject = collision.gameObject;
+            transform.position = collision.contacts[0].point;
             collisionObject.transform.parent.GetComponent<KeyEvents>().Key_PressedEvent();
             _isColliding = true;
         }
@@ -23,6 +23,7 @@ public class DrumEvents : MonoBehaviour {
         if (collision.gameObject.name == "MainShape")
         {
             _isColliding = false;
+            collisionObject = collision.gameObject;
             collisionObject.transform.parent.GetComponent<KeyEvents>().Key_ReleaseEvent();
             collisionObject = null;
         }
@@ -33,6 +34,7 @@ public class DrumEvents : MonoBehaviour {
         if (collision.gameObject.name == "MainShape")
         {
             _isColliding = true;
+            transform.position = collision.contacts[0].point;
         }
     }
 

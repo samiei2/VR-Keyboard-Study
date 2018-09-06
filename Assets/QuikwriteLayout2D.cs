@@ -225,7 +225,6 @@ public class QuikwriteLayout2D : KeyboardLayout {
     // Use this for initialization
     public override void Start ()
     {
-        
         zoneHighlightMat = Resources.Load("ZoneHighlightMat") as Material;
         invisibleMat = Resources.Load("InvisibleMaterial") as Material;
         base.Start();
@@ -235,8 +234,7 @@ public class QuikwriteLayout2D : KeyboardLayout {
     {
         base.Update();
 
-        InputButtonDown = Input.GetMouseButton(0);
-        if (InputButtonDown)
+        if (InputButtonHeldDown)
         {
             if (IsInRestZone(pointer))
             {
@@ -307,13 +305,39 @@ public class QuikwriteLayout2D : KeyboardLayout {
 
     private string GetZoneOfPointer()
     {
+        
         // Visual bug problem. needs to be fixed
         foreach (Transform zone in transform.Find("RegionQuads"))
         {
             zone.GetComponent<MeshRenderer>().material = invisibleMat;
         }
+
+        if (rightTrackpadHandler != null && rightTrackpadHandler.transform.gameObject.activeInHierarchy)
+        {
+            RaycastHit hitObject;
+            Ray raycast = new Ray(rightTrackpadHandler.GetPosition(), rightTrackpadHandler.GetForward());
+
+            if (Physics.Raycast(raycast, out hitObject))
+            {
+                if (hitObject.transform.name.Contains("Zone"))
+                {
+                    // Light up zone?
+                    if (HighlightZone)
+                    {
+                        focusedZone = hitObject.transform;
+                        focusedZone.GetComponent<MeshRenderer>().material = zoneHighlightMat;
+                    }
+                    return hitObject.transform.name.Replace("one", ""); // Removes "one" from "Zone" which results in "Z1" etc
+                }
+            }
+            else
+            {
+                return "";
+            }
+        }
+
         Ray ray = new Ray(pointer.transform.position, pointer.transform.position - Camera.main.transform.position);
-        Debug.DrawRay(ray.origin,ray.direction,Color.red);
+        //Debug.DrawRay(ray.origin,ray.direction,Color.red);
         RaycastHit hit;
         if (Physics.Raycast(ray,out hit,20f))
         {
@@ -333,6 +357,23 @@ public class QuikwriteLayout2D : KeyboardLayout {
 
     private bool IsInRestZone(Pointer pointer)
     {
+        if (rightTrackpadHandler!=null && rightTrackpadHandler.transform.gameObject.activeInHierarchy)
+        {
+            RaycastHit hit;
+            Ray ray = new Ray(rightTrackpadHandler.GetPosition(), rightTrackpadHandler.GetForward());
+
+            if (Physics.Raycast(ray, out hit))
+            {
+                if (hit.transform.name == "Center")
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
         var center = transform.position;
         if (radius == -1)
             radius = FindRadius();
@@ -366,12 +407,30 @@ public class QuikwriteLayout2D : KeyboardLayout {
 
     private Dictionary<int, KeyID> codeToKeyId = new Dictionary<int, KeyID>
     {
-        { 080,KeyID.A },
-        { 04560,KeyID.B },
-        { 0760,KeyID.C },
-        { 0450,KeyID.D },
-        { 070,KeyID.E },
-        { 0210,KeyID.F },
+        // Zone 1
+        { 0120,KeyID.Shift},
+        { 010,KeyID.Backspace},
+        { 0180,KeyID.Space},
+
+        // Zone 2
+        { 02120,KeyID.P},
+        { 0210,KeyID.F},
+        { 020,KeyID.N},
+        { 0230,KeyID.L},
+        { 02320,KeyID.X},
+
+        // Zone 3
+        { 0320,KeyID.U},
+        { 030,KeyID.T},
+        { 0340,KeyID.Y},
+
+        // Zone 4
+        { 04340,KeyID.J},
+        { 0430,KeyID.R},
+        { 040,KeyID.I},
+        { 0450,KeyID.D},
+        { 04540,KeyID.B},
+        
     };
     private string oldZone;
 }

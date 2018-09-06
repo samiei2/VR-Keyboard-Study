@@ -50,11 +50,11 @@ public abstract class KeyboardLayout : MonoBehaviour
         if (cameraRig != null)
             rightTrackpadHandler = cameraRig.transform.Find("Controller (right)").GetComponent<ViveTrackpad>();
 
-        if (leftTrackpadHandler!=null && useViveTrackpad)
+        if (leftTrackpadHandler!=null)
         {
             leftTrackpadHandler.TrackpadDataReceived += LeftTrackpadHandler_TrackpadDataReceived;
         }
-        if (rightTrackpadHandler!=null && useViveTrackpad)
+        if (rightTrackpadHandler!=null)
         {
             rightTrackpadHandler.TrackpadDataReceived += RightTrackpadHandler_TrackpadDataReceived;
         }
@@ -81,30 +81,25 @@ public abstract class KeyboardLayout : MonoBehaviour
     {
         UnityMainThreadDispatcher.Instance().Enqueue(() =>
         {
-            if (args.rightGripped)
-            {
-                rightHandGripped = true;
-            }
-            else
-            {
-                rightHandGripped = false;
-            }
-            if (pointer != null && useTrackerInputForPointer)
+            if (useTrackerInputForPointer)
             {
                 if (args.TriggerDown)
                 {
                     InputButtonDown = true;
+                    InputButtonHeldDown = true;
                     InputButtonUp = false;
                 }
                 else
                 {
                     InputButtonDown = false;
+                    InputButtonHeldDown = false;
                     InputButtonUp = true;
                 }
             }
             if (InputType == KeyboardInputType.Ray || InputType == KeyboardInputType.DrumStick)
             {
                 InputButtonDown = args.TriggerDown;
+                InputButtonHeldDown = args.TriggerDown;
                 InputButtonUp = args.TriggerUp;
             }
         });
@@ -114,17 +109,10 @@ public abstract class KeyboardLayout : MonoBehaviour
     {
         UnityMainThreadDispatcher.Instance().Enqueue(() =>
         {
-            if (args.leftGripped)
-            {
-                leftHandGripped = true;
-            }
-            else
-            {
-                leftHandGripped = false;
-            }
             if (InputType == KeyboardInputType.Ray || InputType == KeyboardInputType.DrumStick)
             { 
                 InputButtonDown = args.TriggerDown;
+                InputButtonHeldDown = args.TriggerDown;
                 InputButtonUp = args.TriggerUp;
             }
         });
@@ -223,12 +211,15 @@ public abstract class KeyboardLayout : MonoBehaviour
         {
             RotateKeysTowardsHead();
         }
+        else if ((Input.GetKey(KeyCode.RightShift) || Input.GetKey(KeyCode.LeftShift)) && Input.GetKeyDown(KeyCode.L))
+        {
+            LoadLayoutFile();
+        }
+        foreach (var item in keysDic)
+        {
+            Debug.DrawRay(item.Value.transform.position, item.Value.transform.forward);
+        }
 
-        //foreach (var item in keysDic)
-        //{
-        //    Debug.DrawRay(item.Value.transform.position, item.Value.transform.forward);
-        //}
-        
         //transform.position = new Vector3(
         //    Camera.main.transform.position.x,
         //    Camera.main.transform.position.y,
@@ -291,6 +282,7 @@ public abstract class KeyboardLayout : MonoBehaviour
 
         if (InputType == KeyboardInputType.Ray)
         {
+
             HandleRayInput();
         }
 
@@ -326,7 +318,11 @@ public abstract class KeyboardLayout : MonoBehaviour
         String filePath = Application.dataPath + "\\LayoutData\\" + transform.name + "_layout.txt";
         Directory.CreateDirectory(Application.dataPath + "\\LayoutData\\");
         if (File.Exists(filePath))
+        {
+            if (File.Exists(filePath + "._backup"))
+                File.Delete(filePath + "._backup");
             File.Copy(filePath, filePath + "._backup");
+        }
         using (StreamWriter file = File.CreateText(filePath))
         {
             JsonSerializer serializer = new JsonSerializer();
@@ -398,13 +394,20 @@ public abstract class KeyboardLayout : MonoBehaviour
     {
         if (leftTrackpadHandler!=null && leftTrackpadHandler.transform.gameObject.activeInHierarchy)
         {
+            if (leftTrackpadHandler.GetComponent<DrumCursor>().isActiveAndEnabled)
+            {
+                leftTrackpadHandler.GetComponent<DrumCursor>().enabled = false;
+            }
+            if (!leftTrackpadHandler.GetComponent<ViveCursor>().isActiveAndEnabled)
+            {
+                leftTrackpadHandler.GetComponent<ViveCursor>().enabled = true;
+            }
             RaycastHit hit;
             Ray ray = new Ray(leftTrackpadHandler.GetPosition(), leftTrackpadHandler.GetForward());
             
             if (Physics.Raycast(ray, out hit))
             {
                 HandleHit(hit.transform.gameObject);
-                
             }
             else
             {
@@ -413,6 +416,14 @@ public abstract class KeyboardLayout : MonoBehaviour
         }
         if (rightTrackpadHandler!=null && rightTrackpadHandler.transform.gameObject.activeInHierarchy)
         {
+            if (rightTrackpadHandler.GetComponent<DrumCursor>().isActiveAndEnabled)
+            {
+                rightTrackpadHandler.GetComponent<DrumCursor>().enabled = false;
+            }
+            if (!rightTrackpadHandler.GetComponent<ViveCursor>().isActiveAndEnabled)
+            {
+                rightTrackpadHandler.GetComponent<ViveCursor>().enabled = true;
+            }
             RaycastHit hit;
             Ray ray = new Ray(rightTrackpadHandler.GetPosition(), rightTrackpadHandler.GetForward());
             
@@ -652,7 +663,8 @@ public abstract class KeyboardLayout : MonoBehaviour
 
     public GameObject KeyInFocus { get; set; }
     public bool InputButtonDown { get; protected set; }
-    public bool InputButtonUp { get; private set; }
+    public bool InputButtonHeldDown { get; protected set; }
+    public bool InputButtonUp { get; protected set; }
 
     public Pointer pointer;
 
@@ -678,8 +690,6 @@ public abstract class KeyboardLayout : MonoBehaviour
     private bool focused = false;
     public bool useViveTrackpad;
     public bool useTrackerInputForPointer;
-    private bool leftHandGripped;
-    private bool rightHandGripped;
     private GameObject rightDrumStick;
     public float rDrumLength;
     private Transform rDrumContactTarget;

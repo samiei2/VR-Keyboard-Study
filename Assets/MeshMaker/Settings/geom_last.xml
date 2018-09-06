@@ -32,7 +32,7 @@
     <smoothNormalsFlag>true</smoothNormalsFlag>
     <maxSmoothAngle>45</maxSmoothAngle>
     <uvMappingType>0</uvMappingType>
-    <meshName>CornerMesh</meshName>
+    <meshName>CenterMesh</meshName>
     <pivotPointX>0</pivotPointX>
     <pivotPointY>0</pivotPointY>
     <pivotPointZ>0</pivotPointZ>

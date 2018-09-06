@@ -12,7 +12,7 @@ public class RainbowKeyboardLayout : KeyboardLayout
 
     public override void CreateMainKeys()
     {
-        GameObject hexPrefab = Resources.Load("CirclePrefab", typeof(GameObject)) as GameObject;
+        GameObject hexPrefab = Resources.Load("CylinderBigPrefab", typeof(GameObject)) as GameObject;
 
         keysDic.Add(KeyID.Q, Instantiate(hexPrefab) as GameObject);
         keysDic.Add(KeyID.W, Instantiate(hexPrefab) as GameObject);
