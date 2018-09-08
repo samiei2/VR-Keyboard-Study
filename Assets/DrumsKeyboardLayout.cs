@@ -160,7 +160,7 @@ public class DrumsKeyboardLayout : KeyboardLayout
         keysDic[KeyID.Comma].transform.position = new Vector3(2.8f, -0.6f, -0.65f);
         keysDic[KeyID.Shift].transform.position = new Vector3(3.45f, -0.6f, -0.65f);
         keysDic[KeyID.Next].transform.position = new Vector3(4.1f, -0.6f, -0.65f);
-
+        
     }
     
     public override void SetProperties()

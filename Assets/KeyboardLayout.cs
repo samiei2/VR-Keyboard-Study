@@ -36,9 +36,10 @@ public abstract class KeyboardLayout : MonoBehaviour
     public virtual void Start()
     {
         MainCamera = GameObject.Find("[CameraRig]").transform.Find("Camera (eye)");
+        gazeTrailGameObject = GameObject.Find("[VRGazeTrail]");
         CreateMainKeys();
-        LayoutKeys();
         SetProperties();
+        LayoutKeys();
         if (touchHandler != null)
         {
             touchHandler.TouchDataReceivedEvent += Pointer_PointerDataReceivedEvent;
@@ -111,9 +112,9 @@ public abstract class KeyboardLayout : MonoBehaviour
         {
             if (InputType == KeyboardInputType.Ray || InputType == KeyboardInputType.DrumStick)
             { 
-                InputButtonDown = args.TriggerDown;
-                InputButtonHeldDown = args.TriggerDown;
-                InputButtonUp = args.TriggerUp;
+                InputLeftButtonDown = args.TriggerDown;
+                InputLeftButtonHeldDown = args.TriggerDown;
+                InputLeftButtonUp = args.TriggerUp;
             }
         });
     }
@@ -215,9 +216,15 @@ public abstract class KeyboardLayout : MonoBehaviour
         {
             LoadLayoutFile();
         }
-        foreach (var item in keysDic)
+        //foreach (var item in keysDic)
+        //{
+        //    Debug.DrawRay(item.Value.transform.position, item.Value.transform.forward);
+        //}
+        
+        if (gazeTrailGameObject != null)
         {
-            Debug.DrawRay(item.Value.transform.position, item.Value.transform.forward);
+            if (gazeTrailGameObject.activeInHierarchy)
+                gazeTrailGameObject.SetActive(false);
         }
 
         //transform.position = new Vector3(
@@ -257,6 +264,11 @@ public abstract class KeyboardLayout : MonoBehaviour
 
         if(InputType == KeyboardInputType.GazeAndDwell || InputType == KeyboardInputType.GazeAndClick)
         {
+            if (gazeTrailGameObject != null)
+            {
+                if (!gazeTrailGameObject.activeInHierarchy)
+                    gazeTrailGameObject.SetActive(true);
+            }
             if(InputType == KeyboardInputType.GazeAndDwell)
             {
                 if (!dwell)
@@ -282,12 +294,19 @@ public abstract class KeyboardLayout : MonoBehaviour
 
         if (InputType == KeyboardInputType.Ray)
         {
-
             HandleRayInput();
         }
 
         if (InputType == KeyboardInputType.DrumStick)
         {
+            if (leftTrackpadHandler.GetComponent<ViveCursor>().enabled)
+            {
+                leftTrackpadHandler.GetComponent<ViveCursor>().enabled = false;
+            }
+            if (rightTrackpadHandler.GetComponent<ViveCursor>().enabled)
+            {
+                rightTrackpadHandler.GetComponent<ViveCursor>().enabled = false;
+            }
             HandleDrumstickInput();
         }
     }
@@ -358,10 +377,17 @@ public abstract class KeyboardLayout : MonoBehaviour
     {
         if (leftTrackpadHandler != null && leftTrackpadHandler.transform.gameObject.activeInHierarchy)
         {
-            if (leftTrackpadHandler.GetComponent<DrumCursor>().gameObject.activeInHierarchy)
+            if (leftDrumStick == null)
             {
-                
+                leftDrumStick = Instantiate(Resources.Load<GameObject>("DrumstickPrefab"));
+                leftDrumStick.transform.forward = leftTrackpadHandler.transform.forward;
+                leftDrumStick.transform.parent = leftTrackpadHandler.transform;
             }
+
+            var controllerPosition = leftTrackpadHandler.GetPosition();
+            leftDrumStick.transform.Find("Capsule").localScale = new Vector3(leftDrumStick.transform.Find("Capsule").localScale.x, rDrumLength, leftDrumStick.transform.Find("Capsule").localScale.z);
+            leftDrumStick.transform.Find("Sphere").localPosition = new Vector3(0, 0, leftDrumStick.transform.Find("Capsule").localScale.y);
+            leftDrumStick.transform.localPosition = new Vector3(0, 0, leftDrumStick.transform.Find("Capsule").localScale.y);
         }
         if (rightTrackpadHandler != null && rightTrackpadHandler.transform.gameObject.activeInHierarchy)
         {
@@ -401,17 +427,20 @@ public abstract class KeyboardLayout : MonoBehaviour
             if (!leftTrackpadHandler.GetComponent<ViveCursor>().isActiveAndEnabled)
             {
                 leftTrackpadHandler.GetComponent<ViveCursor>().enabled = true;
+                leftTrackpadHandler.GetComponent<ViveCursor>().transform.eulerAngles = new Vector3(0,0,0);
             }
             RaycastHit hit;
             Ray ray = new Ray(leftTrackpadHandler.GetPosition(), leftTrackpadHandler.GetForward());
             
+
+            // This is necessary because of the current way we handle hits, we need to seperate it for now,later change logic
             if (Physics.Raycast(ray, out hit))
             {
-                HandleHit(hit.transform.gameObject);
+                HandleLeftHit(hit.transform.gameObject);
             }
             else
             {
-                HandleNotHit();
+                HandleLeftNotHit();
             }
         }
         if (rightTrackpadHandler!=null && rightTrackpadHandler.transform.gameObject.activeInHierarchy)
@@ -423,6 +452,7 @@ public abstract class KeyboardLayout : MonoBehaviour
             if (!rightTrackpadHandler.GetComponent<ViveCursor>().isActiveAndEnabled)
             {
                 rightTrackpadHandler.GetComponent<ViveCursor>().enabled = true;
+                rightTrackpadHandler.GetComponent<ViveCursor>().transform.eulerAngles = new Vector3(0, 0, 0);
             }
             RaycastHit hit;
             Ray ray = new Ray(rightTrackpadHandler.GetPosition(), rightTrackpadHandler.GetForward());
@@ -466,7 +496,25 @@ public abstract class KeyboardLayout : MonoBehaviour
         {
             StopCoroutine("RepeatKeyPress");
             inKeyPress = false;
-            objectInFocus.transform.parent.GetComponent<KeyEvents>().Key_ReleaseEvent();
+            if (objectInFocus == null)
+            {
+                // release all
+                foreach (var item in keysDic)
+                {
+                    item.Value.transform.GetComponent<KeyEvents>().Key_ReleaseEvent();
+                }
+            }
+            else
+            {
+                try
+                {
+                    objectInFocus.transform.parent.GetComponent<KeyEvents>().Key_ReleaseEvent();
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError(e.StackTrace);
+                }
+            }
         }
         else
         {
@@ -532,6 +580,106 @@ public abstract class KeyboardLayout : MonoBehaviour
             }
         }
     }
+
+    #region LeftHitHandler_TOBEREMOVED
+    private bool inKeyPressLeft = false;
+    private bool focusedLeft = false;
+    private bool InputLeftButtonDown = false;
+    private bool InputLeftButtonHeldDown = false;
+    private bool InputLeftButtonUp = false;
+    private GameObject objectInFocusLeft;
+    
+    private void HandleLeftNotHit()
+    {
+        if (inKeyPressLeft)
+        {
+            StopCoroutine("RepeatKeyPress");
+            inKeyPressLeft = false;
+            if (objectInFocusLeft == null)
+            {
+                // release all
+                foreach (var item in keysDic)
+                {
+                    item.Value.transform.GetComponent<KeyEvents>().Key_ReleaseEvent();
+                }
+            }
+            else
+            {
+                try
+                {
+                    objectInFocus.transform.parent.GetComponent<KeyEvents>().Key_ReleaseEvent();
+                }
+                catch (Exception e )
+                {
+                    Debug.LogError(e.StackTrace);
+                }
+            }
+        }
+        else
+        {
+        }
+        if (objectInFocusLeft != null)
+        {
+            if (objectInFocusLeft.name.Contains("MainShape"))
+            {
+                //Debug.Log("You realsed the " + objectInFocus.transform.parent.name);
+                objectInFocusLeft.transform.parent.GetComponent<KeyEvents>().Key_UnfocusedEvent();
+                objectInFocusLeft = null;
+                focusedLeft = false;
+                // There is a bug in visual update and we have to do the following 
+                //foreach (Transform child in transform)
+                //{
+                //    if(child.Find("MainShape")!=null)
+                //    child.GetComponent<KeyEvents>().Key_UnfocusedEvent();
+                //}
+                //////////////////////////////////////////////////////////////
+            }
+        }
+    }
+
+    private void HandleLeftHit(GameObject hit)
+    {
+        if (hit.transform.name.Contains("MainShape"))
+        {
+            if (InputLeftButtonDown)
+            {
+                //Debug.Log("Mouse down on the " + hit.transform.parent.name);
+                inKeyPressLeft = true;
+                hit.transform.parent.GetComponent<KeyEvents>().Key_PressedEvent();
+                StartCoroutine("RepeatKeyPress");
+                InputLeftButtonDown = false;
+            }
+            else if (InputLeftButtonUp)
+            {
+                //Debug.Log("Mouse up on the " + hit.transform.parent.name);
+                StopCoroutine("RepeatKeyPress");
+                inKeyPressLeft = false;
+                hit.transform.parent.GetComponent<KeyEvents>().Key_ReleaseEvent();
+                InputLeftButtonUp = false;
+            }
+            else
+            {
+                if (!inKeyPressLeft && !focusedLeft)
+                {
+                    // There is a bug in visual update and we have to do the following 
+                    //foreach (Transform child in transform)
+                    {
+                        //if (child != null)
+                        //if (child.name != hit.transform.gameObject.name)
+                        //if (child.GetComponent<KeyEvents>() != null)
+
+                        //child.GetComponent<KeyEvents>().Key_UnfocusedEvent();
+                    }
+                    //////////////////////////////////////////////////////////////
+
+                    hit.transform.parent.GetComponent<KeyEvents>().Key_FocusedEvent();
+                    objectInFocusLeft = hit.transform.gameObject;
+                    focusedLeft = true;
+                }
+            }
+        }
+    }
+    #endregion
 
     protected bool GetRay(out Ray ray)
     {
@@ -699,6 +847,7 @@ public abstract class KeyboardLayout : MonoBehaviour
     private Transform lDrumContactTarget;
     private float lContactDistance;
     private Transform MainCamera;
+    private GameObject gazeTrailGameObject;
 
     public abstract void SetProperties();
 
