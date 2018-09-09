@@ -53,11 +53,11 @@ public abstract class KeyboardLayout : MonoBehaviour
 
         if (leftTrackpadHandler!=null)
         {
-            leftTrackpadHandler.TrackpadDataReceived += LeftTrackpadHandler_TrackpadDataReceived;
+            leftTrackpadHandler.TrackpadDataReceived += TrackpadHandler_TrackpadDataReceived;
         }
         if (rightTrackpadHandler!=null)
         {
-            rightTrackpadHandler.TrackpadDataReceived += RightTrackpadHandler_TrackpadDataReceived;
+            rightTrackpadHandler.TrackpadDataReceived += TrackpadHandler_TrackpadDataReceived;
         }
         _eyeTracker = VREyeTracker.Instance;
         _calibrationObject = VRCalibration.Instance;
@@ -78,11 +78,12 @@ public abstract class KeyboardLayout : MonoBehaviour
         textArea.transform.localPosition = new Vector3(0, keyboardTop + 4, 2);
     }
 
-    private void RightTrackpadHandler_TrackpadDataReceived(object sender, TouchDataArgs args)
+    private void TrackpadHandler_TrackpadDataReceived(object sender, TouchDataArgs args)
     {
+        ViveTrackpad controller = sender as ViveTrackpad;
         UnityMainThreadDispatcher.Instance().Enqueue(() =>
         {
-            if (useTrackerInputForPointer)
+            if (useTrackerInputForPointer && controller.IsRightController())
             {
                 if (args.TriggerDown)
                 {
@@ -103,18 +104,10 @@ public abstract class KeyboardLayout : MonoBehaviour
                 InputButtonHeldDown = args.TriggerDown;
                 InputButtonUp = args.TriggerUp;
             }
-        });
-    }
 
-    private void LeftTrackpadHandler_TrackpadDataReceived(object sender, TouchDataArgs args)
-    {
-        UnityMainThreadDispatcher.Instance().Enqueue(() =>
-        {
-            if (InputType == KeyboardInputType.Ray || InputType == KeyboardInputType.DrumStick)
-            { 
-                InputLeftButtonDown = args.TriggerDown;
-                InputLeftButtonHeldDown = args.TriggerDown;
-                InputLeftButtonUp = args.TriggerUp;
+            if (args.moveDirection != MovementDirection.None) 
+            {
+
             }
         });
     }
@@ -226,6 +219,9 @@ public abstract class KeyboardLayout : MonoBehaviour
             if (gazeTrailGameObject.activeInHierarchy)
                 gazeTrailGameObject.SetActive(false);
         }
+
+        if (updateLayout)
+            LayoutKeys();
 
         //transform.position = new Vector3(
         //    Camera.main.transform.position.x,
@@ -848,6 +844,11 @@ public abstract class KeyboardLayout : MonoBehaviour
     private float lContactDistance;
     private Transform MainCamera;
     private GameObject gazeTrailGameObject;
+
+    public float keyXDelta = 0;
+    public float keyYDelta = 0;
+    public float keyZDelta = 0;
+    public bool updateLayout = false;
 
     public abstract void SetProperties();
 

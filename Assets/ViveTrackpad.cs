@@ -32,7 +32,6 @@ public class ViveTrackpad : MonoBehaviour {
 
     private void Controller_Ungripped(object sender, ClickedEventArgs e)
     {
-        GetComponent<SteamVR_LaserPointer>().enabled = false;
         TouchDataArgs args = new TouchDataArgs();
         if(transform.name.Contains("left"))
             args.leftGripped = false;
@@ -44,7 +43,6 @@ public class ViveTrackpad : MonoBehaviour {
 
     private void Controller_Gripped(object sender, ClickedEventArgs e)
     {
-        GetComponent<SteamVR_LaserPointer>().enabled = true;
         TouchDataArgs args = new TouchDataArgs();
         if (transform.name.Contains("left"))
             args.leftGripped = true;
@@ -74,7 +72,30 @@ public class ViveTrackpad : MonoBehaviour {
 
     private void Controller_PadTouched(object sender, ClickedEventArgs e)
     {
-        
+        Vector2 touchpad = new Vector2(device.GetAxis().x, device.GetAxis().y);
+        TouchDataArgs args = new TouchDataArgs();
+        if (touchpad.y > 0.5f)
+        {
+            args.moveDirection = MovementDirection.Up;
+        }
+
+        else if (touchpad.y < -0.5f)
+        {
+            args.moveDirection = MovementDirection.Down;
+        }
+
+        if (touchpad.x > 0.5f)
+        {
+            args.moveDirection = MovementDirection.Right;
+
+        }
+        else if (touchpad.x < -0.5f)
+        {
+            args.moveDirection = MovementDirection.Left;
+        }
+
+        if (TrackpadDataReceived != null)
+            TrackpadDataReceived(this, args);
     }
 
     void FixedUpdate()
@@ -85,27 +106,7 @@ public class ViveTrackpad : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        Vector2 touchpad = new Vector2(device.GetAxis().x, device.GetAxis().y);
-        if (touchpad.y > 0.5f)
-        {
-            //print("Moving Up");
-        }
-
-        else if (touchpad.y < -0.5f)
-        {
-            //print("Moving Down");
-        }
-
-        if (touchpad.x > 0.5f)
-        {
-            //print("Moving Right");
-
-        }
-        else if (touchpad.x < -0.5f)
-        {
-            //print("Moving left");
-        }
-
+        
         if (device.GetAxis().x != 0 && device.GetAxis().y != 0)
         {
             args.touchPadVector2 = new Vector2(device.GetAxis().x, device.GetAxis().y);
@@ -123,4 +124,21 @@ public class ViveTrackpad : MonoBehaviour {
     {
         return transform.position;
     }
+
+    internal bool IsRightController()
+    {
+        return transform.name.Contains("right");
+    }
+
+    internal bool IsLeftController()
+    {
+        return transform.name.Contains("left");
+    }
+}
+
+
+public enum MovementDirection
+{
+    Up,Down,Left,Right,
+    None
 }

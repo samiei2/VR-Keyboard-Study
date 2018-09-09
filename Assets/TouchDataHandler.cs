@@ -100,4 +100,5 @@ public class TouchDataArgs
     internal bool leftGripped;
     internal bool rightGripped;
     internal bool TriggerUp;
+    internal MovementDirection moveDirection = MovementDirection.None;
 }

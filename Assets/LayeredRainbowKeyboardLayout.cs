@@ -30,7 +30,7 @@ public class LayeredRainbowKeyboardLayout : RainbowKeyboardLayout {
     };
     
     public float delta;
-    public bool updateLayout = false;
+    
     public float initR1 = 0 ;
     public float initR2 = 0;
     public float initR3 = 0;
@@ -138,7 +138,6 @@ public class LayeredRainbowKeyboardLayout : RainbowKeyboardLayout {
     public override void Update()
     {
         base.Update();
-        if(updateLayout)
-            LayoutKeys();
+        
     }
 }

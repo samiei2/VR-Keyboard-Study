@@ -51,47 +51,47 @@ public class MetroKeyboardLayout : KeyboardLayout {
     public override void LayoutKeys()
     {
         // First row: . k w m u q '
-        keysDic[KeyID.Dot].transform.position = new Vector3(-6, 4, 0);
-        keysDic[KeyID.K].transform.position = new Vector3(-4, 4, 0);
-        keysDic[KeyID.W].transform.position = new Vector3(-2, 4, 0);
-        keysDic[KeyID.M].transform.position = new Vector3(0, 4, 0);
-        keysDic[KeyID.U].transform.position = new Vector3(2, 4, 0);
-        keysDic[KeyID.Q].transform.position = new Vector3(4, 4, 0);
-        keysDic[KeyID.Backspace].transform.position = new Vector3(6, 4, 0);
+        keysDic[KeyID.Dot].transform.localPosition = new Vector3(-6 - 3*keyXDelta, 4 + 2 * keyYDelta, 0);
+        keysDic[KeyID.K].transform.localPosition = new Vector3(-4 - 2*keyXDelta, 4 + 2 * keyYDelta, 0);
+        keysDic[KeyID.W].transform.localPosition = new Vector3(-2 - 1*keyXDelta, 4 + 2 * keyYDelta, 0);
+        keysDic[KeyID.M].transform.localPosition = new Vector3(0 , 4 + 2 * keyYDelta, 0);
+        keysDic[KeyID.U].transform.localPosition = new Vector3(2 + 1*keyXDelta, 4 + 2 * keyYDelta, 0);
+        keysDic[KeyID.Q].transform.localPosition = new Vector3(4 + 2*keyXDelta, 4 + 2 * keyYDelta, 0);
+        keysDic[KeyID.Backspace].transform.localPosition = new Vector3(6 + 3*keyXDelta, 4 + 2 * keyYDelta, 0);
 
         // Second row: c h t o f z
-        keysDic[KeyID.C].transform.position = new Vector3(-5, 2, 0);
-        keysDic[KeyID.H].transform.position = new Vector3(-3, 2, 0);
-        keysDic[KeyID.T].transform.position = new Vector3(-1, 2, 0);
-        keysDic[KeyID.O].transform.position = new Vector3(1, 2, 0);
-        keysDic[KeyID.F].transform.position = new Vector3(3, 2, 0);
-        keysDic[KeyID.Z].transform.position = new Vector3(5, 2, 0);
+        keysDic[KeyID.C].transform.localPosition = new Vector3(-5 - 3 * keyXDelta, 2 + keyYDelta, 0);
+        keysDic[KeyID.H].transform.localPosition = new Vector3(-3 - 2 * keyXDelta, 2 + keyYDelta, 0);
+        keysDic[KeyID.T].transform.localPosition = new Vector3(-1 - 1 * keyXDelta, 2 + keyYDelta, 0);
+        keysDic[KeyID.O].transform.localPosition = new Vector3(1, 2 + keyYDelta, 0);
+        keysDic[KeyID.F].transform.localPosition = new Vector3(3 + 1 * keyXDelta, 2 + keyYDelta, 0);
+        keysDic[KeyID.Z].transform.localPosition = new Vector3(5 + 2 * keyXDelta, 2 + keyYDelta, 0);
 
         // Third row: j i e space n g b
-        keysDic[KeyID.J].transform.position = new Vector3(-6, 0, 0);
-        keysDic[KeyID.I].transform.position = new Vector3(-4, 0, 0);
-        keysDic[KeyID.E].transform.position = new Vector3(-2, 0, 0);
-        keysDic[KeyID.Space].transform.position = new Vector3(0, 0, 0);
-        keysDic[KeyID.N].transform.position = new Vector3(2, 0, 0);
-        keysDic[KeyID.G].transform.position = new Vector3(4, 0, 0);
-        keysDic[KeyID.B].transform.position = new Vector3(6, 0, 0);
+        keysDic[KeyID.J].transform.localPosition = new Vector3(-6 - 3 * keyXDelta, 0, 0);
+        keysDic[KeyID.I].transform.localPosition = new Vector3(-4 - 2 * keyXDelta, 0, 0);
+        keysDic[KeyID.E].transform.localPosition = new Vector3(-2 - 1 * keyXDelta, 0, 0);
+        keysDic[KeyID.Space].transform.localPosition = new Vector3(0, 0, 0);
+        keysDic[KeyID.N].transform.localPosition = new Vector3(2 + 1 * keyXDelta, 0, 0);
+        keysDic[KeyID.G].transform.localPosition = new Vector3(4 + 2 * keyXDelta, 0, 0);
+        keysDic[KeyID.B].transform.localPosition = new Vector3(6 + 3 * keyXDelta, 0, 0);
 
         // Fourth row: v r s a d ret
-        keysDic[KeyID.V].transform.position = new Vector3(-5, -2, 0);
-        keysDic[KeyID.R].transform.position = new Vector3(-3, -2, 0);
-        keysDic[KeyID.S].transform.position = new Vector3(-1, -2, 0);
-        keysDic[KeyID.A].transform.position = new Vector3(1, -2, 0);
-        keysDic[KeyID.D].transform.position = new Vector3(3, -2, 0);
-        keysDic[KeyID.Enter].transform.position = new Vector3(5, -2, 0);
+        keysDic[KeyID.V].transform.localPosition = new Vector3(-5 - 2 * keyXDelta, -2 - keyYDelta, 0);
+        keysDic[KeyID.R].transform.localPosition = new Vector3(-3 - 1 * keyXDelta, -2 - keyYDelta, 0);
+        keysDic[KeyID.S].transform.localPosition = new Vector3(-1, -2 - keyYDelta, 0);
+        keysDic[KeyID.A].transform.localPosition = new Vector3(1 + 1 * keyXDelta, -2 - keyYDelta, 0);
+        keysDic[KeyID.D].transform.localPosition = new Vector3(3 + 2 * keyXDelta, -2 - keyYDelta, 0);
+        keysDic[KeyID.Enter].transform.localPosition = new Vector3(5 + 3 * keyXDelta, -2 - keyYDelta, 0);
 
         // Fifth row: , x p l y shift otherkeysDic
-        keysDic[KeyID.Comma].transform.position = new Vector3(-6, -4, 0);
-        keysDic[KeyID.X].transform.position = new Vector3(-4, -4, 0);
-        keysDic[KeyID.P].transform.position = new Vector3(-2, -4, 0);
-        keysDic[KeyID.L].transform.position = new Vector3(0, -4, 0);
-        keysDic[KeyID.Y].transform.position = new Vector3(2, -4, 0);
-        keysDic[KeyID.Shift].transform.position = new Vector3(4, -4, 0);
-        keysDic[KeyID.Next].transform.position = new Vector3(6, -4, 0);
+        keysDic[KeyID.Comma].transform.localPosition = new Vector3(-6 - 3 * keyXDelta, -4 - 2* keyYDelta, 0);
+        keysDic[KeyID.X].transform.localPosition = new Vector3(-4 - 2 * keyXDelta, -4 - 2 * keyYDelta, 0);
+        keysDic[KeyID.P].transform.localPosition = new Vector3(-2 - 1 * keyXDelta, -4 - 2 * keyYDelta, 0);
+        keysDic[KeyID.L].transform.localPosition = new Vector3(0, -4 - 2 * keyYDelta, 0);
+        keysDic[KeyID.Y].transform.localPosition = new Vector3(2 + 1 * keyXDelta, -4 - 2 * keyYDelta, 0);
+        keysDic[KeyID.Shift].transform.localPosition = new Vector3(4 + 2 * keyXDelta, -4 - 2 * keyYDelta, 0);
+        keysDic[KeyID.Next].transform.localPosition = new Vector3(6 + 3 * keyXDelta, -4 - 2 * keyYDelta, 0);
     }
 
     public override void CreateMainKeys()
