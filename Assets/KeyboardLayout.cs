@@ -35,8 +35,9 @@ public abstract class KeyboardLayout : MonoBehaviour
 
     public virtual void Start()
     {
-        MainCamera = GameObject.Find("[CameraRig]").transform.Find("Camera (eye)");
-        gazeTrailGameObject = GameObject.Find("[VRGazeTrail]");
+        MainCamera = GameObject.FindWithTag("MainCamera").transform.Find("Camera (eye)");
+        VRDesk = GameObject.FindWithTag("VRDesk").transform;
+        gazeTrailGameObject = GameObject.FindWithTag("[VRGazeTrail]");
         CreateMainKeys();
         SetProperties();
         LayoutKeys();
@@ -68,14 +69,30 @@ public abstract class KeyboardLayout : MonoBehaviour
         //    Camera.main.transform.position.y,
         //    Camera.main.transform.position.z + keyboardDistanceFromCamera);
 
-        transform.position = new Vector3(MainCamera.position.x, MainCamera.position.y, MainCamera.position.z + keyboardDistanceFromCamera);
+        transform.position = new Vector3(0, 0, MainCamera.position.z + keyboardDistanceFromCamera);
         //transform.parent = MainCamera;
-        
+        //transform.localPosition = new Vector3(0, 0, keyboardDistanceFromCamera);
+
         var keyboardTop = GetKeyboardTop();
 
         textArea = GameObject.Find("TextArea");
         textArea.transform.parent = this.transform;
         textArea.transform.localPosition = new Vector3(0, keyboardTop + 4, 2);
+
+        //AddManipulationPoints();
+    }
+
+    private void AddManipulationPoints()
+    {
+        var KeyboardTop = GetKeyboardTop();
+        var KeyboardRight = GetKeyboardRight();
+
+        var topRightPoint = GameObject.CreatePrimitive(PrimitiveType.Sphere);
+        topRightPoint.transform.parent = transform;
+        topRightPoint.transform.localScale = keysDic[KeyID.A].transform.localScale;
+        topRightPoint.transform.localPosition = new Vector3(KeyboardRight + 2, KeyboardTop + 1f, 0);
+        topRightPoint.AddComponent<Rigidbody>();
+        topRightPoint.GetComponent<Rigidbody>().useGravity = false;
     }
 
     private void TrackpadHandler_TrackpadDataReceived(object sender, TouchDataArgs args)
@@ -121,6 +138,17 @@ public abstract class KeyboardLayout : MonoBehaviour
                 top = item.Value.transform.position.y;
         }
         return top;
+    }
+
+    private float GetKeyboardRight()
+    {
+        float right = int.MinValue;
+        foreach (var item in keysDic)
+        {
+            if (item.Value.transform.position.x > right)
+                right = item.Value.transform.position.x;
+        }
+        return right;
     }
 
     public int pointerSpeedMultiplier = 10;
@@ -209,11 +237,17 @@ public abstract class KeyboardLayout : MonoBehaviour
         {
             LoadLayoutFile();
         }
+
+        else if ((Input.GetKey(KeyCode.RightShift) || Input.GetKey(KeyCode.LeftShift)) && Input.GetKeyDown(KeyCode.P))
+        {
+            transform.position = VRDesk.position;
+            transform.eulerAngles = VRDesk.eulerAngles;
+        }
         //foreach (var item in keysDic)
         //{
         //    Debug.DrawRay(item.Value.transform.position, item.Value.transform.forward);
         //}
-        
+
         if (gazeTrailGameObject != null)
         {
             if (gazeTrailGameObject.activeInHierarchy)
@@ -843,6 +877,7 @@ public abstract class KeyboardLayout : MonoBehaviour
     private Transform lDrumContactTarget;
     private float lContactDistance;
     private Transform MainCamera;
+    private Transform VRDesk;
     private GameObject gazeTrailGameObject;
 
     public float keyXDelta = 0;
