@@ -405,6 +405,16 @@ public class QuikwriteLayout2D : KeyboardLayout {
         return maxDist;
     }
 
+    public override void ScaleToVRDeskPosition()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void ScaleToFrontViewPosition()
+    {
+        throw new NotImplementedException();
+    }
+
     private Dictionary<int, KeyID> codeToKeyId = new Dictionary<int, KeyID>
     {
         // Zone 1

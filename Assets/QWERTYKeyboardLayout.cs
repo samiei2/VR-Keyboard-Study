@@ -216,4 +216,14 @@ public class QWERTYKeyboardLayout : KeyboardLayout {
             textArea.GetComponent<TextMeshPro>().text += '\n';
         }
     }
+
+    public override void ScaleToVRDeskPosition()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void ScaleToFrontViewPosition()
+    {
+        throw new System.NotImplementedException();
+    }
 }

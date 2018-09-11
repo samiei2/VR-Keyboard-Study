@@ -13,7 +13,8 @@ public class GameManager : MonoBehaviour {
         {
             var menuModule = GameObject.Find("MenuModule");
             var commandText = menuModule.transform.Find("MenuFollower").Find("Menu").Find("CommandText");
-            commandText.GetComponent<TextMeshPro>().text = "";
+            //if(commandText!=null)
+            //    commandText.GetComponent<TextMeshPro>().text = "";
         }
 	}
 	

@@ -50,7 +50,7 @@ public abstract class KeyboardLayout : MonoBehaviour
                 if (_steamvrsdl != null)
                 {
                     gazeTrailGameObject = _steamvrsdl.Find("[VRGazeTrail]").gameObject;
-                    var _camerarig = _steamvrsdl.Find("[CameraRig]");
+                    _camerarig = _steamvrsdl.Find("[CameraRig]");
                     if (_camerarig != null)
                     {
                         var _cameraHead = _camerarig.Find("Camera (head)");
@@ -94,11 +94,11 @@ public abstract class KeyboardLayout : MonoBehaviour
             touchHandler.TouchDataReceivedEvent += Pointer_PointerDataReceivedEvent;
         }
 
-        var cameraRig = GameObject.Find("[CameraRig]");
-        if (cameraRig != null)
-            leftTrackpadHandler = cameraRig.transform.Find("Controller (left)").GetComponent<ViveTrackpad>();
-        if (cameraRig != null)
-            rightTrackpadHandler = cameraRig.transform.Find("Controller (right)").GetComponent<ViveTrackpad>();
+        
+        if (_camerarig != null)
+            leftTrackpadHandler = _camerarig.transform.Find("Controller (left)").GetComponent<ViveTrackpad>();
+        if (_camerarig != null)
+            rightTrackpadHandler = _camerarig.transform.Find("Controller (right)").GetComponent<ViveTrackpad>();
 
         if (leftTrackpadHandler!=null)
         {
@@ -289,8 +289,7 @@ public abstract class KeyboardLayout : MonoBehaviour
         }
         else if ((Input.GetKey(KeyCode.RightShift) || Input.GetKey(KeyCode.LeftShift)) && Input.GetKeyDown(KeyCode.P)) // Position Keyboard
         {
-            transform.position = VRDesk.position;
-            transform.eulerAngles = VRDesk.eulerAngles;
+            ScaleToVRDeskPosition();
         }
         
 
@@ -391,7 +390,7 @@ public abstract class KeyboardLayout : MonoBehaviour
             HandleDrumstickInput();
         }
     }
-
+    
     private void RotateKeysTowardsHead()
     {
         foreach (var key in keysDic)
@@ -928,9 +927,9 @@ public abstract class KeyboardLayout : MonoBehaviour
     private Transform lDrumContactTarget;
     private float lContactDistance;
     public Transform MainCamera;
-    private Transform VRDesk;
+    protected Transform VRDesk;
     private GameObject gazeTrailGameObject;
-
+    private Transform _camerarig;
     public float keyXDelta = 0;
     public float keyYDelta = 0;
     public float keyZDelta = 0;
@@ -949,6 +948,10 @@ public abstract class KeyboardLayout : MonoBehaviour
     public abstract void KeyboardEventHandler_OnUnfocusedHandler(object sender, KeyEventArgs args);
 
     public abstract void KeyboardEventHandler_OnFocusedHandler(object sender, KeyEventArgs args);
+
+    public abstract void ScaleToVRDeskPosition();
+
+    public abstract void ScaleToFrontViewPosition();
 
     public abstract void HighlightKeys(List<char> suggestedAlphabet);
 }

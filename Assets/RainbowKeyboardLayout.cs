@@ -198,4 +198,14 @@ public class RainbowKeyboardLayout : KeyboardLayout
             textArea.GetComponent<TextMeshPro>().text += '\n';
         }
     }
+
+    public override void ScaleToVRDeskPosition()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void ScaleToFrontViewPosition()
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -162,7 +162,17 @@ public class DrumsKeyboardLayout : KeyboardLayout
         keysDic[KeyID.Next].transform.position = new Vector3(4.1f, -0.6f, -0.65f);
         
     }
-    
+
+    public override void ScaleToFrontViewPosition()
+    {
+        throw new NotImplementedException();
+    }
+
+    public override void ScaleToVRDeskPosition()
+    {
+        throw new NotImplementedException();
+    }
+
     public override void SetProperties()
     {
         foreach (var key in keysDic.Keys)
