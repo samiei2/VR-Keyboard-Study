@@ -19,7 +19,6 @@ public class KeyProperties : MonoBehaviour {
 
     bool isDwelling = false;
     bool doneDwelling = false;
-    
 
     void Start()
     {

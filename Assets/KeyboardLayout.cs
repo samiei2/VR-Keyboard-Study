@@ -35,9 +35,57 @@ public abstract class KeyboardLayout : MonoBehaviour
 
     public virtual void Start()
     {
-        MainCamera = GameObject.FindWithTag("MainCamera").transform.Find("Camera (eye)");
-        VRDesk = GameObject.FindWithTag("VRDesk").transform;
-        gazeTrailGameObject = GameObject.FindWithTag("[VRGazeTrail]");
+        if (!GameObject.Find("[SaveModule]"))
+        {
+            var prefab = Resources.Load("[SaveModule]") as GameObject;
+            Instantiate(prefab).GetComponent<SaveDataModule>();
+        }
+
+        try
+        {
+            var _vrtkObj = GameObject.Find("[VRTK]");
+            if (_vrtkObj != null)
+            {
+                var _steamvrsdl = _vrtkObj.transform.Find("SteamVRSDK");
+                if (_steamvrsdl != null)
+                {
+                    gazeTrailGameObject = _steamvrsdl.Find("[VRGazeTrail]").gameObject;
+                    var _camerarig = _steamvrsdl.Find("[CameraRig]");
+                    if (_camerarig != null)
+                    {
+                        var _cameraHead = _camerarig.Find("Camera (head)");
+                        if (_cameraHead!=null)
+                        {
+                            MainCamera = _cameraHead.Find("Camera (eye)");
+                            VRDesk = _cameraHead.Find("VRDesk"); 
+                        }
+                    }
+                }
+            }
+            else
+            {
+                var _MainCameraObj = GameObject.FindGameObjectWithTag("MainCamera");
+                var _VRDeskobj = GameObject.FindGameObjectWithTag("VRDesk");
+                var _gazeTrailGameObject = GameObject.FindGameObjectWithTag("[VRGazeTrail]");
+                if (_MainCameraObj != null)
+                {
+                    MainCamera = _MainCameraObj.transform;
+                }
+                if (_VRDeskobj != null)
+                {
+                    VRDesk = _VRDeskobj.transform;
+                }
+                if (_gazeTrailGameObject != null)
+                {
+                    gazeTrailGameObject = _gazeTrailGameObject;
+                }
+            }
+        }
+        catch (Exception e)
+        {
+            
+        }
+        SaveDataModule.Instance.WriteToTimeLine("==============================Keyboard Started==============================");
         CreateMainKeys();
         SetProperties();
         LayoutKeys();
@@ -54,11 +102,11 @@ public abstract class KeyboardLayout : MonoBehaviour
 
         if (leftTrackpadHandler!=null)
         {
-            leftTrackpadHandler.TrackpadDataReceived += TrackpadHandler_TrackpadDataReceived;
+            leftTrackpadHandler.ViveDataReceived += ViveHandler_ViveDataReceived;
         }
         if (rightTrackpadHandler!=null)
         {
-            rightTrackpadHandler.TrackpadDataReceived += TrackpadHandler_TrackpadDataReceived;
+            rightTrackpadHandler.ViveDataReceived += ViveHandler_ViveDataReceived;
         }
         _eyeTracker = VREyeTracker.Instance;
         _calibrationObject = VRCalibration.Instance;
@@ -95,11 +143,13 @@ public abstract class KeyboardLayout : MonoBehaviour
         topRightPoint.GetComponent<Rigidbody>().useGravity = false;
     }
 
-    private void TrackpadHandler_TrackpadDataReceived(object sender, TouchDataArgs args)
+    private void ViveHandler_ViveDataReceived(object sender, TouchDataArgs args)
     {
         ViveTrackpad controller = sender as ViveTrackpad;
         UnityMainThreadDispatcher.Instance().Enqueue(() =>
         {
+            if(args.TriggerDown)
+                SaveDataModule.Instance.WriteToTimeLine(controller.transform.name + " Trigger Down");
             if (useTrackerInputForPointer && controller.IsRightController())
             {
                 if (args.TriggerDown)
@@ -229,20 +279,21 @@ public abstract class KeyboardLayout : MonoBehaviour
         {
             SaveUserLayout();
         }
-        else if ((Input.GetKey(KeyCode.RightShift) || Input.GetKey(KeyCode.LeftShift)) && Input.GetKeyDown(KeyCode.R))
+        else if ((Input.GetKey(KeyCode.RightShift) || Input.GetKey(KeyCode.LeftShift)) && Input.GetKeyDown(KeyCode.R)) // Rotate keys towards head
         {
             RotateKeysTowardsHead();
         }
-        else if ((Input.GetKey(KeyCode.RightShift) || Input.GetKey(KeyCode.LeftShift)) && Input.GetKeyDown(KeyCode.L))
+        else if ((Input.GetKey(KeyCode.RightShift) || Input.GetKey(KeyCode.LeftShift)) && Input.GetKeyDown(KeyCode.L)) // Load Layout File
         {
             LoadLayoutFile();
         }
-
-        else if ((Input.GetKey(KeyCode.RightShift) || Input.GetKey(KeyCode.LeftShift)) && Input.GetKeyDown(KeyCode.P))
+        else if ((Input.GetKey(KeyCode.RightShift) || Input.GetKey(KeyCode.LeftShift)) && Input.GetKeyDown(KeyCode.P)) // Position Keyboard
         {
             transform.position = VRDesk.position;
             transform.eulerAngles = VRDesk.eulerAngles;
         }
+        
+
         //foreach (var item in keysDic)
         //{
         //    Debug.DrawRay(item.Value.transform.position, item.Value.transform.forward);
@@ -876,7 +927,7 @@ public abstract class KeyboardLayout : MonoBehaviour
     public float lDrumLength;
     private Transform lDrumContactTarget;
     private float lContactDistance;
-    private Transform MainCamera;
+    public Transform MainCamera;
     private Transform VRDesk;
     private GameObject gazeTrailGameObject;
 

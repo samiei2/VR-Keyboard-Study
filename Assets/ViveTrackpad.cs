@@ -5,7 +5,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(SteamVR_TrackedObject))]
 public class ViveTrackpad : MonoBehaviour {
-    public event TouchDataHandler.TouchDataReceived TrackpadDataReceived;
+    public event TouchDataHandler.TouchDataReceived ViveDataReceived;
     SteamVR_TrackedObject trackedObj;
     SteamVR_Controller.Device device;
     public SteamVR_TrackedController controller { get; private set; }
@@ -37,8 +37,8 @@ public class ViveTrackpad : MonoBehaviour {
             args.leftGripped = false;
         else if (transform.name.Contains("right"))
             args.rightGripped = false;
-        if (TrackpadDataReceived != null)
-            TrackpadDataReceived(this, args);
+        if (ViveDataReceived != null)
+            ViveDataReceived(this, args);
     }
 
     private void Controller_Gripped(object sender, ClickedEventArgs e)
@@ -48,8 +48,8 @@ public class ViveTrackpad : MonoBehaviour {
             args.leftGripped = true;
         else if (transform.name.Contains("right"))
             args.rightGripped = true;
-        if (TrackpadDataReceived != null)
-            TrackpadDataReceived(this, args);
+        if (ViveDataReceived != null)
+            ViveDataReceived(this, args);
     }
 
     private void Controller_TriggerUnclicked(object sender, ClickedEventArgs e)
@@ -57,8 +57,8 @@ public class ViveTrackpad : MonoBehaviour {
         TouchDataArgs args = new TouchDataArgs();
         args.TriggerDown = false;
         args.TriggerUp = true;
-        if (TrackpadDataReceived != null)
-            TrackpadDataReceived(this, args);
+        if (ViveDataReceived != null)
+            ViveDataReceived(this, args);
     }
 
     private void Controller_TriggerClicked(object sender, ClickedEventArgs e)
@@ -66,8 +66,8 @@ public class ViveTrackpad : MonoBehaviour {
         TouchDataArgs args = new TouchDataArgs();
         args.TriggerDown = true;
         args.TriggerUp = false;
-        if (TrackpadDataReceived!=null)
-            TrackpadDataReceived(this, args);
+        if (ViveDataReceived!=null)
+            ViveDataReceived(this, args);
     }
 
     private void Controller_PadTouched(object sender, ClickedEventArgs e)
@@ -94,8 +94,8 @@ public class ViveTrackpad : MonoBehaviour {
             args.moveDirection = MovementDirection.Left;
         }
 
-        if (TrackpadDataReceived != null)
-            TrackpadDataReceived(this, args);
+        if (ViveDataReceived != null)
+            ViveDataReceived(this, args);
     }
 
     void FixedUpdate()
@@ -110,8 +110,8 @@ public class ViveTrackpad : MonoBehaviour {
         if (device.GetAxis().x != 0 && device.GetAxis().y != 0)
         {
             args.touchPadVector2 = new Vector2(device.GetAxis().x, device.GetAxis().y);
-            if (TrackpadDataReceived != null)
-                TrackpadDataReceived(this, args);
+            if (ViveDataReceived != null)
+                ViveDataReceived(this, args);
         }
     }
 
