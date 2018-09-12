@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading.Collections;
 using UnityEngine;
 
 public class SaveDataModule : MonoBehaviour {
@@ -10,9 +11,11 @@ public class SaveDataModule : MonoBehaviour {
     private StreamWriter configFile;
     private StreamWriter timeLineFile;
     private bool SaveUserData = false;
+    private ConcurrentQueue<string> _timeLineQueue;
 
     public static SaveDataModule Instance;
     private bool initialized;
+    private bool _stopSerialization = false;
 
     private void Awake()
     {
@@ -21,6 +24,8 @@ public class SaveDataModule : MonoBehaviour {
         else
             throw new Exception("Multiple save modules detected.");
         directoryPath = Application.dataPath + @"\\User_Data\\";
+        _timeLineQueue = new ConcurrentQueue<string>();
+        StartCoroutine("Serializer");
     }
 
     // Use this for initialization
@@ -65,15 +70,7 @@ public class SaveDataModule : MonoBehaviour {
 
     internal void WriteToTimeLine(string v)
     {
-        if (timeLineFile == null)
-            Initialize();
-        if (SaveUserData)
-        {
-            String currentTime = System.DateTime.Now.ToString("MM/dd HH:mm:ss");
-            String finalMessage = currentTime + " :: " + v + "\n";
-            
-            timeLineFile.WriteLine(finalMessage);
-        }
+        _timeLineQueue.Enqueue(v);
     }
 
     private void OnApplicationPause(bool pause)
@@ -90,9 +87,9 @@ public class SaveDataModule : MonoBehaviour {
     {
         if (SaveUserData)
         {
+            _stopSerialization = true;
             if (timeLineFile != null)
             {
-
                 WriteToTimeLine("===========================================GAMESessionEndded=============================================");
                 WriteToTimeLine("=========================================================================================================");
                 timeLineFile.Flush();
@@ -102,6 +99,31 @@ public class SaveDataModule : MonoBehaviour {
             {
                 configFile.Flush();
                 configFile.Close();
+            }
+        }
+    }
+
+    public IEnumerable Serializer()
+    {
+        if (timeLineFile == null)
+            Initialize();
+        if (SaveUserData)
+        {
+            while (!_stopSerialization)
+            {
+                string v = "";
+                var success = _timeLineQueue.TryDequeue(out v);
+                if (success)
+                {
+                    String currentTime = System.DateTime.Now.ToString("MM/dd HH:mm:ss");
+                    String finalMessage = currentTime + " :: " + v + "\n";
+
+                    timeLineFile.WriteLine(finalMessage);
+                }
+                else
+                {
+                    yield return new WaitForSeconds(0.1f);
+                }
             }
         }
     }

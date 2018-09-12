@@ -231,9 +231,9 @@ public class MetroKeyboardLayout : KeyboardLayout {
 
     public override void ScaleToVRDeskPosition()
     {
+        transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
         transform.position = VRDesk.position;
         transform.eulerAngles = VRDesk.eulerAngles;
-        transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
     }
 
     public override void ScaleToFrontViewPosition()

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
@@ -140,8 +141,7 @@ public class QWERTYKeyboardLayout : KeyboardLayout {
     public override void KeyboardEventHandler_OnFocusedHandler(object sender, KeyEventArgs args)
     {
         var transform = (Transform)sender;
-
-
+        
         transform.Find("Tint").gameObject.SetActive(true);
         if (zoomEffect)
         {
@@ -160,7 +160,7 @@ public class QWERTYKeyboardLayout : KeyboardLayout {
         var transform = (Transform)sender;
 
         transform.Find("MainShape").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().pressedMat;
-
+        SaveDataModule.Instance.WriteToTimeLine("KeyPressed: " + Enum.GetName(typeof(KeyID), args.KeyId));
         if (args.KeyPrintable)
         {
             if (textArea != null)
@@ -219,7 +219,9 @@ public class QWERTYKeyboardLayout : KeyboardLayout {
 
     public override void ScaleToVRDeskPosition()
     {
-        throw new System.NotImplementedException();
+        transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
+        transform.position = VRDesk.position;
+        transform.eulerAngles = VRDesk.eulerAngles;
     }
 
     public override void ScaleToFrontViewPosition()

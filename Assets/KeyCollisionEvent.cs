@@ -3,11 +3,14 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class KeyCollisionEvent : MonoBehaviour {
-    private float movementSpeed = 8f;
-    private float movementMultiplier = 0.05f;
+    public float movementMultiplier = 0.02f;
     private Vector3 keyPreviousPosition;
     private System.Diagnostics.Stopwatch _watch;
-
+    private bool _isLerping;
+    private float _timeStartedLerping;
+    private Vector3 _startPosition;
+    private Vector3 _endPosition;
+    public float timeTakenDuringLerp = .35f;
 
     private void Start()
     {
@@ -24,8 +27,9 @@ public class KeyCollisionEvent : MonoBehaviour {
 
             if (angle > 120 && drumDirection.normalized.y > 0.8 && (_watch.IsRunning && _watch.ElapsedMilliseconds > 100))
             {
-                transform.parent.Translate(transform.parent.forward * movementMultiplier, Space.Self);
-                transform.parent.GetComponent<KeyEvents>().Key_PressedEvent();
+
+                StartLerping();
+                StartCoroutine("TriggerClick");
                 if (other.transform.parent.parent.GetComponent<SteamVR_TrackedController>() != null)
                     TriggerHapticPulse(other.transform.parent.parent.GetComponent<SteamVR_TrackedObject>());
 
@@ -34,6 +38,11 @@ public class KeyCollisionEvent : MonoBehaviour {
             }
         }
         
+    }
+
+    private void TriggerClick()
+    {
+        transform.parent.GetComponent<KeyEvents>().Key_PressedEvent();
     }
     
     private void OnTriggerExit(Collider other)
@@ -64,7 +73,7 @@ public class KeyCollisionEvent : MonoBehaviour {
         //yield return new WaitForEndOfFrame();
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
         if(_watch.IsRunning)
             if(_watch.ElapsedMilliseconds> 1000)
@@ -73,6 +82,39 @@ public class KeyCollisionEvent : MonoBehaviour {
                 _watch.Reset();
             }
         Debug.DrawRay(transform.parent.position, transform.parent.forward);
-        transform.parent.localPosition = Vector3.Lerp(transform.parent.localPosition, keyPreviousPosition, Time.deltaTime * movementSpeed);
+        //transform.parent.localPosition = Vector3.Lerp(transform.parent.localPosition, keyPreviousPosition, Time.deltaTime * movementSpeed);
+
+        if (_isLerping)
+        {
+            //We want percentage = 0.0 when Time.time = _timeStartedLerping
+            //and percentage = 1.0 when Time.time = _timeStartedLerping + timeTakenDuringLerp
+            //In other words, we want to know what percentage of "timeTakenDuringLerp" the value
+            //"Time.time - _timeStartedLerping" is.
+            float timeSinceStarted = Time.time - _timeStartedLerping;
+            float percentageComplete = timeSinceStarted / timeTakenDuringLerp;
+
+            //Perform the actual lerping.  Notice that the first two parameters will always be the same
+            //throughout a single lerp-processs (ie. they won't change until we hit the space-bar again
+            //to start another lerp)
+            transform.parent.localPosition = Vector3.Lerp(_startPosition, _endPosition, percentageComplete);
+
+            //When we've completed the lerp, we set _isLerping to false
+            if (percentageComplete >= 1.0f)
+            {
+                _isLerping = false;
+            }
+        }
+    }
+
+    void StartLerping()
+    {
+        _isLerping = true;
+        _timeStartedLerping = Time.time;
+
+        //We set the start position to the current position, and the finish to 10 spaces in the 'forward' direction
+        
+        transform.parent.Translate(transform.parent.forward * movementMultiplier, Space.Self);
+        _startPosition = transform.parent.localPosition;
+        _endPosition = keyPreviousPosition;
     }
 }

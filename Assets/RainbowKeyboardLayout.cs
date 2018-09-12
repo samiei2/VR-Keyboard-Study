@@ -201,7 +201,8 @@ public class RainbowKeyboardLayout : KeyboardLayout
 
     public override void ScaleToVRDeskPosition()
     {
-        throw new NotImplementedException();
+        transform.position = VRDesk.position;
+        transform.eulerAngles = VRDesk.eulerAngles;
     }
 
     public override void ScaleToFrontViewPosition()
