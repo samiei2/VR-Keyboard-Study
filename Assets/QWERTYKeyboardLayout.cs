@@ -223,12 +223,17 @@ public class QWERTYKeyboardLayout : KeyboardLayout {
         transform.position = VRDesk.position;
         transform.position -= new Vector3(0,0.2f,0);
         transform.eulerAngles = VRDesk.eulerAngles;
+        screenArea.transform.LookAt(MainCamera);
     }
 
     public override void ScaleToFrontViewPosition()
     {
-        transform.eulerAngles = Vector3.zero;
-        transform.position = new Vector3(0, 0, MainCamera.position.z + keyboardDistanceFromCamera);
-        transform.localScale = Vector3.one;
+        //transform.eulerAngles = Vector3.zero;
+        transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+        //transform.position = new Vector3(0, 0, MainCamera.position.z + keyboardDistanceFromCamera);
+        transform.position = VRWall.position;
+        transform.eulerAngles = VRWall.eulerAngles;
+        //transform.localScale = Vector3.one;
+        screenArea.transform.LookAt(MainCamera);
     }
 }

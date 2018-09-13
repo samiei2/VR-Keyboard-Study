@@ -20,11 +20,15 @@ public class KeyCollisionEvent : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other)
     {
+        if (!_isLerping)
+        {
+            keyPreviousPosition = transform.parent.localPosition;
+        }
         if (other.GetComponent<DrumEvents>() != null)
         {
             var drumDirection = other.GetComponent<DrumEvents>().GetMovementDirection();
             float angle = Vector3.Angle(drumDirection, transform.parent.forward);
-            print("trigger enter: " + transform.parent.name + "," + angle +"," + drumDirection.normalized.y +  "," + _watch.IsRunning + "," + _watch.ElapsedMilliseconds);
+            //print("trigger enter: " + transform.parent.name + "," + angle +"," + drumDirection.normalized.y +  "," + _watch.IsRunning + "," + _watch.ElapsedMilliseconds);
             if (angle > 100 && drumDirection.normalized.y > 0.7 )
             {
                 if (_watch.IsRunning)

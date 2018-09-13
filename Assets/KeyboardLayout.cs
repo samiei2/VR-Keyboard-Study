@@ -151,81 +151,84 @@ public abstract class KeyboardLayout : MonoBehaviour
             }
         }
 
-        if (InputType == KeyboardInputType.Mouse)
+        //if (!updateLayout)
         {
-            InputButtonDown = Input.GetMouseButtonDown(0);
-            InputButtonUp = Input.GetMouseButtonUp(0);
-            HandleMouseInput();
-
-            if (pointer != null)
+            if (InputType == KeyboardInputType.Mouse)
             {
-                Vector3 mousePosition = Input.mousePosition;
+                InputButtonDown = Input.GetMouseButtonDown(0);
+                InputButtonUp = Input.GetMouseButtonUp(0);
+                HandleMouseInput();
 
-                //mousePosition.z = 9;
-                mousePosition.z = Math.Abs(Camera.main.transform.position.z - transform.position.z) + pointerDistanceFromCamera;
-
-                Vector3 mouseScreenToWorld = Camera.main.ScreenToWorldPoint(mousePosition);
-                Vector3 position = Vector3.Lerp(pointer.transform.position, mouseScreenToWorld, 1.0f - Mathf.Exp(-speed * Time.deltaTime));
-                //position.z = transform.position.z + pointerDistanceFromKeyboard;
-                pointer.transform.position = position;
-            }
-        }
-
-        if (InputType == KeyboardInputType.TouchPad)
-        {
-            InputButtonDown = action == 0 && tapActionEnabled ? true : false;
-            InputButtonUp = action == 1 && tapActionEnabled ? true : false;
-            HandleTouchInput(-1);
-        }
-
-        if (InputType == KeyboardInputType.GazeAndDwell || InputType == KeyboardInputType.GazeAndClick)
-        {
-            if (gazeTrailGameObject != null)
-            {
-                if (!gazeTrailGameObject.activeInHierarchy)
-                    gazeTrailGameObject.SetActive(true);
-            }
-            if (InputType == KeyboardInputType.GazeAndDwell)
-            {
-                if (!dwell)
-                    dwell = true;
-            }
-            if (InputType == KeyboardInputType.GazeAndClick)
-            {
-                useViveTrackpad = true;
-                useTrackerInputForPointer = true;
-                if (!useViveTrackpad)
+                if (pointer != null)
                 {
-                    InputButtonDown = action == 0 && tapActionEnabled ? true : false;
-                    InputButtonUp = action == 1 && tapActionEnabled ? true : false;
+                    Vector3 mousePosition = Input.mousePosition;
+
+                    //mousePosition.z = 9;
+                    mousePosition.z = Math.Abs(Camera.main.transform.position.z - transform.position.z) + pointerDistanceFromCamera;
+
+                    Vector3 mouseScreenToWorld = Camera.main.ScreenToWorldPoint(mousePosition);
+                    Vector3 position = Vector3.Lerp(pointer.transform.position, mouseScreenToWorld, 1.0f - Mathf.Exp(-speed * Time.deltaTime));
+                    //position.z = transform.position.z + pointerDistanceFromKeyboard;
+                    pointer.transform.position = position;
                 }
-                // else its set in the trigger handler
             }
-            HandleGazeInput();
-        }
 
-        if (InputType == KeyboardInputType.Swype)
-        {
-            InputButtonDown = action == 0 && tapActionEnabled ? true : false;
-            InputButtonUp = action == 1 && tapActionEnabled ? true : false;
-        }
-
-        if (InputType == KeyboardInputType.Ray)
-        {
-            HandleRayInput();
-        }
-
-        if (InputType == KeyboardInputType.DrumStick)
-        {
-            if (leftTrackpadHandler.GetComponent<ViveCursor>().enabled)
+            if (InputType == KeyboardInputType.TouchPad)
             {
-                leftTrackpadHandler.GetComponent<ViveCursor>().enabled = false;
+                InputButtonDown = action == 0 && tapActionEnabled ? true : false;
+                InputButtonUp = action == 1 && tapActionEnabled ? true : false;
+                HandleTouchInput(-1);
             }
-            if (rightTrackpadHandler.GetComponent<ViveCursor>().enabled)
+
+            if (InputType == KeyboardInputType.GazeAndDwell || InputType == KeyboardInputType.GazeAndClick)
             {
-                rightTrackpadHandler.GetComponent<ViveCursor>().enabled = false;
+                if (gazeTrailGameObject != null)
+                {
+                    if (!gazeTrailGameObject.activeInHierarchy)
+                        gazeTrailGameObject.SetActive(true);
+                }
+                if (InputType == KeyboardInputType.GazeAndDwell)
+                {
+                    if (!dwell)
+                        dwell = true;
+                }
+                if (InputType == KeyboardInputType.GazeAndClick)
+                {
+                    useViveTrackpad = true;
+                    useTrackerInputForPointer = true;
+                    if (!useViveTrackpad)
+                    {
+                        InputButtonDown = action == 0 && tapActionEnabled ? true : false;
+                        InputButtonUp = action == 1 && tapActionEnabled ? true : false;
+                    }
+                    // else its set in the trigger handler
+                }
+                HandleGazeInput();
             }
-            HandleDrumstickInput();
+
+            if (InputType == KeyboardInputType.Swype)
+            {
+                InputButtonDown = action == 0 && tapActionEnabled ? true : false;
+                InputButtonUp = action == 1 && tapActionEnabled ? true : false;
+            }
+
+            if (InputType == KeyboardInputType.Ray)
+            {
+                HandleRayInput();
+            }
+
+            if (InputType == KeyboardInputType.DrumStick)
+            {
+                if (leftTrackpadHandler.GetComponent<ViveCursor>().enabled)
+                {
+                    leftTrackpadHandler.GetComponent<ViveCursor>().enabled = false;
+                }
+                if (rightTrackpadHandler.GetComponent<ViveCursor>().enabled)
+                {
+                    rightTrackpadHandler.GetComponent<ViveCursor>().enabled = false;
+                }
+                HandleDrumstickInput();
+            }
         }
     }
     #endregion
