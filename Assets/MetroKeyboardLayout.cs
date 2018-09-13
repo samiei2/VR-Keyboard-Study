@@ -35,15 +35,15 @@ public class MetroKeyboardLayout : KeyboardLayout {
         }
 
         // Special Keys font size fix
-        keysDic[KeyID.Backspace].transform.Find("Text").GetComponent<TextMeshPro>().fontSize -= 7;
+        keysDic[KeyID.Backspace].transform.Find("Text").GetComponent<TextMeshPro>().fontSize = 1.7f;
         keysDic[KeyID.Backspace].transform.Find("Text").GetComponent<TextMeshPro>().text = "Backspace";
-        keysDic[KeyID.Space].transform.Find("Text").GetComponent<TextMeshPro>().fontSize -= 7;
+        keysDic[KeyID.Space].transform.Find("Text").GetComponent<TextMeshPro>().fontSize = 2;
         keysDic[KeyID.Space].transform.Find("Text").GetComponent<TextMeshPro>().text = "Space";
-        keysDic[KeyID.Shift].transform.Find("Text").GetComponent<TextMeshPro>().fontSize -= 6;
+        keysDic[KeyID.Shift].transform.Find("Text").GetComponent<TextMeshPro>().fontSize = 1.9f;
         keysDic[KeyID.Shift].transform.Find("Text").GetComponent<TextMeshPro>().text = "Shift";
-        keysDic[KeyID.Next].transform.Find("Text").GetComponent<TextMeshPro>().fontSize -= 6;
+        keysDic[KeyID.Next].transform.Find("Text").GetComponent<TextMeshPro>().fontSize = 1.9f;
         keysDic[KeyID.Next].transform.Find("Text").GetComponent<TextMeshPro>().text = "Next";
-        keysDic[KeyID.Enter].transform.Find("Text").GetComponent<TextMeshPro>().fontSize -= 6;
+        keysDic[KeyID.Enter].transform.Find("Text").GetComponent<TextMeshPro>().fontSize = 1.9f;
         keysDic[KeyID.Enter].transform.Find("Text").GetComponent<TextMeshPro>().text = "Enter";
 
     }
@@ -51,47 +51,47 @@ public class MetroKeyboardLayout : KeyboardLayout {
     public override void LayoutKeys()
     {
         // First row: . k w m u q '
-        keysDic[KeyID.Dot].transform.localPosition = new Vector3(-6 - 3*keyXDelta, 4 + 2 * keyYDelta, 0);
-        keysDic[KeyID.K].transform.localPosition = new Vector3(-4 - 2*keyXDelta, 4 + 2 * keyYDelta, 0);
-        keysDic[KeyID.W].transform.localPosition = new Vector3(-2 - 1*keyXDelta, 4 + 2 * keyYDelta, 0);
-        keysDic[KeyID.M].transform.localPosition = new Vector3(0 , 4 + 2 * keyYDelta, 0);
-        keysDic[KeyID.U].transform.localPosition = new Vector3(2 + 1*keyXDelta, 4 + 2 * keyYDelta, 0);
-        keysDic[KeyID.Q].transform.localPosition = new Vector3(4 + 2*keyXDelta, 4 + 2 * keyYDelta, 0);
-        keysDic[KeyID.Backspace].transform.localPosition = new Vector3(6 + 3*keyXDelta, 4 + 2 * keyYDelta, 0);
+        keysDic[KeyID.Dot].transform.localPosition = new Vector3(-3 - 3*keyXDelta, 2 + 2 * keyYDelta, 0);
+        keysDic[KeyID.K].transform.localPosition = new Vector3(-2 - 2*keyXDelta, 2 + 2 * keyYDelta, 0);
+        keysDic[KeyID.W].transform.localPosition = new Vector3(-1 - 1*keyXDelta, 2 + 2 * keyYDelta, 0);
+        keysDic[KeyID.M].transform.localPosition = new Vector3(0 , 2 + 2 * keyYDelta, 0);
+        keysDic[KeyID.U].transform.localPosition = new Vector3(1 + 1*keyXDelta, 2 + 2 * keyYDelta, 0);
+        keysDic[KeyID.Q].transform.localPosition = new Vector3(2 + 2*keyXDelta, 2 + 2 * keyYDelta, 0);
+        keysDic[KeyID.Backspace].transform.localPosition = new Vector3(3 + 3*keyXDelta, 2 + 2 * keyYDelta, 0);
 
         // Second row: c h t o f z
-        keysDic[KeyID.C].transform.localPosition = new Vector3(-5 - 3 * keyXDelta, 2 + keyYDelta, 0);
-        keysDic[KeyID.H].transform.localPosition = new Vector3(-3 - 2 * keyXDelta, 2 + keyYDelta, 0);
-        keysDic[KeyID.T].transform.localPosition = new Vector3(-1 - 1 * keyXDelta, 2 + keyYDelta, 0);
-        keysDic[KeyID.O].transform.localPosition = new Vector3(1, 2 + keyYDelta, 0);
-        keysDic[KeyID.F].transform.localPosition = new Vector3(3 + 1 * keyXDelta, 2 + keyYDelta, 0);
-        keysDic[KeyID.Z].transform.localPosition = new Vector3(5 + 2 * keyXDelta, 2 + keyYDelta, 0);
+        keysDic[KeyID.C].transform.localPosition = new Vector3(-2.5f - 3 * keyXDelta, 1 + keyYDelta, 0);
+        keysDic[KeyID.H].transform.localPosition = new Vector3(-1.5f - 2 * keyXDelta, 1 + keyYDelta, 0);
+        keysDic[KeyID.T].transform.localPosition = new Vector3(-.5f - 1 * keyXDelta, 1 + keyYDelta, 0);
+        keysDic[KeyID.O].transform.localPosition = new Vector3(0.5f, 1 + keyYDelta, 0);
+        keysDic[KeyID.F].transform.localPosition = new Vector3(1.5f + 1 * keyXDelta, 1 + keyYDelta, 0);
+        keysDic[KeyID.Z].transform.localPosition = new Vector3(2.5f + 2 * keyXDelta, 1 + keyYDelta, 0);
 
         // Third row: j i e space n g b
-        keysDic[KeyID.J].transform.localPosition = new Vector3(-6 - 3 * keyXDelta, 0, 0);
-        keysDic[KeyID.I].transform.localPosition = new Vector3(-4 - 2 * keyXDelta, 0, 0);
-        keysDic[KeyID.E].transform.localPosition = new Vector3(-2 - 1 * keyXDelta, 0, 0);
+        keysDic[KeyID.J].transform.localPosition = new Vector3(-3 - 3 * keyXDelta, 0, 0);
+        keysDic[KeyID.I].transform.localPosition = new Vector3(-2 - 2 * keyXDelta, 0, 0);
+        keysDic[KeyID.E].transform.localPosition = new Vector3(-1 - 1 * keyXDelta, 0, 0);
         keysDic[KeyID.Space].transform.localPosition = new Vector3(0, 0, 0);
-        keysDic[KeyID.N].transform.localPosition = new Vector3(2 + 1 * keyXDelta, 0, 0);
-        keysDic[KeyID.G].transform.localPosition = new Vector3(4 + 2 * keyXDelta, 0, 0);
-        keysDic[KeyID.B].transform.localPosition = new Vector3(6 + 3 * keyXDelta, 0, 0);
+        keysDic[KeyID.N].transform.localPosition = new Vector3(1 + 1 * keyXDelta, 0, 0);
+        keysDic[KeyID.G].transform.localPosition = new Vector3(2 + 2 * keyXDelta, 0, 0);
+        keysDic[KeyID.B].transform.localPosition = new Vector3(3 + 3 * keyXDelta, 0, 0);
 
         // Fourth row: v r s a d ret
-        keysDic[KeyID.V].transform.localPosition = new Vector3(-5 - 2 * keyXDelta, -2 - keyYDelta, 0);
-        keysDic[KeyID.R].transform.localPosition = new Vector3(-3 - 1 * keyXDelta, -2 - keyYDelta, 0);
-        keysDic[KeyID.S].transform.localPosition = new Vector3(-1, -2 - keyYDelta, 0);
-        keysDic[KeyID.A].transform.localPosition = new Vector3(1 + 1 * keyXDelta, -2 - keyYDelta, 0);
-        keysDic[KeyID.D].transform.localPosition = new Vector3(3 + 2 * keyXDelta, -2 - keyYDelta, 0);
-        keysDic[KeyID.Enter].transform.localPosition = new Vector3(5 + 3 * keyXDelta, -2 - keyYDelta, 0);
+        keysDic[KeyID.V].transform.localPosition = new Vector3(-2.5f - 2 * keyXDelta, -1 - keyYDelta, 0);
+        keysDic[KeyID.R].transform.localPosition = new Vector3(-1.5f - 1 * keyXDelta, -1 - keyYDelta, 0);
+        keysDic[KeyID.S].transform.localPosition = new Vector3(-.5f, -1 - keyYDelta, 0);
+        keysDic[KeyID.A].transform.localPosition = new Vector3(.5f + 1 * keyXDelta, -1 - keyYDelta, 0);
+        keysDic[KeyID.D].transform.localPosition = new Vector3(1.5f + 2 * keyXDelta, -1 - keyYDelta, 0);
+        keysDic[KeyID.Enter].transform.localPosition = new Vector3(2.5f + 3 * keyXDelta, -1 - keyYDelta, 0);
 
         // Fifth row: , x p l y shift otherkeysDic
-        keysDic[KeyID.Comma].transform.localPosition = new Vector3(-6 - 3 * keyXDelta, -4 - 2* keyYDelta, 0);
-        keysDic[KeyID.X].transform.localPosition = new Vector3(-4 - 2 * keyXDelta, -4 - 2 * keyYDelta, 0);
-        keysDic[KeyID.P].transform.localPosition = new Vector3(-2 - 1 * keyXDelta, -4 - 2 * keyYDelta, 0);
-        keysDic[KeyID.L].transform.localPosition = new Vector3(0, -4 - 2 * keyYDelta, 0);
-        keysDic[KeyID.Y].transform.localPosition = new Vector3(2 + 1 * keyXDelta, -4 - 2 * keyYDelta, 0);
-        keysDic[KeyID.Shift].transform.localPosition = new Vector3(4 + 2 * keyXDelta, -4 - 2 * keyYDelta, 0);
-        keysDic[KeyID.Next].transform.localPosition = new Vector3(6 + 3 * keyXDelta, -4 - 2 * keyYDelta, 0);
+        keysDic[KeyID.Comma].transform.localPosition = new Vector3(-3 - 3 * keyXDelta, -2 - 2* keyYDelta, 0);
+        keysDic[KeyID.X].transform.localPosition = new Vector3(-2 - 2 * keyXDelta, -2 - 2 * keyYDelta, 0);
+        keysDic[KeyID.P].transform.localPosition = new Vector3(-1 - 1 * keyXDelta, -2 - 2 * keyYDelta, 0);
+        keysDic[KeyID.L].transform.localPosition = new Vector3(0, -2 - 2 * keyYDelta, 0);
+        keysDic[KeyID.Y].transform.localPosition = new Vector3(1 + 1 * keyXDelta, -2 - 2 * keyYDelta, 0);
+        keysDic[KeyID.Shift].transform.localPosition = new Vector3(2 + 2 * keyXDelta, -2 - 2 * keyYDelta, 0);
+        keysDic[KeyID.Next].transform.localPosition = new Vector3(3 + 3 * keyXDelta, -2 - 2 * keyYDelta, 0);
     }
 
     public override void CreateMainKeys()
@@ -231,13 +231,15 @@ public class MetroKeyboardLayout : KeyboardLayout {
 
     public override void ScaleToVRDeskPosition()
     {
-        transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
-        transform.position = VRDesk.position;
+        transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+        transform.position = VRDesk.position - new Vector3(0,0.5f,0);
         transform.eulerAngles = VRDesk.eulerAngles;
     }
 
     public override void ScaleToFrontViewPosition()
     {
-        throw new NotImplementedException();
+        transform.eulerAngles = Vector3.zero;
+        transform.position = new Vector3(0, 0, MainCamera.position.z + keyboardDistanceFromCamera);
+        transform.localScale = Vector3.one;
     }
 }

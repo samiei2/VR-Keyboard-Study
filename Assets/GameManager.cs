@@ -5,9 +5,16 @@ using TMPro;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour {
+    public static GameManager Instance;
     System.Diagnostics.Stopwatch _timer;
-	// Use this for initialization
-	void Start () {
+    private bool _inSession;
+
+    private void Awake()
+    {
+        Instance = this;
+    }
+
+    void Start () {
         _timer = new System.Diagnostics.Stopwatch();
         if (GameObject.Find("MenuModule")!=null)
         {
@@ -16,6 +23,7 @@ public class GameManager : MonoBehaviour {
             //if(commandText!=null)
             //    commandText.GetComponent<TextMeshPro>().text = "";
         }
+        
 	}
 	
 	// Update is called once per frame
@@ -51,10 +59,13 @@ public class GameManager : MonoBehaviour {
         }
         SaveDataModule.Instance.WriteToTimeLine("=============================="+ Enum.GetName(typeof(SessionType), type) + " Session Ended==============================");
         SaveDataModule.Instance.SetSaveData(false);
+        _inSession = false;
     }
 
     private void StartSession(SessionType type)
     {
+        _inSession = true;
+        SaveKeyboardLayoutSettings();
         if (_timer.IsRunning)
         {
             Debug.LogError("Test: Timer Still Running");
@@ -65,6 +76,15 @@ public class GameManager : MonoBehaviour {
         SaveDataModule.Instance.WriteToTimeLine("=============================="+Enum.GetName(typeof(SessionType),type)+" Session Started==============================");
     }
 
+    private void SaveKeyboardLayoutSettings()
+    {
+        
+    }
+
+    public bool IsInSession()
+    {
+        return _inSession;
+    }
 }
 
 public enum SessionType

@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System;
 
 public class ViveCursor : MonoBehaviour
 {
@@ -52,13 +53,19 @@ public class ViveCursor : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        if (holder == null)
+            CreateRay();
+    }
+
+    private void CreateRay()
+    {
         Material newMaterial = new Material(Shader.Find("Unlit/Color"));
         newMaterial.SetColor("_Color", color);
 
-        holder = new GameObject();
+        holder = new GameObject("Ray");
         holder.transform.parent = this.transform;
         holder.transform.localPosition = Vector3.zero;
-
+        
         pointer = GameObject.CreatePrimitive(PrimitiveType.Cube);
         pointer.transform.parent = holder.transform;
         pointer.GetComponent<MeshRenderer>().material = newMaterial;
@@ -73,12 +80,15 @@ public class ViveCursor : MonoBehaviour
             cursor.transform.parent = holder.transform;
             cursor.GetComponent<MeshRenderer>().material = newMaterial;
             cursor.transform.localScale = cursorScale;
+            cursor.transform.localEulerAngles = Vector3.zero;
 
             cursor.GetComponent<SphereCollider>().isTrigger = true;
             cursor.AddComponent<Rigidbody>().isKinematic = true;
             cursor.layer = 2;
         }
 
+        holder.transform.localEulerAngles = Vector3.zero;
+        pointer.transform.localEulerAngles = Vector3.zero;
         SetPointerTransform(length, thickness);
     }
 
@@ -127,5 +137,23 @@ public class ViveCursor : MonoBehaviour
 
         float beamLength = GetBeamLength(rayHit, hitObject);
         SetPointerTransform(beamLength, thickness);
+    }
+
+    private void OnDisable()
+    {
+        Destroy(holder);
+    }
+
+    private void OnEnable()
+    {
+        if (holder == null)
+        {
+            CreateRay();
+        }
+    }
+
+    internal Transform GetHolder()
+    {
+        return holder.transform;
     }
 }

@@ -25,7 +25,7 @@ public class KeyCollisionEvent : MonoBehaviour {
             var drumDirection = other.GetComponent<DrumEvents>().GetMovementDirection();
             float angle = Vector3.Angle(drumDirection, transform.parent.forward);
 
-            if (angle > 120 && drumDirection.normalized.y > 0.8 && (_watch.IsRunning && _watch.ElapsedMilliseconds > 100))
+            if (angle > 100 && drumDirection.normalized.y > 0.7 && (_watch.IsRunning && _watch.ElapsedMilliseconds > 50))
             {
 
                 StartLerping();
@@ -75,12 +75,15 @@ public class KeyCollisionEvent : MonoBehaviour {
 
     private void FixedUpdate()
     {
-        if(_watch.IsRunning)
-            if(_watch.ElapsedMilliseconds> 1000)
-            {
-                _watch.Stop();
-                _watch.Reset();
-            }
+        if (_watch != null)
+        {
+            if (_watch.IsRunning)
+                if (_watch.ElapsedMilliseconds > 1000)
+                {
+                    _watch.Stop();
+                    _watch.Reset();
+                }
+        }
         Debug.DrawRay(transform.parent.position, transform.parent.forward);
         //transform.parent.localPosition = Vector3.Lerp(transform.parent.localPosition, keyPreviousPosition, Time.deltaTime * movementSpeed);
 

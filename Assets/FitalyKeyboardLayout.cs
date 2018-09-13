@@ -133,7 +133,7 @@ public class FitalyKeyboardLayout : KeyboardLayout {
         }
 
         keysDic[KeyID.Backspace].transform.Find("Text").GetComponent<TextMeshPro>().rectTransform.localScale = new Vector3(0.5f,2,1);
-        keysDic[KeyID.Backspace].transform.Find("Text").GetComponent<TextMeshPro>().fontSize = 2f;
+        keysDic[KeyID.Backspace].transform.Find("Text").GetComponent<TextMeshPro>().fontSize = 1.5f;
         keysDic[KeyID.Backspace].transform.Find("Text").GetComponent<TextMeshPro>().text = "Backspace";
         keysDic[KeyID.Enter].transform.Find("Text").GetComponent<TextMeshPro>().rectTransform.localScale = new Vector3(0.5f, 2, 1);
         keysDic[KeyID.Enter].transform.Find("Text").GetComponent<TextMeshPro>().fontSize = 2f;
@@ -150,7 +150,7 @@ public class FitalyKeyboardLayout : KeyboardLayout {
     {
         var transform = (Transform)sender;
         transform.Find("MainShape").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().pressedMat;
-
+        SaveDataModule.Instance.WriteToTimeLine("KeyPressed: " + Enum.GetName(typeof(KeyID), args.KeyId));
         if (args.KeyPrintable)
         {
             if (textArea != null)
@@ -224,11 +224,16 @@ public class FitalyKeyboardLayout : KeyboardLayout {
 
     public override void ScaleToVRDeskPosition()
     {
-        throw new NotImplementedException();
+        transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
+        transform.position = VRDesk.position;
+        transform.position -= new Vector3(0, 0.2f, 0);
+        transform.eulerAngles = VRDesk.eulerAngles;
     }
 
     public override void ScaleToFrontViewPosition()
     {
-        throw new NotImplementedException();
+        transform.eulerAngles = Vector3.zero;
+        transform.position = new Vector3(0, 0, MainCamera.position.z + keyboardDistanceFromCamera);
+        transform.localScale = Vector3.one;
     }
 }

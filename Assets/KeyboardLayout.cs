@@ -100,13 +100,22 @@ public abstract class KeyboardLayout : MonoBehaviour
         //transform.parent = MainCamera;
         //transform.localPosition = new Vector3(0, 0, keyboardDistanceFromCamera);
 
-        var keyboardTop = GetKeyboardTop();
+        
 
-        textArea = GameObject.Find("TextArea");
-        textArea.transform.parent = this.transform;
-        textArea.transform.localPosition = new Vector3(0, keyboardTop + 4, 2);
+        FindTextArea();
 
+        
         //AddManipulationPoints();
+    }
+
+    private void FindTextArea()
+    {
+        screenArea = Instantiate(Resources.Load("ScreenArea") as GameObject);
+        
+        textArea = screenArea.transform.Find("TextArea").gameObject;
+        screenArea.transform.parent = this.transform;
+        var keyboardTop = GetKeyboardTop();
+        screenArea.transform.localPosition = new Vector3(0, transform.InverseTransformPoint(keyboardTop).y + 1 + 2.5f, 0);
     }
 
     public virtual void Update()
@@ -117,7 +126,8 @@ public abstract class KeyboardLayout : MonoBehaviour
         }
         else if ((Input.GetKey(KeyCode.RightShift) || Input.GetKey(KeyCode.LeftShift)) && Input.GetKeyDown(KeyCode.R)) // Rotate keys towards head
         {
-            RotateKeysTowardsHead();
+            //RotateKeysTowardsHead();
+            ScaleToFrontViewPosition();
         }
         else if ((Input.GetKey(KeyCode.RightShift) || Input.GetKey(KeyCode.LeftShift)) && Input.GetKeyDown(KeyCode.L)) // Load Layout File
         {
@@ -128,7 +138,9 @@ public abstract class KeyboardLayout : MonoBehaviour
             ScaleToVRDeskPosition();
         }
 
-
+        screenArea.transform.localEulerAngles = new Vector3(-transform.eulerAngles.x, 0, 0);
+        var keyboardTopWorldSpace = GetKeyboardTop();
+        screenArea.transform.localPosition = new Vector3(0, transform.InverseTransformPoint(keyboardTopWorldSpace).y + 1 + 2.5f, 0);
         //foreach (var item in keysDic)
         //{
         //    Debug.DrawRay(item.Value.transform.position, item.Value.transform.forward);
@@ -140,8 +152,17 @@ public abstract class KeyboardLayout : MonoBehaviour
                 gazeTrailGameObject.SetActive(false);
         }
 
-        if (updateLayout)
+        if (updateLayout && !GameManager.Instance.IsInSession())
             LayoutKeys();
+        else
+        {
+            if(GameManager.Instance!=null)
+                if (GameManager.Instance.IsInSession())
+                    Debug.LogError("Cant change layout while in session");
+        }
+
+
+        
 
         //transform.position = new Vector3(
         //    Camera.main.transform.position.x,
@@ -150,6 +171,19 @@ public abstract class KeyboardLayout : MonoBehaviour
 
         if (InputType != KeyboardInputType.GazeAndDwell)
             dwell = false;
+
+        if (InputType!=KeyboardInputType.DrumStick)
+        {
+            if (rightDrumStick!=null)
+            {
+                Destroy(rightDrumStick);
+            }
+
+            if (leftDrumStick != null)
+            {
+                Destroy(leftDrumStick);
+            }
+        }
 
         if (InputType == KeyboardInputType.Mouse)
         {
@@ -314,7 +348,6 @@ public abstract class KeyboardLayout : MonoBehaviour
         var topRightPoint = GameObject.CreatePrimitive(PrimitiveType.Sphere);
         topRightPoint.transform.parent = transform;
         topRightPoint.transform.localScale = keysDic[KeyID.A].transform.localScale;
-        topRightPoint.transform.localPosition = new Vector3(KeyboardRight + 2, KeyboardTop + 1f, 0);
         topRightPoint.AddComponent<Rigidbody>();
         topRightPoint.GetComponent<Rigidbody>().useGravity = false;
     }
@@ -355,15 +388,20 @@ public abstract class KeyboardLayout : MonoBehaviour
         });
     }
 
-    private float GetKeyboardTop()
+    private Vector3 GetKeyboardTop()
     {
         float top = int.MinValue;
+        Vector3 temp = Vector3.zero;
         foreach (var item in keysDic)
         {
-            if (item.Value.transform.position.y > top)
+            if (item.Value.transform.Find("MainShape").GetComponent<MeshRenderer>().bounds.max.y/*transform.position.y*/ > top)
+            {
                 top = item.Value.transform.position.y;
+                
+                temp = item.Value.transform.Find("MainShape").GetComponent<MeshRenderer>().bounds.max;
+            }
         }
-        return top;
+        return temp;
     }
 
     private float GetKeyboardRight()
@@ -383,7 +421,7 @@ public abstract class KeyboardLayout : MonoBehaviour
     {
         foreach (var key in keysDic)
         {
-            key.Value.transform.LookAt(GameObject.Find("[CameraRig]").transform.Find("Camera (eye)").position);
+            key.Value.transform.LookAt(_camerarig.transform.Find("Camera (eye)").position);
         }
     }
 
@@ -442,6 +480,16 @@ public abstract class KeyboardLayout : MonoBehaviour
 
     private void HandleDrumstickInput()
     {
+        if (leftTrackpadHandler.GetComponent<ViveCursor>().isActiveAndEnabled)
+        {
+            leftTrackpadHandler.GetComponent<ViveCursor>().enabled = false;
+            leftTrackpadHandler.GetComponent<ViveCursor>().transform.eulerAngles = new Vector3(0, 0, 0);
+        }
+        if (rightTrackpadHandler.GetComponent<ViveCursor>().isActiveAndEnabled)
+        {
+            rightTrackpadHandler.GetComponent<ViveCursor>().enabled = false;
+            rightTrackpadHandler.GetComponent<ViveCursor>().transform.eulerAngles = new Vector3(0, 0, 0);
+        }
         if (leftTrackpadHandler != null && leftTrackpadHandler.transform.gameObject.activeInHierarchy)
         {
             if (leftDrumStick == null)
@@ -492,14 +540,9 @@ public abstract class KeyboardLayout : MonoBehaviour
     {
         if (leftTrackpadHandler!=null && leftTrackpadHandler.transform.gameObject.activeInHierarchy)
         {
-            if (leftTrackpadHandler.GetComponent<DrumCursor>().isActiveAndEnabled)
-            {
-                leftTrackpadHandler.GetComponent<DrumCursor>().enabled = false;
-            }
             if (!leftTrackpadHandler.GetComponent<ViveCursor>().isActiveAndEnabled)
             {
                 leftTrackpadHandler.GetComponent<ViveCursor>().enabled = true;
-                leftTrackpadHandler.GetComponent<ViveCursor>().transform.eulerAngles = new Vector3(0,0,0);
             }
             RaycastHit hit;
             Ray ray = new Ray(leftTrackpadHandler.GetPosition(), leftTrackpadHandler.GetForward());
@@ -517,14 +560,9 @@ public abstract class KeyboardLayout : MonoBehaviour
         }
         if (rightTrackpadHandler!=null && rightTrackpadHandler.transform.gameObject.activeInHierarchy)
         {
-            if (rightTrackpadHandler.GetComponent<DrumCursor>().isActiveAndEnabled)
-            {
-                rightTrackpadHandler.GetComponent<DrumCursor>().enabled = false;
-            }
             if (!rightTrackpadHandler.GetComponent<ViveCursor>().isActiveAndEnabled)
             {
                 rightTrackpadHandler.GetComponent<ViveCursor>().enabled = true;
-                rightTrackpadHandler.GetComponent<ViveCursor>().transform.eulerAngles = new Vector3(0, 0, 0);
             }
             RaycastHit hit;
             Ray ray = new Ray(rightTrackpadHandler.GetPosition(), rightTrackpadHandler.GetForward());
@@ -972,6 +1010,7 @@ public abstract class KeyboardLayout : MonoBehaviour
         { KeyID.Hat, '^' },{ KeyID.Ampersand, '&' },{ KeyID.Star, '*' },{ KeyID.LParathesis, '(' },{ KeyID.RParathesis, ')' },
         { KeyID.Underline, '_' },{ KeyID.Dash, '-' },{ KeyID.Plus, '+' },{ KeyID.Slash, '/' },{ KeyID.BackSlash, '\\' },
     };
+    private GameObject screenArea;
     #endregion
     #endregion
 }
@@ -992,7 +1031,6 @@ public enum KeyboardInputType
 {
     GazeAndDwell,
     GazeAndClick,
-    GazeAndRay,
     Ray,
     DrumStick,
     Mouse,

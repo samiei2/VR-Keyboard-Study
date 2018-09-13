@@ -25,13 +25,13 @@ public class SaveDataModule : MonoBehaviour {
             throw new Exception("Multiple save modules detected.");
         directoryPath = Application.dataPath + @"\\User_Data\\";
         _timeLineQueue = new ConcurrentQueue<string>();
-        StartCoroutine("Serializer");
+        StartCoroutine(Serializer());
     }
 
     // Use this for initialization
     private void Start()
     {
-        if (SaveUserData)
+        if (true)
         {
             if(!initialized)
                 Initialize();
@@ -70,12 +70,12 @@ public class SaveDataModule : MonoBehaviour {
 
     internal void WriteToTimeLine(string v)
     {
-        _timeLineQueue.Enqueue(v);
-    }
-
-    private void OnApplicationPause(bool pause)
-    {
-        CloseStreams();
+        if (true)
+        {
+            String currentTime = System.DateTime.Now.ToString("MM/dd HH:mm:ss");
+            String finalMessage = currentTime + " :: " + v + "\n";
+            _timeLineQueue.Enqueue(finalMessage);
+        }
     }
     
     private void OnApplicationQuit()
@@ -85,13 +85,15 @@ public class SaveDataModule : MonoBehaviour {
 
     private void CloseStreams()
     {
-        if (SaveUserData)
+        if (true)
         {
-            _stopSerialization = true;
             if (timeLineFile != null)
             {
-                WriteToTimeLine("===========================================GAMESessionEndded=============================================");
-                WriteToTimeLine("=========================================================================================================");
+                _stopSerialization = true;
+                timeLineFile.WriteLine("===========================================GAMESessionEndded=============================================");
+                timeLineFile.WriteLine("=========================================================================================================");
+
+                
                 timeLineFile.Flush();
                 timeLineFile.Close();
             }
@@ -103,27 +105,21 @@ public class SaveDataModule : MonoBehaviour {
         }
     }
 
-    public IEnumerable Serializer()
+    public IEnumerator Serializer()
     {
         if (timeLineFile == null)
             Initialize();
-        if (SaveUserData)
+        while (!_stopSerialization)
         {
-            while (!_stopSerialization)
+            string finalMessagev = "";
+            var success = _timeLineQueue.TryDequeue(out finalMessagev);
+            if (success)
             {
-                string v = "";
-                var success = _timeLineQueue.TryDequeue(out v);
-                if (success)
-                {
-                    String currentTime = System.DateTime.Now.ToString("MM/dd HH:mm:ss");
-                    String finalMessage = currentTime + " :: " + v + "\n";
-
-                    timeLineFile.WriteLine(finalMessage);
-                }
-                else
-                {
-                    yield return new WaitForSeconds(0.1f);
-                }
+                timeLineFile.WriteLine(finalMessagev);
+            }
+            else
+            {
+                yield return new WaitForSeconds(0.1f);
             }
         }
     }

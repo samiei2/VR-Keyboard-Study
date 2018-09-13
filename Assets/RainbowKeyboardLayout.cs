@@ -78,6 +78,7 @@ public class RainbowKeyboardLayout : KeyboardLayout
         var transform = (Transform)sender;
 
         transform.Find("MainShape").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().pressedMat;
+        SaveDataModule.Instance.WriteToTimeLine("KeyPressed: " + Enum.GetName(typeof(KeyID), args.KeyId));
 
         if (args.KeyPrintable)
         {
