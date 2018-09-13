@@ -203,11 +203,14 @@ public class RainbowKeyboardLayout : KeyboardLayout
     public override void ScaleToVRDeskPosition()
     {
         transform.position = VRDesk.position;
+        transform.position -= new Vector3(-.2f, 0.5f, 0);
         transform.eulerAngles = VRDesk.eulerAngles;
     }
 
     public override void ScaleToFrontViewPosition()
     {
-        throw new NotImplementedException();
+        transform.eulerAngles = Vector3.zero;
+        transform.position = new Vector3(0, 0, MainCamera.position.z + keyboardDistanceFromCamera);
+        transform.localScale = Vector3.one;
     }
 }

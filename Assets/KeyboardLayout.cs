@@ -20,49 +20,15 @@ public abstract class KeyboardLayout : MonoBehaviour
             Instantiate(prefab).GetComponent<SaveDataModule>();
         }
 
-        try
-        {
-            var _vrtkObj = GameObject.Find("[VRTK]");
-            if (_vrtkObj != null)
-            {
-                var _steamvrsdl = _vrtkObj.transform.Find("SteamVRSDK");
-                if (_steamvrsdl != null)
-                {
-                    gazeTrailGameObject = _steamvrsdl.Find("[VRGazeTrail]").gameObject;
-                    _camerarig = _steamvrsdl.Find("[CameraRig]");
-                    if (_camerarig != null)
-                    {
-                        var _cameraHead = _camerarig.Find("Camera (head)");
-                        if (_cameraHead != null)
-                        {
-                            MainCamera = _cameraHead.Find("Camera (eye)");
-                            VRDesk = _cameraHead.Find("VRDesk");
-                        }
-                    }
-                }
-            }
-            else
-            {
-                var _MainCameraObj = GameObject.FindGameObjectWithTag("MainCamera");
-                var _VRDeskobj = GameObject.FindGameObjectWithTag("VRDesk");
-                var _gazeTrailGameObject = GameObject.FindGameObjectWithTag("[VRGazeTrail]");
-                if (_MainCameraObj != null)
-                {
-                    MainCamera = _MainCameraObj.transform;
-                }
-                if (_VRDeskobj != null)
-                {
-                    VRDesk = _VRDeskobj.transform;
-                }
-                if (_gazeTrailGameObject != null)
-                {
-                    gazeTrailGameObject = _gazeTrailGameObject;
-                }
-            }
-        }
-        catch (Exception e)
-        {
+        _camerarig = GameObject.Find("[CameraRig]").transform;
+        MainCamera = _camerarig.Find("Camera (eye)");
+        VRDesk = MainCamera.Find("VRDesk");
+        VRWall = MainCamera.Find("VRWall");
+        var _gazeTrailGameObject = GameObject.Find("[VRGazeTrail]");
 
+        if (_gazeTrailGameObject != null)
+        {
+            gazeTrailGameObject = _gazeTrailGameObject;
         }
         SaveDataModule.Instance.WriteToTimeLine("==============================Keyboard Started==============================");
         CreateMainKeys();
@@ -226,6 +192,8 @@ public abstract class KeyboardLayout : MonoBehaviour
             }
             if (InputType == KeyboardInputType.GazeAndClick)
             {
+                useViveTrackpad = true;
+                useTrackerInputForPointer = true;
                 if (!useViveTrackpad)
                 {
                     InputButtonDown = action == 0 && tapActionEnabled ? true : false;
@@ -511,6 +479,7 @@ public abstract class KeyboardLayout : MonoBehaviour
                 rightDrumStick = Instantiate(Resources.Load<GameObject>("DrumstickPrefab"));
                 rightDrumStick.transform.forward = rightTrackpadHandler.transform.forward;
                 rightDrumStick.transform.parent = rightTrackpadHandler.transform;
+                
             }
 
             var controllerPosition = rightTrackpadHandler.GetPosition();
@@ -518,10 +487,18 @@ public abstract class KeyboardLayout : MonoBehaviour
             rightDrumStick.transform.Find("Sphere").localPosition = new Vector3(0, 0, rightDrumStick.transform.Find("Capsule").localScale.y);
             rightDrumStick.transform.localPosition = new Vector3(0, 0, rightDrumStick.transform.Find("Capsule").localScale.y);
 
-            var distanceFromHead = controllerPosition - MainCamera.position;
-            //print(distanceFromHead);
-            rightDrumStick.transform.localPosition = new Vector3(rightDrumStick.transform.localPosition.x,
-                    rightDrumStick.transform.localPosition.y, rightDrumStick.transform.localPosition.z + distanceFromHead.z);
+            //if (prevDistanceFromHead != Vector3.zero)
+            //{
+            //    var distanceFromHead = controllerPosition - MainCamera.position;
+            //    var diffdistance = prevDistanceFromHead - distanceFromHead;
+            //    prevDistanceFromHead = distanceFromHead;
+            //    //print(distanceFromHead);
+            //    rightDrumStick.transform.Find("Capsule").localScale += new Vector3(0, diffdistance.sqrMagnitude * pointerDistanceFromCamera, 0);
+            //}
+            //else
+            //    prevDistanceFromHead = controllerPosition - MainCamera.position;
+            //rightDrumStick.transform.localPosition = new Vector3(rightDrumStick.transform.localPosition.x,
+            //        rightDrumStick.transform.localPosition.y, rightDrumStick.transform.localScale.z);
 
             // Automatic length adjustment
             //RaycastHit hit;
@@ -993,7 +970,7 @@ public abstract class KeyboardLayout : MonoBehaviour
     public float lDrumLength;
     public Transform MainCamera;
     protected Transform VRDesk;
-
+    protected Transform VRWall;
     public static Dictionary<KeyID, char> PRINTABLEKEYS = new Dictionary<KeyID, char>()
     {
         { KeyID.A, 'a' },{ KeyID.B, 'b' },{ KeyID.C, 'c' },{ KeyID.D, 'd' },{ KeyID.E, 'e' },
@@ -1010,7 +987,8 @@ public abstract class KeyboardLayout : MonoBehaviour
         { KeyID.Hat, '^' },{ KeyID.Ampersand, '&' },{ KeyID.Star, '*' },{ KeyID.LParathesis, '(' },{ KeyID.RParathesis, ')' },
         { KeyID.Underline, '_' },{ KeyID.Dash, '-' },{ KeyID.Plus, '+' },{ KeyID.Slash, '/' },{ KeyID.BackSlash, '\\' },
     };
-    private GameObject screenArea;
+    protected GameObject screenArea;
+    private Vector3 prevDistanceFromHead;
     #endregion
     #endregion
 }

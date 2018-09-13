@@ -24,17 +24,32 @@ public class KeyCollisionEvent : MonoBehaviour {
         {
             var drumDirection = other.GetComponent<DrumEvents>().GetMovementDirection();
             float angle = Vector3.Angle(drumDirection, transform.parent.forward);
-
-            if (angle > 100 && drumDirection.normalized.y > 0.7 && (_watch.IsRunning && _watch.ElapsedMilliseconds > 50))
+            print("trigger enter: " + transform.parent.name + "," + angle +"," + drumDirection.normalized.y +  "," + _watch.IsRunning + "," + _watch.ElapsedMilliseconds);
+            if (angle > 100 && drumDirection.normalized.y > 0.7 )
             {
+                if (_watch.IsRunning)
+                {
+                    if (_watch.ElapsedMilliseconds > 100)
+                    {
+                        StartLerping();
+                        StartCoroutine("TriggerClick");
+                        if (other.transform.parent.parent.GetComponent<SteamVR_TrackedController>() != null)
+                            TriggerHapticPulse(other.transform.parent.parent.GetComponent<SteamVR_TrackedObject>());
 
-                StartLerping();
-                StartCoroutine("TriggerClick");
-                if (other.transform.parent.parent.GetComponent<SteamVR_TrackedController>() != null)
-                    TriggerHapticPulse(other.transform.parent.parent.GetComponent<SteamVR_TrackedObject>());
+                        _watch.Stop();
+                        _watch.Reset();
+                    }
+                }
+                else
+                {
+                    StartLerping();
+                    StartCoroutine("TriggerClick");
+                    if (other.transform.parent.parent.GetComponent<SteamVR_TrackedController>() != null)
+                        TriggerHapticPulse(other.transform.parent.parent.GetComponent<SteamVR_TrackedObject>());
 
-                _watch.Stop();
-                _watch.Reset();
+                    _watch.Stop();
+                    _watch.Reset();
+                }
             }
         }
         

@@ -72,7 +72,7 @@ public class SaveDataModule : MonoBehaviour {
     {
         if (true)
         {
-            String currentTime = System.DateTime.Now.ToString("MM/dd HH:mm:ss");
+            String currentTime = System.DateTime.Now.ToString("MM/dd HH:mm:ss.fffff");
             String finalMessage = currentTime + " :: " + v + "\n";
             _timeLineQueue.Enqueue(finalMessage);
         }

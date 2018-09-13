@@ -219,7 +219,7 @@ public class QWERTYKeyboardLayout : KeyboardLayout {
 
     public override void ScaleToVRDeskPosition()
     {
-        transform.localScale = new Vector3(0.05f, 0.05f, 0.05f);
+        transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
         transform.position = VRDesk.position;
         transform.position -= new Vector3(0,0.2f,0);
         transform.eulerAngles = VRDesk.eulerAngles;
