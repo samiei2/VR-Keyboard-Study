@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using Tobii.Research.Unity;
 using UnityEngine;
+using UnityEngine.UI;
 
 public abstract class KeyboardLayout : MonoBehaviour
 {
@@ -104,18 +105,19 @@ public abstract class KeyboardLayout : MonoBehaviour
             ScaleToVRDeskPosition();
         }
 
-        screenArea.transform.localEulerAngles = new Vector3(-transform.eulerAngles.x, 0, 0);
-        var keyboardTopWorldSpace = GetKeyboardTop();
-        screenArea.transform.localPosition = new Vector3(0, transform.InverseTransformPoint(keyboardTopWorldSpace).y + 1 + 2.5f, 0);
+        //screenArea.transform.localEulerAngles = new Vector3(-transform.eulerAngles.x, 0, 0);
+        //var keyboardTopWorldSpace = GetKeyboardTop();
+        //screenArea.transform.localPosition = new Vector3(0, transform.InverseTransformPoint(keyboardTopWorldSpace).y + 1 + 2.5f, 0);
         //foreach (var item in keysDic)
         //{
         //    Debug.DrawRay(item.Value.transform.position, item.Value.transform.forward);
         //}
 
-        if (gazeTrailGameObject != null)
+        if (!(InputType == KeyboardInputType.GazeAndClick || InputType == KeyboardInputType.GazeAndDwell))
         {
-            if (gazeTrailGameObject.activeInHierarchy)
-                gazeTrailGameObject.SetActive(false);
+            if(gazeTrailGameObject!=null)
+                if (gazeTrailGameObject.GetComponent<VRGazeTrail>().On)
+                    gazeTrailGameObject.GetComponent<VRGazeTrail>().On = false;
         }
 
         if (updateLayout && !GameManager.Instance.IsInSession())
@@ -184,8 +186,8 @@ public abstract class KeyboardLayout : MonoBehaviour
             {
                 if (gazeTrailGameObject != null)
                 {
-                    if (!gazeTrailGameObject.activeInHierarchy)
-                        gazeTrailGameObject.SetActive(true);
+                    if (!gazeTrailGameObject.GetComponent<VRGazeTrail>().On)
+                        gazeTrailGameObject.GetComponent<VRGazeTrail>().On = true;
                 }
                 if (InputType == KeyboardInputType.GazeAndDwell)
                 {
@@ -198,8 +200,8 @@ public abstract class KeyboardLayout : MonoBehaviour
                     useTrackerInputForPointer = true;
                     if (!useViveTrackpad)
                     {
-                        InputButtonDown = action == 0 && tapActionEnabled ? true : false;
-                        InputButtonUp = action == 1 && tapActionEnabled ? true : false;
+                        //InputButtonDown = action == 0 && tapActionEnabled ? true : false;
+                        //InputButtonUp = action == 1 && tapActionEnabled ? true : false;
                     }
                     // else its set in the trigger handler
                 }
@@ -336,20 +338,29 @@ public abstract class KeyboardLayout : MonoBehaviour
                 {
                     InputButtonDown = true;
                     InputButtonHeldDown = true;
-                    InputButtonUp = false;
+                    //InputButtonUp = false;
                 }
                 else
                 {
-                    InputButtonDown = false;
-                    InputButtonHeldDown = false;
+                    //InputButtonDown = false;
+                    //InputButtonHeldDown = false;
                     InputButtonUp = true;
                 }
             }
             if (InputType == KeyboardInputType.Ray || InputType == KeyboardInputType.DrumStick)
             {
-                InputButtonDown = args.TriggerDown;
-                InputButtonHeldDown = args.TriggerDown;
-                InputButtonUp = args.TriggerUp;
+                if (args.TriggerDown)
+                {
+                    InputButtonDown = true;
+                    InputButtonHeldDown = true;
+                    //InputButtonUp = false;
+                }
+                else
+                {
+                    //InputButtonDown = false;
+                    //InputButtonHeldDown = false;
+                    InputButtonUp = true;
+                }
             }
 
             if (args.moveDirection != MovementDirection.None) 
@@ -570,6 +581,7 @@ public abstract class KeyboardLayout : MonoBehaviour
                 RaycastHit hit;
                 if (Physics.Raycast(ray, out hit))
                 {
+                    //GameObject.Find("[VRPositioningGuide]").transform.Find("PlacementCanvas").Find("InfoText").GetComponent<Text>().text = hit.transform.parent.name;
                     HandleHit(hit.transform.gameObject);
                 }
                 else
@@ -635,6 +647,7 @@ public abstract class KeyboardLayout : MonoBehaviour
             if (InputButtonDown)
             {
                 //Debug.Log("Mouse down on the " + hit.transform.parent.name);
+                GameObject.Find("[VRPositioningGuide]").transform.Find("PlacementCanvas").Find("InfoText").GetComponent<Text>().text = hit.transform.parent.name + " Down";
                 inKeyPress = true;
                 hit.transform.parent.GetComponent<KeyEvents>().Key_PressedEvent();
                 StartCoroutine("RepeatKeyPress");

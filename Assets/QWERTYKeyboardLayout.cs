@@ -219,11 +219,12 @@ public class QWERTYKeyboardLayout : KeyboardLayout {
 
     public override void ScaleToVRDeskPosition()
     {
-        transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-        transform.position = VRDesk.position;
-        transform.position -= new Vector3(0,0.2f,0);
+        transform.localScale = new Vector3(0.08f, 0.08f, 0.08f);
+        transform.position = VRDesk.position - new Vector3(.2f, 0.48f, -0.28f);
         transform.eulerAngles = VRDesk.eulerAngles;
-        screenArea.transform.LookAt(MainCamera);
+        //screenArea.transform.LookAt(MainCamera);
+        screenArea.transform.localPosition = new Vector3(0, 3.9f, -2.83f);
+        screenArea.transform.localEulerAngles = new Vector3(-50, 0, 0);
     }
 
     public override void ScaleToFrontViewPosition()
@@ -231,9 +232,11 @@ public class QWERTYKeyboardLayout : KeyboardLayout {
         //transform.eulerAngles = Vector3.zero;
         transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
         //transform.position = new Vector3(0, 0, MainCamera.position.z + keyboardDistanceFromCamera);
-        transform.position = VRWall.position;
+        transform.position = VRWall.position - new Vector3(0, 0.2f, -0.3f);
         transform.eulerAngles = VRWall.eulerAngles;
         //transform.localScale = Vector3.one;
         screenArea.transform.LookAt(MainCamera);
+        screenArea.transform.localPosition = new Vector3(0, 4.97f, 0.34f);
+        screenArea.transform.localEulerAngles = new Vector3(-7.34f, 0f, 0);
     }
 }

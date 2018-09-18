@@ -20,7 +20,7 @@ public class ViveCursor : MonoBehaviour
     GameObject pointer;
     GameObject cursor;
 
-    Vector3 cursorScale = new Vector3(0.05f, 0.05f, 0.05f);
+    Vector3 cursorScale = new Vector3(0.02f, 0.02f, 0.02f);
     float contactDistance = 0f;
     Transform contactTarget = null;
 

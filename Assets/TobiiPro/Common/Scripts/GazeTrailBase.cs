@@ -122,7 +122,7 @@ namespace Tobii.Research.Unity
             _particleSystem = GetComponent<ParticleSystem>();
         }
 
-        private void Update()
+        protected void Update()
         {
             if (_particlesDirty)
             {

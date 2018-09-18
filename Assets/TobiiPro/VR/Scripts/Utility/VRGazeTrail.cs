@@ -29,7 +29,7 @@ namespace Tobii.Research.Unity
             _eyeTracker = VREyeTracker.Instance;
             _calibrationObject = VRCalibration.Instance;
         }
-
+        
         protected override bool GetRay(out Ray ray)
         {
             if (_eyeTracker == null)

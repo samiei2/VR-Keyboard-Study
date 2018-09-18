@@ -9,6 +9,10 @@ public class GameManager : MonoBehaviour {
     System.Diagnostics.Stopwatch _timer;
     private bool _inSession;
 
+    public string[] trainingPhraseSet;
+
+    public string[] testPhraseSet;
+
     private void Awake()
     {
         Instance = this;

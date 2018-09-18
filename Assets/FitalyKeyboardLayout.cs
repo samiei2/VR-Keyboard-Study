@@ -43,14 +43,14 @@ public class FitalyKeyboardLayout : KeyboardLayout {
         keysDic.Add(KeyID.N, Instantiate(hexPrefab) as GameObject);
         keysDic.Add(KeyID.M, Instantiate(hexPrefab) as GameObject);
 
-        //keysDic.Add(KeyID.Dot, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.Dot, Instantiate(hexPrefab) as GameObject);
         keysDic.Add(KeyID.Backspace, Instantiate(hexPrefab) as GameObject);
-        //keysDic.Add(KeyID.Comma, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.Comma, Instantiate(hexPrefab) as GameObject);
         keysDic.Add(KeyID.Space, Instantiate(hexPrefab) as GameObject);
         keysDic.Add(KeyID.Space2, Instantiate(hexPrefab) as GameObject);
-        //keysDic.Add(KeyID.Shift, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.Shift, Instantiate(hexPrefab) as GameObject);
         keysDic.Add(KeyID.Enter, Instantiate(hexPrefab) as GameObject);
-        //keysDic.Add(KeyID.Next, Instantiate(hexPrefab) as GameObject);
+        keysDic.Add(KeyID.Next, Instantiate(hexPrefab) as GameObject);
     }
 
     public override void LayoutKeys()
@@ -96,14 +96,14 @@ public class FitalyKeyboardLayout : KeyboardLayout {
         keysDic[KeyID.X].transform.localPosition = new Vector3(3.3f + 3 * keyXDelta, -2.2f - 2 * keyYDelta, 0);
 
         // Sixth Row
-        //keysDic[KeyID.Dot].transform.position = new Vector3(-2.2f, -3.5f, 0);
-        //keysDic[KeyID.Shift].transform.position = new Vector3(-1.1f, -3.5f, 0);
+        keysDic[KeyID.Dot].transform.localPosition = new Vector3(4.4f + 3 * keyXDelta, 0, 0);
+        keysDic[KeyID.Shift].transform.localPosition = new Vector3(5.5f + 4 * keyXDelta, 0, 0);
         keysDic[KeyID.Backspace].transform.localPosition = new Vector3(0.55f, -3.5f - 3 * keyYDelta, 0);
         keysDic[KeyID.Backspace].transform.localScale = new Vector3(6.5f + 5* keyXDelta, 1, 1);
-        //keysDic[KeyID.Comma].transform.position = new Vector3(1.1f, -3.5f, 0);
+        keysDic[KeyID.Comma].transform.localPosition = new Vector3(-3.28f - 2 * keyXDelta, 0, 0);
         keysDic[KeyID.Enter].transform.localPosition = new Vector3(0.55f, 3.5f + 3 * keyYDelta, 0);
         keysDic[KeyID.Enter].transform.localScale = new Vector3(6.5f + 5* keyXDelta, 1, 1);
-        //keysDic[KeyID.Next].transform.position = new Vector3(3.3f, -3.5f, 0);
+        keysDic[KeyID.Next].transform.localPosition = new Vector3(-4.38f - 3 * keyXDelta, 0, 0);
     }
 
     public override void SetProperties()
@@ -138,6 +138,11 @@ public class FitalyKeyboardLayout : KeyboardLayout {
         keysDic[KeyID.Enter].transform.Find("Text").GetComponent<TextMeshPro>().rectTransform.localScale = new Vector3(0.5f, 2, 1);
         keysDic[KeyID.Enter].transform.Find("Text").GetComponent<TextMeshPro>().fontSize = 2f;
         keysDic[KeyID.Enter].transform.Find("Text").GetComponent<TextMeshPro>().text = "Enter";
+
+        keysDic[KeyID.Shift].transform.Find("Text").GetComponent<TextMeshPro>().fontSize = 1.9f;
+        keysDic[KeyID.Shift].transform.Find("Text").GetComponent<TextMeshPro>().text = "Shift";
+        keysDic[KeyID.Next].transform.Find("Text").GetComponent<TextMeshPro>().fontSize = 1.9f;
+        keysDic[KeyID.Next].transform.Find("Text").GetComponent<TextMeshPro>().text = "Next";
     }
 
     public override void KeyboardEventHandler_OnReleasedHandler(object sender, KeyEventArgs args)
@@ -224,11 +229,12 @@ public class FitalyKeyboardLayout : KeyboardLayout {
 
     public override void ScaleToVRDeskPosition()
     {
-        transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-        transform.position = VRDesk.position;
-        transform.position -= new Vector3(0, 0.2f, 0);
+        transform.localScale = new Vector3(0.08f, 0.08f, 0.08f);
+        transform.position = VRDesk.position - new Vector3(0, 0.45f, -0.18f);
         transform.eulerAngles = VRDesk.eulerAngles;
-        screenArea.transform.LookAt(MainCamera);
+        //screenArea.transform.LookAt(MainCamera);
+        screenArea.transform.localPosition = new Vector3(0, 5.64f, -1.6f);
+        screenArea.transform.localEulerAngles = new Vector3(-50, 0, 0);
     }
 
     public override void ScaleToFrontViewPosition()
@@ -236,9 +242,11 @@ public class FitalyKeyboardLayout : KeyboardLayout {
         //transform.eulerAngles = Vector3.zero;
         transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
         //transform.position = new Vector3(0, 0, MainCamera.position.z + keyboardDistanceFromCamera);
-        transform.position = VRWall.position;
+        transform.position = VRWall.position - new Vector3(0, 0.2f, -0.3f);
         transform.eulerAngles = VRWall.eulerAngles;
         //transform.localScale = Vector3.one;
         screenArea.transform.LookAt(MainCamera);
+        screenArea.transform.localPosition = new Vector3(0, 7.24f, -1.88f);
+        screenArea.transform.localEulerAngles = new Vector3(-18f, 0f, 0);
     }
 }

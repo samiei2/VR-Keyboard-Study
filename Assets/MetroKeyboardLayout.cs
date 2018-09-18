@@ -232,9 +232,11 @@ public class MetroKeyboardLayout : KeyboardLayout {
     public override void ScaleToVRDeskPosition()
     {
         transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
-        transform.position = VRDesk.position - new Vector3(0,0.5f,0);
+        transform.position = VRDesk.position - new Vector3(0,0.45f,-0.08f);
         transform.eulerAngles = VRDesk.eulerAngles;
-        screenArea.transform.LookAt(MainCamera);
+        //screenArea.transform.LookAt(MainCamera);
+        screenArea.transform.localPosition = new Vector3(0, 4.64f,-1.6f);
+        screenArea.transform.localEulerAngles = new Vector3(-50,0,0);
     }
 
     public override void ScaleToFrontViewPosition()
@@ -242,9 +244,11 @@ public class MetroKeyboardLayout : KeyboardLayout {
         //transform.eulerAngles = Vector3.zero;
         transform.localScale = new Vector3(0.1f, 0.1f, 0.1f);
         //transform.position = new Vector3(0, 0, MainCamera.position.z + keyboardDistanceFromCamera);
-        transform.position = VRWall.position;
+        transform.position = VRWall.position - new Vector3(0, 0.2f, 0);
         transform.eulerAngles = VRWall.eulerAngles;
         //transform.localScale = Vector3.one;
         screenArea.transform.LookAt(MainCamera);
+        screenArea.transform.localPosition = new Vector3(0, 5.24f, 0);
+        screenArea.transform.localEulerAngles = new Vector3(-15.77f, 0f, 0);
     }
 }
