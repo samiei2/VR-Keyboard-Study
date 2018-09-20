@@ -11,9 +11,6 @@ public class GameManager_editro : Editor {
         DrawDefaultInspector();
 
         GameManager manager_script = (GameManager)target;
-        if (GUILayout.Button("Start Training"))
-        {
-
-        }
+        
     }
 }
