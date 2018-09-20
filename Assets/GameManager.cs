@@ -7,11 +7,20 @@ using UnityEngine;
 public class GameManager : MonoBehaviour {
     public static GameManager Instance;
     System.Diagnostics.Stopwatch _timer;
+    private SessionType currentSession = SessionType.None;
     private bool _inSession;
 
     public string[] trainingPhraseSet;
 
     public string[] testPhraseSet;
+
+    internal int numberOfTrainingPhrases;
+    internal int numberOfTestPhrases;
+    private KeyboardLayout activeKeyboard;
+    private ScreenAreaManager screenArea;
+
+    private int currentPhraseNumber = -1;
+    private string[] currentSet;
 
     private void Awake()
     {
@@ -20,18 +29,38 @@ public class GameManager : MonoBehaviour {
 
     void Start () {
         _timer = new System.Diagnostics.Stopwatch();
-        if (GameObject.Find("MenuModule")!=null)
-        {
-            var menuModule = GameObject.Find("MenuModule");
-            var commandText = menuModule.transform.Find("MenuFollower").Find("Menu").Find("CommandText");
-            //if(commandText!=null)
-            //    commandText.GetComponent<TextMeshPro>().text = "";
-        }
-        
+
+        activeKeyboard = KeyboardLayout.Instance;
+        activeKeyboard.KeyboardLayout_OnKeyPressed += ActiveKeyboard_KeyboardLayout_OnKeyPressed;
+
+        screenArea = ScreenAreaManager.Instance;
 	}
-	
-	// Update is called once per frame
-	void Update ()
+
+    private void ActiveKeyboard_KeyboardLayout_OnKeyPressed(object sender, KeyEventArgs args)
+    {
+        if (args.KeyId == KeyID.Enter)
+        {
+            if (currentSet != null)
+            {
+                if (currentPhraseNumber < currentSet.Length)
+                {
+                    ShowNextPhrase();
+                }
+                else
+                {
+                    EndSession(currentSession);
+                }
+            }
+        }
+    }
+
+    private void ShowNextPhrase()
+    {
+        screenArea.DisplayMessage(currentSet[currentPhraseNumber]);
+    }
+
+    // Update is called once per frame
+    void Update ()
     {
 		if ((Input.GetKey(KeyCode.RightShift) || Input.GetKey(KeyCode.LeftShift)) && Input.GetKeyDown(KeyCode.T)) //Start Training
         {
@@ -56,33 +85,46 @@ public class GameManager : MonoBehaviour {
 
     private void EndSession(SessionType type)
     {
-        if (!_timer.IsRunning)
+        if (currentSession != SessionType.None)
         {
-            Debug.LogError("Test: Timer Not Running");
-            return;
+            if (!_timer.IsRunning)
+            {
+                Debug.LogError("Test: Timer Not Running");
+                return;
+            }
+            SaveDataModule.Instance.WriteToTimeLine("==============================" + Enum.GetName(typeof(SessionType), type) + " Session Ended==============================");
+            SaveDataModule.Instance.SetSaveData(false);
+            _inSession = false;
+            currentSession = SessionType.None;
+            currentSet = null;
         }
-        SaveDataModule.Instance.WriteToTimeLine("=============================="+ Enum.GetName(typeof(SessionType), type) + " Session Ended==============================");
-        SaveDataModule.Instance.SetSaveData(false);
-        _inSession = false;
     }
 
     private void StartSession(SessionType type)
     {
-        _inSession = true;
-        SaveKeyboardLayoutSettings();
-        if (_timer.IsRunning)
+        if (currentSession == SessionType.None)
         {
-            Debug.LogError("Test: Timer Still Running");
-            return;
+            currentSession = type;
+            if (type == SessionType.Training)
+                currentSet = trainingPhraseSet;
+            else if (type == SessionType.Test)
+                currentSet = testPhraseSet;
+            _inSession = true;
+            SaveKeyboardLayoutSettings();
+            if (_timer.IsRunning)
+            {
+                Debug.LogError("Test: Timer Still Running");
+                return;
+            }
+            _timer.Start();
+            SaveDataModule.Instance.SetSaveData(true);
+            SaveDataModule.Instance.WriteToTimeLine("==============================" + Enum.GetName(typeof(SessionType), type) + " Session Started==============================");
         }
-        _timer.Start();
-        SaveDataModule.Instance.SetSaveData(true);
-        SaveDataModule.Instance.WriteToTimeLine("=============================="+Enum.GetName(typeof(SessionType),type)+" Session Started==============================");
     }
 
     private void SaveKeyboardLayoutSettings()
     {
-        
+        activeKeyboard.WriteLayoutSettingsToFile();
     }
 
     public bool IsInSession()
@@ -95,5 +137,6 @@ public enum SessionType
 {
     Training,
     Test,
-    Other
+    Other,
+    None
 }

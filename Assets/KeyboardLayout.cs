@@ -11,8 +11,19 @@ using UnityEngine.UI;
 public abstract class KeyboardLayout : MonoBehaviour
 {
     public event KeyEvents.KeyEvent KeyboardLayout_OnKeyPressed;
-    
+
     #region UNITY_FUNCTIONS
+    private void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+        else
+        {
+            Debug.LogError("More than 1 keyboard is active");
+            Application.Quit();
+        }
+    }
+
     public virtual void Start()
     {
         if (!GameObject.Find("[SaveModule]"))
@@ -121,10 +132,13 @@ public abstract class KeyboardLayout : MonoBehaviour
         }
 
         if (updateLayout && !GameManager.Instance.IsInSession())
+        {
             LayoutKeys();
+            layoutChanged = true;
+        }
         else
         {
-            if(GameManager.Instance!=null)
+            if (GameManager.Instance != null)
                 if (GameManager.Instance.IsInSession())
                     Debug.LogError("Cant change layout while in session");
         }
@@ -196,13 +210,11 @@ public abstract class KeyboardLayout : MonoBehaviour
                 }
                 if (InputType == KeyboardInputType.GazeAndClick)
                 {
-                    useViveTrackpad = true;
-                    useTrackerInputForPointer = true;
-                    if (!useViveTrackpad)
-                    {
+                    //if (!useViveTrackpad)
+                    //{
                         //InputButtonDown = action == 0 && tapActionEnabled ? true : false;
                         //InputButtonUp = action == 1 && tapActionEnabled ? true : false;
-                    }
+                    //}
                     // else its set in the trigger handler
                 }
                 HandleGazeInput();
@@ -231,6 +243,46 @@ public abstract class KeyboardLayout : MonoBehaviour
                 }
                 HandleDrumstickInput();
             }
+        }
+    }
+
+    internal void WriteLayoutSettingsToFile()
+    {
+        if (true)
+        {
+            string layout = "###################################################################\n";
+            layout += "KeyboardName: " + transform.name + "\n";
+            layout += "KeyboardPosition: " + transform.position + "\n";
+            layout += "KeyboardAngle: " + transform.eulerAngles + "\n";
+            layout += "KeyboardScale: " + transform.localScale + "\n";
+            layout += "KeyboardStartDistanceFromCamera: " + (transform.position - MainCamera.position).magnitude + "\n";
+            layout += "KeyboardInput: " + Enum.GetName(typeof(KeyboardInputType),InputType) + "\n";
+            layout += "KeyboardXYDelta: (" + keyXDelta + "," + keyYDelta + ")\n";
+            layout += "KeyLocalPositions: \n";
+            layout += "DrumsLength: " + "(L: " + lDrumLength + ", R: " + rDrumLength + ")\n";
+
+            foreach (var item in keysDic)
+            {
+                layout += "Key_" + Enum.GetName(typeof(KeyID), item.Key) + " : " + item.Value.transform.localPosition + ",";
+            }
+            layout += "\n";
+
+            layout += "KeyLocalAngle: \n";
+            foreach (var item in keysDic)
+            {
+                layout += "Key_" + Enum.GetName(typeof(KeyID), item.Key) + " : " + item.Value.transform.localEulerAngles + ",";
+            }
+            layout += "\n";
+
+            layout += "KeyLocalScale: \n";
+            foreach (var item in keysDic)
+            {
+                layout += "Key_" + Enum.GetName(typeof(KeyID), item.Key) + " : " + item.Value.transform.localScale + ",";
+            }
+            layout += "\n";
+
+            layout += "###################################################################";
+            SaveDataModule.Instance.WriteToTimeLine(layout);
         }
     }
     #endregion
@@ -332,7 +384,7 @@ public abstract class KeyboardLayout : MonoBehaviour
         {
             if(args.TriggerDown)
                 SaveDataModule.Instance.WriteToTimeLine(controller.transform.name + " Trigger Down");
-            if (useTrackerInputForPointer && controller.IsRightController())
+            if (InputType == KeyboardInputType.GazeAndClick && controller.IsRightController())
             {
                 if (args.TriggerDown)
                 {
@@ -958,6 +1010,7 @@ public abstract class KeyboardLayout : MonoBehaviour
     public bool InputButtonDown { get; protected set; }
     public bool InputButtonHeldDown { get; protected set; }
     public bool InputButtonUp { get; protected set; }
+    public static KeyboardLayout Instance { get ; private set; }
 
     public Pointer pointer;
 
@@ -977,8 +1030,6 @@ public abstract class KeyboardLayout : MonoBehaviour
     public TouchDataHandler touchHandler;
     public ViveTrackpad rightTrackpadHandler;
     public ViveTrackpad leftTrackpadHandler;
-    public bool useViveTrackpad;
-    public bool useTrackerInputForPointer;
 
     public bool tapActionEnabled;
 
@@ -1005,6 +1056,7 @@ public abstract class KeyboardLayout : MonoBehaviour
     };
     protected GameObject screenArea;
     private Vector3 prevDistanceFromHead;
+    private bool layoutChanged;
     #endregion
     #endregion
 }
