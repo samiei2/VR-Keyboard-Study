@@ -93,6 +93,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4102401018269310}
+  - component: {fileID: 114941420965175708}
   m_Layer: 0
   m_Name: ScreenArea
   m_TagString: Untagged
@@ -537,6 +538,17 @@ MonoBehaviour:
   m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 977eb6406c4bd3c46ba5defdc5ce1e45, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114941420965175708
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1743772525052746}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9106cb2388f8360498653319bd33d943, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!222 &222326297379068988

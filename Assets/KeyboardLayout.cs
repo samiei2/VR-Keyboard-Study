@@ -131,16 +131,16 @@ public abstract class KeyboardLayout : MonoBehaviour
                     gazeTrailGameObject.GetComponent<VRGazeTrail>().On = false;
         }
 
-        if (updateLayout && !GameManager.Instance.IsInSession())
+        if (GameManager.Instance != null)
         {
-            LayoutKeys();
-            layoutChanged = true;
-        }
-        else
-        {
-            if (GameManager.Instance != null)
-                if (GameManager.Instance.IsInSession())
-                    Debug.LogError("Cant change layout while in session");
+            if (updateLayout && !GameManager.Instance.IsInSession())
+            {
+                LayoutKeys();
+                layoutChanged = true;
+            }
+            else  if (GameManager.Instance.IsInSession() && updateLayout) { 
+                Debug.LogError("Cant change layout while in session");
+            }
         }
 
 
