@@ -41,7 +41,7 @@ public class QuikwriteLayout : KeyboardLayout {
         keysDic.Add(KeyID.M, null);
     }
 
-    public override void HighlightKeys(List<char> suggestedAlphabet)
+    public override void HighlightKeys(HashSet<char> suggestedAlphabet)
     {
 
     }

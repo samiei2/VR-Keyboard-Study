@@ -993,7 +993,7 @@ public abstract class KeyboardLayout : MonoBehaviour
 
     public abstract void ScaleToFrontViewPosition();
 
-    public abstract void HighlightKeys(List<char> suggestedAlphabet);
+    public abstract void HighlightKeys(HashSet<char> suggestedAlphabet);
     #endregion
 
     #region Properties

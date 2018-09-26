@@ -210,7 +210,7 @@ public class FitalyKeyboardLayout : KeyboardLayout {
         }
     }
 
-    public override void HighlightKeys(List<char> suggestedAlphabet)
+    public override void HighlightKeys(HashSet<char> suggestedAlphabet)
     {
         if (GetComponent<KeyHighlightEffect>() != null && suggestionEnabled)
             GetComponent<KeyHighlightEffect>().HighlightKeys(suggestedAlphabet);

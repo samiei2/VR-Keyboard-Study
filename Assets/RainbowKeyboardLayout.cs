@@ -50,9 +50,10 @@ public class RainbowKeyboardLayout : KeyboardLayout
         keysDic.Add(KeyID.Next, Instantiate(hexPrefab) as GameObject);
     }
 
-    public override void HighlightKeys(List<char> suggestedAlphabet)
+    public override void HighlightKeys(HashSet<char> suggestedAlphabet)
     {
-        
+        if (GetComponent<KeyHighlightEffect>() != null && suggestionEnabled)
+            GetComponent<KeyHighlightEffect>().HighlightKeys(suggestedAlphabet);
     }
 
     public override void KeyboardEventHandler_OnFocusedHandler(object sender, KeyEventArgs args)

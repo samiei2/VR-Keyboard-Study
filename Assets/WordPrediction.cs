@@ -61,7 +61,7 @@ public class WordPrediction : MonoBehaviour
                 
             }
             //Debug.Log(temp);
-            targetkeyboard.HighlightKeys(new List<char>(highlightList));
+            targetkeyboard.HighlightKeys(new HashSet<char>(highlightList));
         }
     }
 

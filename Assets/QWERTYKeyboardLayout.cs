@@ -133,9 +133,10 @@ public class QWERTYKeyboardLayout : KeyboardLayout {
         keysDic[KeyID.Enter].transform.Find("Text").GetComponent<TextMeshPro>().text = "↵";
     }
 
-    public override void HighlightKeys(List<char> suggestedAlphabet)
+    public override void HighlightKeys(HashSet<char> suggestedAlphabet)
     {
-
+        if (GetComponent<KeyHighlightEffect>() != null && suggestionEnabled)
+            GetComponent<KeyHighlightEffect>().HighlightKeys(suggestedAlphabet);
     }
 
     public override void KeyboardEventHandler_OnFocusedHandler(object sender, KeyEventArgs args)

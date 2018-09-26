@@ -142,7 +142,7 @@ public class QuikwriteLayout2D : KeyboardLayout {
         keysDic[KeyID.Dot].transform.Find("Text").GetComponent<TextMeshPro>().fontSize = 7;
     }
 
-    public override void HighlightKeys(List<char> suggestedAlphabet)
+    public override void HighlightKeys(HashSet<char> suggestedAlphabet)
     {
         
     }

@@ -14,7 +14,7 @@ public class KeyHighlightEffect : MonoBehaviour
     //public bool sizeHighlight;
     public Material highlightMaterial;
 
-    public void HighlightKeys(List<char> suggestedAlphabet)
+    public void HighlightKeys(HashSet<char> suggestedAlphabet)
     {
         foreach (var item in suggestedAlphabet)
         {

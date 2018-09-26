@@ -48,7 +48,7 @@ public class DrumsKeyboardLayout : KeyboardLayout
     }
 
 
-    public override void HighlightKeys(List<char> suggestedAlphabet)
+    public override void HighlightKeys(HashSet<char> suggestedAlphabet)
     {
     }
 
