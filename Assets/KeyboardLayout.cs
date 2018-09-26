@@ -17,7 +17,9 @@ public abstract class KeyboardLayout : MonoBehaviour
     private void Awake()
     {
         if (Instance == null)
+        {
             Instance = this;
+        }
         else
         {
             Debug.LogError("More than 1 keyboard is active");
@@ -249,6 +251,8 @@ public abstract class KeyboardLayout : MonoBehaviour
                 HandleDrumstickInput();
             }
         }
+
+        
     }
 
     internal void WriteLayoutSettingsToFile()

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [CustomEditor(typeof(GameManager))]
 public class GameManager_editro : Editor {
@@ -20,6 +21,9 @@ public class GameManager_editro : Editor {
     public List<string> traingPhrases;
     [SerializeField]
     public List<string> testPhrases;
+    [SerializeField]
+    public Dictionary<string,KeyboardLayout> availableKeyboards;
+
 
     //private SerializedProperty traingPhrases;
     //private SerializedProperty testPhrases;
@@ -35,6 +39,7 @@ public class GameManager_editro : Editor {
 
         traingPhrases = manager_script.trainingPhraseSet;
         testPhrases = manager_script.testPhraseSet;
+        availableKeyboards = manager_script.availableKeyboards;
         //traingPhrases = serializedObject.FindProperty("trainingPhraseSet");
         //testPhrases = serializedObject.FindProperty("testPhraseSet");
     }
@@ -158,6 +163,32 @@ public class GameManager_editro : Editor {
             }
         }
         EditorGUILayout.EndHorizontal();
+
+        //EditorGUILayout.BeginVertical("box");
+
+        //availableKeyboards.Clear();
+        
+        //foreach (var item in FindObjectsOfTypeAll<KeyboardLayout>())
+        //{
+        //    EditorGUILayout.BeginVertical();
+        //    availableKeyboards.Add(item.name,item);
+        //    var enabled = EditorGUILayout.Toggle(item.name, availableKeyboards[item.name].transform.gameObject.activeInHierarchy);
+        //    if (enabled)
+        //    {
+        //        Debug.LogError("Enabled");
+        //        foreach (var item2 in availableKeyboards)
+        //        {
+        //            if (item2.Key != item.name)
+        //            {
+        //                availableKeyboards[item.name].transform.gameObject.SetActive(false);
+        //            }
+        //        }
+        //    }
+        //    availableKeyboards[item.name].transform.gameObject.SetActive(enabled);
+        //    EditorGUILayout.EndVertical();
+        //}
+        //EditorGUILayout.EndVertical();
+
         serializedObject.ApplyModifiedProperties();
         if (EditorGUI.EndChangeCheck())
         {
@@ -168,5 +199,24 @@ public class GameManager_editro : Editor {
             EditorUtility.SetDirty(target);
             EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
         }
+    }
+
+    public static List<T> FindObjectsOfTypeAll<T>()
+    {
+        List<T> results = new List<T>();
+        for (int i = 0; i < SceneManager.sceneCount; i++)
+        {
+            var s = SceneManager.GetSceneAt(i);
+            if (s.isLoaded)
+            {
+                var allGameObjects = s.GetRootGameObjects();
+                for (int j = 0; j < allGameObjects.Length; j++)
+                {
+                    var go = allGameObjects[j];
+                    results.AddRange(go.GetComponentsInChildren<T>(true));
+                }
+            }
+        }
+        return results;
     }
 }

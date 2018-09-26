@@ -11,8 +11,9 @@ public class SpellCorrection : MonoBehaviour {
     //private string _input = "";
 
     //// Use this for initialization
-    //void Start () {
-    //    if(!targetkeyboard)
+    //void Start()
+    //{
+    //    if (!targetkeyboard)
     //        targetkeyboard = GetComponent<KeyboardLayout>();
     //    if (!targetkeyboard)
     //    {

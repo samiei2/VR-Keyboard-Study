@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour {
     public List<string> trainingPhraseSet;
     [SerializeField]
     public List<string> testPhraseSet;
+    [SerializeField]
+    public Dictionary<string, KeyboardLayout> availableKeyboards = new Dictionary<string, KeyboardLayout>();
 
     public int numberOfTrainingPhrases;
     public int numberOfTestPhrases;
