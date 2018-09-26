@@ -2,34 +2,48 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 
 [CustomEditor(typeof(GameManager))]
 public class GameManager_editro : Editor {
+    [SerializeField]
     private bool trainingFoldout;
-    private bool testFoldout = false;
+    [SerializeField]
+    private bool testFoldout;
+    [SerializeField]
     private Vector2 trainingScrollPosition = new Vector2(0, 0);
+    [SerializeField]
     private Vector2 testScrollPosition = new Vector2(0, 0);
-    private bool _inSession;
-    private SessionType _sessionType = SessionType.None;
-    private SerializedProperty traingPhrases;
-    private SerializedProperty testPhrases;
+
+    [SerializeField]
+    public List<string> traingPhrases;
+    [SerializeField]
+    public List<string> testPhrases;
+
+    //private SerializedProperty traingPhrases;
+    //private SerializedProperty testPhrases;
+    private GameManager manager_script;
     private SerializedProperty numberOfTrainingPhrases;
     private SerializedProperty numberOfTestPhrases;
 
     private void OnEnable()
     {
+        manager_script = (GameManager)target;
         numberOfTrainingPhrases = serializedObject.FindProperty("numberOfTrainingPhrases");
         numberOfTestPhrases = serializedObject.FindProperty("numberOfTestPhrases");
 
-        traingPhrases = serializedObject.FindProperty("trainingPhraseSet");
-        testPhrases = serializedObject.FindProperty("testPhraseSet");
+        traingPhrases = manager_script.trainingPhraseSet;
+        testPhrases = manager_script.testPhraseSet;
+        //traingPhrases = serializedObject.FindProperty("trainingPhraseSet");
+        //testPhrases = serializedObject.FindProperty("testPhraseSet");
     }
 
     public override void OnInspectorGUI()
     {
+        EditorGUI.BeginChangeCheck();
         serializedObject.Update();
-        GameManager manager_script = (GameManager)target;
+        
         EditorGUILayout.BeginVertical();
         trainingFoldout = EditorGUILayout.Foldout(trainingFoldout, "Training Phrases",true);
         if (trainingFoldout)
@@ -40,31 +54,31 @@ public class GameManager_editro : Editor {
             trainingScrollPosition = EditorGUILayout.BeginScrollView(trainingScrollPosition, false, false, GUILayout.MinHeight(10), GUILayout.MaxHeight(200));
             if (numberOfTrainingPhrases.intValue >= 0)
             {
-                if (numberOfTrainingPhrases.intValue >= (traingPhrases.objectReferenceValue as System.Object as List<string>).Count)
+                if (numberOfTrainingPhrases.intValue >= traingPhrases.Count)
                 {
-                    for (int i = 0; i < numberOfTrainingPhrases.intValue - (traingPhrases.objectReferenceValue as System.Object as List<string>).Count; i++)
+                    for (int i = 0; i < numberOfTrainingPhrases.intValue - traingPhrases.Count; i++)
                     {
-                        (traingPhrases.objectReferenceValue as System.Object as List<string>).Add("");
+                        traingPhrases.Add("");
                     }
                 }
                 else
                 {
-                    (traingPhrases.objectReferenceValue as System.Object as List<string>).RemoveRange(numberOfTrainingPhrases.intValue, (traingPhrases.objectReferenceValue as System.Object as List<string>).Count - numberOfTrainingPhrases.intValue);
+                    traingPhrases.RemoveRange(numberOfTrainingPhrases.intValue, traingPhrases.Count - numberOfTrainingPhrases.intValue);
                 }
                 
                 for (int i = 0; i < numberOfTrainingPhrases.intValue; i++)
                 {
-                    if (i < (traingPhrases.objectReferenceValue as System.Object as List<string>).Count)
-                        (traingPhrases.objectReferenceValue as System.Object as List<string>)[i] = GUILayout.TextArea((traingPhrases.objectReferenceValue as System.Object as List<string>)[i], GUILayout.MinHeight(40), GUILayout.MaxHeight(80), GUILayout.MinWidth(40));
+                    if (i < traingPhrases.Count)
+                        traingPhrases[i] = GUILayout.TextArea(traingPhrases[i], GUILayout.MinHeight(40), GUILayout.MaxHeight(80), GUILayout.MinWidth(40));
                     else
                     {
-                        (traingPhrases.objectReferenceValue as System.Object as List<string>).Add("");
-                        (traingPhrases.objectReferenceValue as System.Object as List<string>)[i] = GUILayout.TextArea((traingPhrases.objectReferenceValue as System.Object as List<string>)[i], GUILayout.MinHeight(40), GUILayout.MaxHeight(80), GUILayout.MinWidth(40));
+                        traingPhrases.Add("");
+                        traingPhrases[i] = GUILayout.TextArea(traingPhrases[i], GUILayout.MinHeight(40), GUILayout.MaxHeight(80), GUILayout.MinWidth(40));
                     }
                 }
 
                 if (Application.isPlaying)
-                    manager_script.trainingPhraseSet = (traingPhrases.objectReferenceValue as System.Object as List<string>);
+                    manager_script.trainingPhraseSet = traingPhrases;
             }
             EditorGUILayout.EndScrollView();
         }
@@ -77,73 +91,82 @@ public class GameManager_editro : Editor {
             testScrollPosition = EditorGUILayout.BeginScrollView(testScrollPosition, false, false, GUILayout.MinHeight(10), GUILayout.MaxHeight(200));
             if (numberOfTestPhrases.intValue >= 0)
             {
-                if (numberOfTestPhrases.intValue >= (testPhrases.objectReferenceValue as System.Object as List<string>).Count)
+                if (numberOfTestPhrases.intValue >= testPhrases.Count)
                 {
-                    for (int i = 0; i < numberOfTestPhrases.intValue - (testPhrases.objectReferenceValue as System.Object as List<string>).Count; i++)
+                    for (int i = 0; i < numberOfTestPhrases.intValue - testPhrases.Count; i++)
                     {
-                        (testPhrases.objectReferenceValue as System.Object as List<string>).Add("");
+                        testPhrases.Add("");
                     }
                 }
                 else
                 {
-                    (testPhrases.objectReferenceValue as System.Object as List<string>).RemoveRange(numberOfTestPhrases.intValue, (testPhrases.objectReferenceValue as System.Object as List<string>).Count - numberOfTestPhrases.intValue);
+                    testPhrases.RemoveRange(numberOfTestPhrases.intValue, testPhrases.Count - numberOfTestPhrases.intValue);
                 }
 
                 for (int i = 0; i < numberOfTestPhrases.intValue; i++)
                 {
-                    if (i < (testPhrases.objectReferenceValue as System.Object as List<string>).Count)
-                        (testPhrases.objectReferenceValue as System.Object as List<string>)[i] = GUILayout.TextArea((testPhrases.objectReferenceValue as System.Object as List<string>)[i], GUILayout.MinHeight(40), GUILayout.MaxHeight(80), GUILayout.MinWidth(40));
+                    if (i < testPhrases.Count)
+                        testPhrases[i] = GUILayout.TextArea(testPhrases[i], GUILayout.MinHeight(40), GUILayout.MaxHeight(80), GUILayout.MinWidth(40));
                     else
                     {
-                        (testPhrases.objectReferenceValue as System.Object as List<string>).Add("");
-                        (testPhrases.objectReferenceValue as System.Object as List<string>)[i] = GUILayout.TextArea((testPhrases.objectReferenceValue as System.Object as List<string>)[i], GUILayout.MinHeight(40), GUILayout.MaxHeight(80), GUILayout.MinWidth(40));
+                        testPhrases.Add("");
+                        testPhrases[i] = GUILayout.TextArea(testPhrases[i], GUILayout.MinHeight(40), GUILayout.MaxHeight(80), GUILayout.MinWidth(40));
                     }
                 }
 
                 if (Application.isPlaying)
-                    manager_script.testPhraseSet = (testPhrases.objectReferenceValue as System.Object as List<string>);
+                    manager_script.testPhraseSet = testPhrases;
             }
             EditorGUILayout.EndScrollView();
         }
         EditorGUILayout.EndVertical();
 
         EditorGUILayout.BeginHorizontal();
-        if (_inSession && Application.isPlaying)
+        if (manager_script._inSession && Application.isPlaying)
         {
-            if (_sessionType == SessionType.Training)
+            if (manager_script.currentSession == SessionType.Training)
             {
                 if (GUILayout.Button("Stop Training"))
                 {
-                    manager_script.EndSession(_sessionType);
-                    _inSession = false;
-                    _sessionType = SessionType.None;
+                    manager_script.EndSession(SessionType.Training);
+                    //manager_script._inSession = false;
+                    //manager_script.currentSession = SessionType.None;
                 }
             }
-            if (_sessionType == SessionType.Test)
+            if (manager_script.currentSession == SessionType.Test)
             {
                 if (GUILayout.Button("Stop Test"))
                 {
-                    manager_script.EndSession(_sessionType);
-                    _inSession = false;
-                    _sessionType = SessionType.None;
+                    manager_script.EndSession(SessionType.Test);
+                    //manager_script._inSession = false;
+                    //manager_script.currentSession = SessionType.None;
                 }
             }
         }
         else{
             if(GUILayout.Button("Start Training") && Application.isPlaying)
             {
-                _inSession = true;
-                _sessionType = SessionType.Training;
-                manager_script.StartSession(_sessionType);
+                //manager_script._inSession = true;
+                //manager_script.currentSession = SessionType.Training;
+                manager_script.StartSession(SessionType.Training);
             }
             if (GUILayout.Button("Start Testing") && Application.isPlaying)
             {
-                _inSession = true;
-                _sessionType = SessionType.Test;
-                manager_script.StartSession(_sessionType);
+                //manager_script._inSession = true;
+                //manager_script.currentSession = SessionType.Test;
+                manager_script.StartSession(SessionType.Test);
             }
         }
         EditorGUILayout.EndHorizontal();
         serializedObject.ApplyModifiedProperties();
+        if (EditorGUI.EndChangeCheck())
+        {
+            EditorUtility.SetDirty(target);
+        }
+        if (GUI.changed && !Application.isPlaying)
+        {
+            EditorUtility.SetDirty(target);
+            EditorSceneManager.MarkSceneDirty(EditorSceneManager.GetActiveScene());
+        }
     }
 }

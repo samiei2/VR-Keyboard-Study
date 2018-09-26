@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using TMPro;
 using Tobii.Research.Unity;
 using UnityEngine;
 using UnityEngine.UI;
@@ -34,6 +35,10 @@ public abstract class KeyboardLayout : MonoBehaviour
 
         _camerarig = GameObject.Find("[CameraRig]").transform;
         MainCamera = _camerarig.Find("Camera (eye)");
+        if (MainCamera == null)
+        {
+            MainCamera = _camerarig.Find("Camera (head)").Find("Camera (eye)");
+        }
         VRDesk = MainCamera.Find("VRDesk");
         VRWall = MainCamera.Find("VRWall");
         var _gazeTrailGameObject = GameObject.Find("[VRGazeTrail]");
@@ -956,7 +961,7 @@ public abstract class KeyboardLayout : MonoBehaviour
             item.Value.GetComponent<KeyProperties>().ResetToNormal();
         }
     }
-
+    
     protected virtual void OnKeyPressed(object sender, KeyEventArgs args)
     {
         KeyEvents.KeyEvent handler = KeyboardLayout_OnKeyPressed;

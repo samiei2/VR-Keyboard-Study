@@ -23,7 +23,7 @@ public class SaveDataModule : MonoBehaviour {
             Instance = this;
         else
             throw new Exception("Multiple save modules detected.");
-        directoryPath = Application.dataPath + @"\\User_Data\\";
+        directoryPath = Application.dataPath + @"//..//User_Data//";
         _timeLineQueue = new ConcurrentQueue<string>();
         StartCoroutine(Serializer());
     }

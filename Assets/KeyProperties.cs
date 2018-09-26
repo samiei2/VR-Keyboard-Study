@@ -19,6 +19,9 @@ public class KeyProperties : MonoBehaviour {
 
     bool isDwelling = false;
     bool doneDwelling = false;
+    internal bool IsShiftOn;
+    private Material shiftMat;
+    private Material tempMat;
 
     void Start()
     {
@@ -32,6 +35,8 @@ public class KeyProperties : MonoBehaviour {
             highlightMat = Resources.Load("HighlightKeyMaterial") as Material;
         if (invisibleMat == null)
             invisibleMat = Resources.Load("InvisibleMaterial") as Material;
+        if (shiftMat == null)
+            shiftMat = Resources.Load("ShiftMaterial") as Material;
     }
 	
 	// Update is called once per frame
@@ -69,5 +74,20 @@ public class KeyProperties : MonoBehaviour {
             isDwelling = false;
             doneDwelling = true;
         }
+    }
+
+    internal void EnableShift()
+    {
+        IsShiftOn = true;
+        //transform.Find("MainShape").GetComponent<MeshRenderer>().material = shiftMat;
+        tempMat = normalMat;
+        normalMat = shiftMat;
+    }
+
+    internal void DisableShift()
+    {
+        //transform.Find("MainShape").GetComponent<MeshRenderer>().material = normalMat;
+        IsShiftOn = false;
+        normalMat = tempMat;
     }
 }

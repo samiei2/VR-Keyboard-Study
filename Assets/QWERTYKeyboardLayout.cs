@@ -166,7 +166,12 @@ public class QWERTYKeyboardLayout : KeyboardLayout {
             if (textArea != null)
             {
                 OnKeyPressed(sender, args);
-                textArea.GetComponent<TextMeshPro>().text += args.KeyText;
+                if (keysDic[KeyID.Shift].GetComponent<KeyProperties>().IsShiftOn)
+                {
+                    textArea.GetComponent<TextMeshPro>().text += args.KeyText.ToUpper();
+                }
+                else
+                    textArea.GetComponent<TextMeshPro>().text += args.KeyText;
             }
         }
         else
@@ -214,6 +219,15 @@ public class QWERTYKeyboardLayout : KeyboardLayout {
         else if (args.KeyId == KeyID.Enter)
         {
             textArea.GetComponent<TextMeshPro>().text += '\n';
+        }
+        else if (args.KeyId == KeyID.Shift)
+        {
+            if (keysDic[KeyID.Shift].GetComponent<KeyProperties>().IsShiftOn)
+            {
+                keysDic[KeyID.Shift].GetComponent<KeyProperties>().DisableShift();
+            }
+            else
+                keysDic[KeyID.Shift].GetComponent<KeyProperties>().EnableShift();
         }
     }
 

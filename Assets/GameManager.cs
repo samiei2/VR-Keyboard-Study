@@ -6,11 +6,12 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour {
     public static GameManager Instance;
-    private SessionType currentSession = SessionType.None;
-    private bool _inSession;
+    public SessionType currentSession = SessionType.None;
+    public bool _inSession;
 
+    [SerializeField]
     public List<string> trainingPhraseSet;
-
+    [SerializeField]
     public List<string> testPhraseSet;
 
     public int numberOfTrainingPhrases;
@@ -24,13 +25,12 @@ public class GameManager : MonoBehaviour {
     private void Awake()
     {
         Instance = this;
-        trainingPhraseSet = new List<string>();
-        testPhraseSet = new List<string>();
     }
 
     void Start () {
 
         activeKeyboard = KeyboardLayout.Instance;
+        if(activeKeyboard!=null)
         activeKeyboard.KeyboardLayout_OnKeyPressed += ActiveKeyboard_KeyboardLayout_OnKeyPressed;
         
 	}
@@ -60,7 +60,9 @@ public class GameManager : MonoBehaviour {
             }
         }
         else
+        {
             Debug.LogError("Current set is null");
+        }
     }
 
     // Update is called once per frame
@@ -95,6 +97,7 @@ public class GameManager : MonoBehaviour {
             _inSession = false;
             currentSession = SessionType.None;
             currentSet = null;
+            currentPhraseNumber = 0;
         }
     }
 
