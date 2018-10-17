@@ -131,6 +131,20 @@ public class GameManager_editro : Editor {
         {
             if (manager_script.currentSession == SessionType.Training)
             {
+                EditorGUILayout.BeginHorizontal();
+                if (GUILayout.Button("Previous Phrase"))
+                {
+                    manager_script.PreviousPhrase();
+                    //manager_script._inSession = false;
+                    //manager_script.currentSession = SessionType.None;
+                }
+                if (GUILayout.Button("Next Phrase"))
+                {
+                    manager_script.NextPhrase();
+                    //manager_script._inSession = false;
+                    //manager_script.currentSession = SessionType.None;
+                }
+                EditorGUILayout.EndHorizontal();
                 if (GUILayout.Button("Stop Training"))
                 {
                     manager_script.EndSession(SessionType.Training);

@@ -128,6 +128,16 @@ public class GameManager : MonoBehaviour {
     {
         return _inSession;
     }
+
+    internal void PreviousPhrase()
+    {
+        throw new NotImplementedException();
+    }
+
+    internal void NextPhrase()
+    {
+        throw new NotImplementedException();
+    }
 }
 
 public enum SessionType
