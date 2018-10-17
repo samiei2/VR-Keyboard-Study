@@ -179,7 +179,7 @@ public class FitalyKeyboardLayout : KeyboardLayout {
     {
 
         var transform = (Transform)sender;
-        //transform.Find("MainShape").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().normalMat;
+        transform.Find("MainShape").GetComponent<MeshRenderer>().material = transform.GetComponent<KeyProperties>().normalMat;
         transform.Find("Tint").gameObject.SetActive(false);
         if (zoomEffect)
         {

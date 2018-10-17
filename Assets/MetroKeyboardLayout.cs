@@ -151,13 +151,13 @@ public class MetroKeyboardLayout : KeyboardLayout {
         {
             if (textArea != null)
             {
-                OnKeyPressed(sender,args);
                 if (keysDic[KeyID.Shift].GetComponent<KeyProperties>().IsShiftOn)
                 {
                     textArea.GetComponent<TextMeshPro>().text += args.KeyText.ToUpper();
                 }
                 else
                     textArea.GetComponent<TextMeshPro>().text += args.KeyText;
+                OnKeyPressed(sender,args);
             }
         }
         else
@@ -170,7 +170,7 @@ public class MetroKeyboardLayout : KeyboardLayout {
     {
         
         var transform = (Transform)sender;
-
+        transform.Find("MainShape").GetComponent<Renderer>().material = transform.GetComponent<KeyProperties>().normalMat;
         transform.Find("Tint").gameObject.SetActive(false);
         if (zoomEffect)
         {

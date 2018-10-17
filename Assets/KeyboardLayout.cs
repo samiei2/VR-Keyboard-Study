@@ -185,13 +185,11 @@ public abstract class KeyboardLayout : MonoBehaviour
                 if (pointer != null)
                 {
                     Vector3 mousePosition = Input.mousePosition;
-
-                    //mousePosition.z = 9;
+                    
                     mousePosition.z = Math.Abs(Camera.main.transform.position.z - transform.position.z) + pointerDistanceFromCamera;
 
                     Vector3 mouseScreenToWorld = Camera.main.ScreenToWorldPoint(mousePosition);
                     Vector3 position = Vector3.Lerp(pointer.transform.position, mouseScreenToWorld, 1.0f - Mathf.Exp(-speed * Time.deltaTime));
-                    //position.z = transform.position.z + pointerDistanceFromKeyboard;
                     pointer.transform.position = position;
                 }
             }
@@ -705,6 +703,14 @@ public abstract class KeyboardLayout : MonoBehaviour
     {
         if (hit.transform.name.Contains("MainShape"))
         {
+            if (objectInFocus!=null)
+            {
+                if (objectInFocus != hit.transform.gameObject)
+                {
+                    HandleNotHit();
+                }
+            }
+
             if (InputButtonDown)
             {
                 //Debug.Log("Mouse down on the " + hit.transform.parent.name);

@@ -23,4 +23,9 @@ public class ScreenAreaManager : MonoBehaviour {
     {
         transform.Find("SourceTextArea").GetComponent<TextMeshPro>().text = v;
     }
+
+    internal void ClearInputDisplay()
+    {
+        transform.Find("TextArea").GetComponent<TextMeshPro>().text = "";
+    }
 }

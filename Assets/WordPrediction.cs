@@ -36,33 +36,33 @@ public class WordPrediction : MonoBehaviour
 
     private void WordPrediction_KeyPressedHandler(object sender, KeyEventArgs args)
     {
-        ResetKeyboardExcept((Transform)sender);
-        if (args.KeyText.Equals(" "))
-        {
-            _input = "";
-        }
-        else
-        {
-            _input += args.KeyText;
-            HashSet<char> highlightList = new HashSet<char>();
-            String temp = "";
-            foreach (DictionaryEntry item in words)
-            {
-                if (item.Key.ToString().StartsWith(_input, StringComparison.InvariantCultureIgnoreCase))
-                {
-                    string filteredinput = item.Key.ToString().Remove(0, _input.Length);
-                    if (filteredinput.Length != 0)
-                    {
-                        highlightList.Add(filteredinput[0]);
-                        temp += filteredinput[0] + ", ";
-                    }
-                }
-                //highlightList.Add(item.Key.ToString()[item.Key.ToString().Length-1]);
+        //ResetKeyboardExcept((Transform)sender);
+        //if (args.KeyText.Equals(" "))
+        //{
+        //    _input = "";
+        //}
+        //else
+        //{
+        //    _input += args.KeyText;
+        //    HashSet<char> highlightList = new HashSet<char>();
+        //    String temp = "";
+        //    foreach (DictionaryEntry item in words)
+        //    {
+        //        if (item.Key.ToString().StartsWith(_input, StringComparison.InvariantCultureIgnoreCase))
+        //        {
+        //            string filteredinput = item.Key.ToString().Remove(0, _input.Length);
+        //            if (filteredinput.Length != 0)
+        //            {
+        //                highlightList.Add(filteredinput[0]);
+        //                temp += filteredinput[0] + ", ";
+        //            }
+        //        }
+        //        //highlightList.Add(item.Key.ToString()[item.Key.ToString().Length-1]);
                 
-            }
-            //Debug.Log(temp);
-            targetkeyboard.HighlightKeys(new HashSet<char>(highlightList));
-        }
+        //    }
+        //    //Debug.Log(temp);
+        //    targetkeyboard.HighlightKeys(new HashSet<char>(highlightList));
+        //}
     }
 
     private void ResetKeyboardExcept(Transform sender)

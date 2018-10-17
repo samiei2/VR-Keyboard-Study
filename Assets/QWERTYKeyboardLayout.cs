@@ -190,7 +190,7 @@ public class QWERTYKeyboardLayout : KeyboardLayout {
     public override void KeyboardEventHandler_OnUnfocusedHandler(object sender, KeyEventArgs args)
     {
         var transform = (Transform)sender;
-
+        transform.Find("MainShape").GetComponent<Renderer>().material = transform.GetComponent<KeyProperties>().normalMat;
         transform.Find("Tint").gameObject.SetActive(false);
         if (zoomEffect)
         {

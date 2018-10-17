@@ -46,36 +46,36 @@ public class SpellCorrection : MonoBehaviour {
 
     private void WordPrediction_KeyPressedHandler(object sender, KeyEventArgs args)
     {
-        Debug.Log("Predicting");
-        if (enableCompoundCorrection)
-        {
-            _input += args.KeyText;
-        }
-        else
-        {
-            if (args.KeyText == " " || args.KeyText == "spc")
-                _input = "";
-            else
-            {
-                _input += args.KeyText;
+        //Debug.Log("Predicting");
+        //if (enableCompoundCorrection)
+        //{
+        //    _input += args.KeyText;
+        //}
+        //else
+        //{
+        //    if (args.KeyText == " " || args.KeyText == "spc")
+        //        _input = "";
+        //    else
+        //    {
+        //        _input += args.KeyText;
 
-                if (!string.IsNullOrEmpty(_input))
-                {
-                    List<SymSpell.SuggestItem> suggestions = Correct(_input, symSpell);
-                    HashSet<char> suggestedAlphabet = new HashSet<char>();
-                    foreach (SymSpell.SuggestItem item in suggestions)
-                    {
-                        var replaced = item.term.Replace(_input, "");
-                        if (replaced != "")
-                        {
-                            suggestedAlphabet.Add(replaced[0]);
-                        }
-                    }
+        //        if (!string.IsNullOrEmpty(_input))
+        //        {
+        //            List<SymSpell.SuggestItem> suggestions = Correct(_input, symSpell);
+        //            HashSet<char> suggestedAlphabet = new HashSet<char>();
+        //            foreach (SymSpell.SuggestItem item in suggestions)
+        //            {
+        //                var replaced = item.term.Replace(_input, "");
+        //                if (replaced != "")
+        //                {
+        //                    suggestedAlphabet.Add(replaced[0]);
+        //                }
+        //            }
 
-                    targetkeyboard.HighlightKeys(suggestedAlphabet);
-                }
-            }
-        }
+        //            targetkeyboard.HighlightKeys(suggestedAlphabet);
+        //        }
+        //    }
+        //}
 
     }
 
