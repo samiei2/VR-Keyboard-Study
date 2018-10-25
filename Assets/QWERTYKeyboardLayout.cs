@@ -166,13 +166,13 @@ public class QWERTYKeyboardLayout : KeyboardLayout {
         {
             if (textArea != null)
             {
-                OnKeyPressed(sender, args);
                 if (keysDic[KeyID.Shift].GetComponent<KeyProperties>().IsShiftOn)
                 {
                     textArea.GetComponent<TextMeshPro>().text += args.KeyText.ToUpper();
                 }
                 else
                     textArea.GetComponent<TextMeshPro>().text += args.KeyText;
+                OnKeyPressed(sender, args);
             }
         }
         else

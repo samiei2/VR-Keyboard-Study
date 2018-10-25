@@ -978,13 +978,14 @@ public abstract class KeyboardLayout : MonoBehaviour
         if(handler!=null)
             handler.Invoke(sender, args);
     }
-    #endregion
     
+    #endregion
+
     #region ABSTRACTS
     public abstract void SetProperties();
 
     public abstract void LayoutKeys();
-
+    
     public abstract void CreateMainKeys();
     
     public abstract void KeyboardEventHandler_OnReleasedHandler(object sender, KeyEventArgs args);
@@ -1033,6 +1034,7 @@ public abstract class KeyboardLayout : MonoBehaviour
     public float keyXDelta = 0;
     public float keyYDelta = 0;
     public float keyZDelta = 0;
+    public float keyScaleFactor = 1;
     public bool updateLayout = false;
 
     public float keyboardDistanceFromCamera = 10;
@@ -1072,6 +1074,7 @@ public abstract class KeyboardLayout : MonoBehaviour
     protected GameObject screenArea;
     private Vector3 prevDistanceFromHead;
     private bool layoutChanged;
+    
     #endregion
     #endregion
 }
