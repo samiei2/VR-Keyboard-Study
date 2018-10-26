@@ -195,9 +195,11 @@ namespace Tobii.Research.Unity
 
         internal static void HMDWriteRawGaze(this XmlWriter file, HMDGazeDataEventArgs originalGaze)
         {
+            System.String currentTime = System.DateTime.Now.ToString("MM/dd HH:mm:ss.fffff");
             file.WriteStartElement("OriginalGaze");
             file.WriteAttributeString("DeviceTimeStamp", originalGaze.DeviceTimeStamp.ToString());
             file.WriteAttributeString("SystemTimeStamp", originalGaze.SystemTimeStamp.ToString());
+            file.WriteAttributeString("MyCustomStamp", currentTime);
             file.HMDWriteEyeData(originalGaze.LeftEye, "LeftEye");
             file.HMDWriteEyeData(originalGaze.RightEye, "RightEye");
             file.WriteEndElement();

@@ -57,6 +57,10 @@ public class KeyCollisionEvent : MonoBehaviour {
             }
         }
         
+        else
+        {
+
+        }
     }
 
     private void TriggerClick()

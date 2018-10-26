@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -136,6 +137,24 @@ public abstract class KeyboardLayout : MonoBehaviour
             if(gazeTrailGameObject!=null)
                 if (gazeTrailGameObject.GetComponent<VRGazeTrail>().On)
                     gazeTrailGameObject.GetComponent<VRGazeTrail>().On = false;
+        }
+
+        if (InputType!=KeyboardInputType.Ray)
+        {
+            if (leftTrackpadHandler != null && leftTrackpadHandler.transform.gameObject.activeInHierarchy)
+            {
+                if (leftTrackpadHandler.GetComponent<ViveCursor>().isActiveAndEnabled)
+                {
+                    leftTrackpadHandler.GetComponent<ViveCursor>().enabled = false;
+                }
+            }
+            if (rightTrackpadHandler != null && rightTrackpadHandler.transform.gameObject.activeInHierarchy)
+            {
+                if (rightTrackpadHandler.GetComponent<ViveCursor>().isActiveAndEnabled)
+                {
+                    rightTrackpadHandler.GetComponent<ViveCursor>().enabled = false;
+                }
+            }
         }
 
         if (GameManager.Instance != null)
@@ -848,6 +867,28 @@ public abstract class KeyboardLayout : MonoBehaviour
                 }
             }
         }
+    }
+
+    protected void TriggerHapticPulse(SteamVR_TrackedObject index)
+    {
+        StartCoroutine(HapticPulse(index));
+    }
+
+    IEnumerator HapticPulse(SteamVR_TrackedObject _trackedObject)
+    {
+
+        if (_trackedObject.index == SteamVR_TrackedObject.EIndex.None)
+        {
+            yield break;
+        }
+
+        SteamVR_Controller.Device device = SteamVR_Controller.Input((int)_trackedObject.index);
+        // When I wrote this, two frames of vibration felt like a really solid hit without it feeling sloppy.
+        // Also using WaitForEndOfFrame() to match my implementation for the Oculus Touch controllers. Not sure if this is ideal.
+        device.TriggerHapticPulse(2500);
+        yield return new WaitForEndOfFrame();
+        //device.TriggerHapticPulse(1500);
+        //yield return new WaitForEndOfFrame();
     }
     #endregion
 

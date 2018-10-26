@@ -540,6 +540,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 977eb6406c4bd3c46ba5defdc5ce1e45, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enableCompoundCorrection: 0
+  enableSegmentation: 0
+  targetkeyboard: {fileID: 0}
 --- !u!114 &114941420965175708
 MonoBehaviour:
   m_ObjectHideFlags: 1

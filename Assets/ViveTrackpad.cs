@@ -23,11 +23,21 @@ public class ViveTrackpad : MonoBehaviour {
         trackedObj = GetComponent<SteamVR_TrackedObject>();
         controller = GetComponent<SteamVR_TrackedController>();
         controller.PadTouched += Controller_PadTouched;
+        controller.PadClicked += Controller_PadClicked;
         controller.TriggerClicked += Controller_TriggerClicked;
 
         controller.TriggerUnclicked += Controller_TriggerUnclicked ;
         controller.Gripped += Controller_Gripped;
         controller.Ungripped += Controller_Ungripped;
+    }
+
+    private void Controller_PadClicked(object sender, ClickedEventArgs e)
+    {
+        TouchDataArgs args = new TouchDataArgs();
+        args.TriggerDown = true;
+        args.TriggerUp = false;
+        if (ViveDataReceived != null)
+            ViveDataReceived(this, args);
     }
 
     private void Controller_Ungripped(object sender, ClickedEventArgs e)

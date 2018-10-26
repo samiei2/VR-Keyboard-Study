@@ -2,6 +2,7 @@
 // Copyright © 2018 Tobii AB. All rights reserved.
 //-----------------------------------------------------------------------
 
+using System;
 using System.Xml;
 using UnityEngine;
 
@@ -156,7 +157,9 @@ namespace Tobii.Research.Unity
 
             if (_saveUnityData)
             {
+                String currentTime = System.DateTime.Now.ToString("MM/dd HH:mm:ss.fffff");
                 _file.WriteAttributeString("TimeStamp", gazeData.TimeStamp.ToString());
+                _file.WriteAttributeString("MyCustomStamp", currentTime);
                 _file.HMDWritePose(gazeData.Pose);
                 _file.HMDWriteEye(gazeData.Left, "Left");
                 _file.HMDWriteEye(gazeData.Right, "Right");

@@ -179,6 +179,15 @@ public class QWERTYKeyboardLayout : KeyboardLayout {
         {
             HandleNonPrintable(sender, args);
         }
+
+        if (InputType != KeyboardInputType.DrumStick)
+        {
+            if (rightTrackpadHandler != null)
+            {
+                var rightTrackedObj = rightTrackpadHandler.GetComponent<SteamVR_TrackedObject>();
+                TriggerHapticPulse(rightTrackedObj);
+            }
+        }
     }
 
     public override void KeyboardEventHandler_OnReleasedHandler(object sender, KeyEventArgs args)
